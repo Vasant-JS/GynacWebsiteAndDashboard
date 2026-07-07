@@ -15,7 +15,7 @@ const _side = Color(0xFFEDEDFF);
 const _panel = Color(0xFFF4F1FF);
 const _line = Color(0xFFE3BDC3);
 const _textMuted = Color(0xFF5A4044);
-const _dummyMode = true;
+const _dummyMode = false;
 
 enum DashboardRole { patient, doctor }
 
@@ -176,7 +176,7 @@ class SourceSidebar extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: patient ? () {} : () => BrowserNavigation.go('/api/auth/logout'),
                 icon: Icon(patient ? Icons.add : Icons.logout),
-                label: Text(patient ? 'Book New Visit' : 'Sign Out'),
+                label: Text(patient ? 'Book New Consultation' : 'Sign Out'),
                 style: FilledButton.styleFrom(
                   backgroundColor: _primary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(patient ? 10 : 4)),
@@ -342,7 +342,61 @@ class SourceTopBar extends StatelessWidget {
             child: const Icon(Icons.notifications_none, color: _textMuted),
           ),
           const SizedBox(width: 20),
-          Text(role == DashboardRole.patient ? 'Patient Login' : '', style: const TextStyle(color: _primary, fontSize: 18, fontWeight: FontWeight.w800)),
+          if (role == DashboardRole.patient) const PatientAccountMenu(),
+        ],
+      ),
+    );
+  }
+}
+
+class PatientAccountMenu extends StatelessWidget {
+  const PatientAccountMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      tooltip: 'Open account menu',
+      offset: const Offset(0, 44),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      color: Colors.white,
+      onSelected: (value) {
+        if (value == 'profile') BrowserNavigation.go('/patient/profile.html');
+        if (value == 'logout') BrowserNavigation.go('/api/auth/logout');
+      },
+      itemBuilder: (context) => const [
+        PopupMenuItem(
+          value: 'profile',
+          child: Row(
+            children: [
+              Icon(Icons.person_outline, color: _textMuted),
+              SizedBox(width: 12),
+              Text('Profile', style: TextStyle(color: _navy, fontWeight: FontWeight.w700)),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'logout',
+          child: Row(
+            children: [
+              Icon(Icons.logout, color: _primary),
+              SizedBox(width: 12),
+              Text('Logout', style: TextStyle(color: _primary, fontWeight: FontWeight.w700)),
+            ],
+          ),
+        ),
+      ],
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: Color(0xFFFFD9DE),
+            child: Text('S', style: TextStyle(color: _primary, fontWeight: FontWeight.w900)),
+          ),
+          SizedBox(width: 10),
+          Text('Sarah', style: TextStyle(color: _primary, fontSize: 18, fontWeight: FontWeight.w800)),
+          SizedBox(width: 4),
+          Icon(Icons.keyboard_arrow_down, color: _primary),
         ],
       ),
     );
@@ -362,8 +416,6 @@ class PatientDashboard extends StatelessWidget {
         SourceHero(
           title: 'Hello, Sarah',
           subtitle: 'You have a busy health week ahead. Stay mindful and hydrated.',
-          actionText: 'Book New Consultation',
-          icon: Icons.edit_calendar,
         ),
         Wrap(
           spacing: 30,
@@ -456,42 +508,19 @@ class DashboardScroll extends StatelessWidget {
 }
 
 class SourceHero extends StatelessWidget {
-  const SourceHero({super.key, required this.title, required this.subtitle, required this.actionText, required this.icon});
+  const SourceHero({super.key, required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
-  final String actionText;
-  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      runSpacing: 18,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: const TextStyle(color: _navy, fontSize: 48, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 12),
-            Text(subtitle, style: const TextStyle(color: _textMuted, fontSize: 23)),
-          ],
-        ),
-        SizedBox(
-          height: 70,
-          child: FilledButton.icon(
-            onPressed: () {},
-            icon: Icon(icon, size: 30),
-            label: Text(actionText),
-            style: FilledButton.styleFrom(
-              backgroundColor: _primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-              padding: const EdgeInsets.symmetric(horizontal: 36),
-              textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-            ),
-          ),
-        ),
+        Text(title, style: const TextStyle(color: _navy, fontSize: 48, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 12),
+        Text(subtitle, style: const TextStyle(color: _textMuted, fontSize: 23)),
       ],
     );
   }

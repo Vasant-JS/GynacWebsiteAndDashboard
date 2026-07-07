@@ -5,11 +5,25 @@ const { Client } = require('pg');
 
 const dbName = process.env.PGDATABASE || 'femmecare';
 
+function sslConfig() {
+  const mode = String(process.env.PGSSLMODE || '').toLowerCase();
+  if (mode === 'disable') return false;
+  if (mode === 'require' || mode === 'no-verify') {
+    return { rejectUnauthorized: process.env.PGSSL_REJECT_UNAUTHORIZED !== 'false' && mode !== 'no-verify' };
+  }
+  if (process.env.DATABASE_URL && /supabase\.com|pooler\.supabase\.com/.test(process.env.DATABASE_URL)) {
+    return { rejectUnauthorized: process.env.PGSSL_REJECT_UNAUTHORIZED !== 'false' };
+  }
+  return undefined;
+}
+
 function baseConfig(database) {
+  const ssl = sslConfig();
   if (process.env.DATABASE_URL) {
-    const url = new URL(process.env.DATABASE_URL);
-    url.pathname = `/${database}`;
-    return { connectionString: url.toString() };
+    return {
+      connectionString: process.env.DATABASE_URL,
+      ...(ssl !== undefined ? { ssl } : {}),
+    };
   }
   return {
     host: process.env.PGHOST || 'localhost',
@@ -17,10 +31,15 @@ function baseConfig(database) {
     user: process.env.PGUSER || 'postgres',
     password: process.env.PGPASSWORD || 'postgres',
     database,
+    ...(ssl !== undefined ? { ssl } : {}),
   };
 }
 
 async function createDatabaseIfNeeded() {
+  if (process.env.DATABASE_URL) {
+    console.log('DATABASE_URL detected; using existing managed database.');
+    return;
+  }
   const client = new Client(baseConfig('postgres'));
   await client.connect();
   const exists = await client.query('SELECT 1 FROM pg_database WHERE datname = $1', [dbName]);

@@ -74,11 +74,14 @@
     const otpInputs = Array.from(document.querySelectorAll('#otp-phase input'));
     const sendButton = buttonByText('Send OTP');
     const verifyButton = buttonByText('Verify');
+    const resendButton = buttonByText('Resend Code');
     const loginPhase = document.getElementById('login-phase');
     const otpPhase = document.getElementById('otp-phase');
     const nextUrl = new URLSearchParams(window.location.search).get('next');
     const safeNextUrl = nextUrl && nextUrl.startsWith('/') && !nextUrl.startsWith('//') ? nextUrl : '';
     let currentPhone = '';
+    let resendTimerId = null;
+    let resendSeconds = 60;
     let message = document.querySelector('[data-login-message]');
     if (!message) {
       message = document.createElement('p');
@@ -89,11 +92,39 @@
       message.textContent = text;
       message.className = `mt-base font-bold ${error ? 'text-error' : 'text-secondary'}`;
     }
-    sendButton?.addEventListener('click', async (event) => {
+    function formatCountdown(seconds) {
+      return `00:${String(seconds).padStart(2, '0')}`;
+    }
+    function setResendDisabled(disabled) {
+      if (!resendButton) return;
+      resendButton.disabled = disabled;
+      resendButton.classList.toggle('opacity-60', disabled);
+      resendButton.classList.toggle('cursor-not-allowed', disabled);
+    }
+    function startResendTimer() {
+      if (!resendButton) return;
+      clearInterval(resendTimerId);
+      resendSeconds = 60;
+      setResendDisabled(true);
+      resendButton.textContent = `Resend Code (${formatCountdown(resendSeconds)})`;
+      resendTimerId = setInterval(() => {
+        resendSeconds -= 1;
+        if (resendSeconds <= 0) {
+          clearInterval(resendTimerId);
+          resendTimerId = null;
+          setResendDisabled(false);
+          resendButton.textContent = 'Resend Code';
+          return;
+        }
+        resendButton.textContent = `Resend Code (${formatCountdown(resendSeconds)})`;
+      }, 1000);
+    }
+    async function requestOtp(event) {
       event.preventDefault();
       currentPhone = phoneInput?.value?.trim() || '8892498859';
       try {
         show('Generating OTP...');
+        setResendDisabled(true);
         const data = await jsonFetch('/api/auth/patient/request-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -103,9 +134,16 @@
         loginPhase?.classList.add('hidden');
         otpPhase?.classList.remove('hidden');
         if (otpInputs.length) String(data.otp).split('').forEach((digit, i) => { if (otpInputs[i]) otpInputs[i].value = digit; });
+        startResendTimer();
       } catch (error) {
+        setResendDisabled(false);
         show(error.message, true);
       }
+    }
+    sendButton?.addEventListener('click', requestOtp);
+    resendButton?.addEventListener('click', (event) => {
+      if (resendButton.disabled) return;
+      requestOtp(event);
     });
     verifyButton?.addEventListener('click', async (event) => {
       event.preventDefault();
