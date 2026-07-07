@@ -216,105 +216,111 @@ async function setupSchema() {
     )
   `);
 
-  const doctorHash = await bcrypt.hash('doctor123', 10);
-  const adminHash = await bcrypt.hash('admin123', 10);
-  const patientHash = await bcrypt.hash('patient-dev-only', 10);
+  const shouldSeed = process.env.SKIP_DB_SEED !== 'true';
 
-  await client.query(
-    `
-      INSERT INTO users (role, display_name, email, password_hash, profile, metadata)
-      VALUES
-        ('DOCTOR', 'Dr. Elena Rossi', 'doctor@aura.test', $1, $2, '{"seed":true}'),
-        ('ADMIN', 'Super Admin', 'admin@aura.test', $3, $4, '{"seed":true}')
-      ON CONFLICT (email) WHERE email IS NOT NULL
-      DO UPDATE SET password_hash = EXCLUDED.password_hash, profile = EXCLUDED.profile, updated_at = now()
-    `,
-    [
-      doctorHash,
-      { specialization: 'Gynecology', experienceYears: 15, consultationFee: 800, dashboard: 'doctor' },
-      adminHash,
-      { dashboard: 'admin', permissions: ['*'] },
-    ],
-  );
+  if (shouldSeed) {
+    const doctorHash = await bcrypt.hash('doctor123', 10);
+    const adminHash = await bcrypt.hash('admin123', 10);
+    const patientHash = await bcrypt.hash('patient-dev-only', 10);
 
-  const seededUsers = await client.query('SELECT id, role, email FROM users WHERE email IN ($1, $2)', ['doctor@aura.test', 'admin@aura.test']);
-  const doctor = seededUsers.rows.find((user) => user.role === 'DOCTOR');
-  const patients = await client.query(
-    `
-      INSERT INTO users (role, display_name, email, phone, password_hash, profile, metadata)
-      VALUES
-        ('PATIENT', 'Sarah Mitchell', 'sarah.patient@aura.test', '8892498859', $1, $2, '{"seed":true}'),
-        ('PATIENT', 'Amanda K. Reed', 'amanda.patient@aura.test', '+919876543211', $1, $3, '{"seed":true}'),
-        ('PATIENT', 'Beatrice Vance', 'beatrice.patient@aura.test', '+919876543212', $1, $4, '{"seed":true}')
-      ON CONFLICT (email) WHERE email IS NOT NULL
-      DO UPDATE SET display_name = EXCLUDED.display_name, phone = EXCLUDED.phone, profile = EXCLUDED.profile, updated_at = now()
-      RETURNING id, display_name, email
-    `,
-    [
-      patientHash,
-      { age: 31, currentConcern: 'Prenatal Checkup - Week 24', bloodGroup: 'O+', whatsappNumber: '918892498859' },
-      { age: 36, currentConcern: 'Diagnostic Ultrasound Review', bloodGroup: 'A+' },
-      { age: 29, currentConcern: 'Bloodwork Review', bloodGroup: 'B+' },
-    ],
-  );
-
-  if (doctor && patients.rowCount) {
-    await client.query('DELETE FROM notifications WHERE user_id = $1 AND metadata->>\'seed\' = \'true\'', [doctor.id]);
-    await client.query('DELETE FROM payments WHERE metadata->>\'seed\' = \'true\'');
-    await client.query('DELETE FROM appointments WHERE doctor_id = $1 AND metadata->>\'seed\' = \'true\'', [doctor.id]);
-    await client.query('DELETE FROM prescriptions WHERE doctor_id = $1 AND metadata->>\'seed\' = \'true\'', [doctor.id]);
-    await client.query('DELETE FROM medical_documents WHERE metadata->>\'seed\' = \'true\'');
-    const [sarah, amanda, beatrice] = patients.rows;
-    const seededAppointments = await client.query(
+    await client.query(
       `
-        INSERT INTO appointments (doctor_id, patient_id, appointment_at, service_type, status, location, notes, metadata)
+        INSERT INTO users (role, display_name, email, password_hash, profile, metadata)
         VALUES
-          ($1, $2, now()::date + time '09:30', 'Prenatal Checkup', 'IN_PROGRESS', 'Aura Boutique Clinic, Wing A, Room 402', '{"trimester":"second"}', '{"seed":true,"priority":"normal"}'),
-          ($1, $3, now()::date + time '10:15', 'Diagnostic Ultrasound Review', 'SCHEDULED', 'Aura Boutique Clinic, Wing A, Room 405', '{"scanType":"pelvic"}', '{"seed":true,"priority":"normal"}'),
-          ($1, $4, now()::date + time '11:00', 'Bloodwork Review', 'SCHEDULED', 'Virtual Consultation', '{"report":"Full Blood Count"}', '{"seed":true,"priority":"follow-up"}')
-        RETURNING id, patient_id, service_type
+          ('DOCTOR', 'Dr. Elena Rossi', 'doctor@aura.test', $1, $2, '{"seed":true}'),
+          ('ADMIN', 'Super Admin', 'admin@aura.test', $3, $4, '{"seed":true}')
+        ON CONFLICT (email) WHERE email IS NOT NULL
+        DO UPDATE SET password_hash = EXCLUDED.password_hash, profile = EXCLUDED.profile, updated_at = now()
       `,
-      [doctor.id, sarah.id, amanda.id, beatrice.id],
+      [
+        doctorHash,
+        { specialization: 'Gynecology', experienceYears: 15, consultationFee: 800, dashboard: 'doctor' },
+        adminHash,
+        { dashboard: 'admin', permissions: ['*'] },
+      ],
     );
-    for (const appointment of seededAppointments.rows) {
+
+    const seededUsers = await client.query('SELECT id, role, email FROM users WHERE email IN ($1, $2)', ['doctor@aura.test', 'admin@aura.test']);
+    const doctor = seededUsers.rows.find((user) => user.role === 'DOCTOR');
+    const patients = await client.query(
+      `
+        INSERT INTO users (role, display_name, email, phone, password_hash, profile, metadata)
+        VALUES
+          ('PATIENT', 'Sarah Mitchell', 'sarah.patient@aura.test', '8892498859', $1, $2, '{"seed":true}'),
+          ('PATIENT', 'Amanda K. Reed', 'amanda.patient@aura.test', '+919876543211', $1, $3, '{"seed":true}'),
+          ('PATIENT', 'Beatrice Vance', 'beatrice.patient@aura.test', '+919876543212', $1, $4, '{"seed":true}')
+        ON CONFLICT (email) WHERE email IS NOT NULL
+        DO UPDATE SET display_name = EXCLUDED.display_name, phone = EXCLUDED.phone, profile = EXCLUDED.profile, updated_at = now()
+        RETURNING id, display_name, email
+      `,
+      [
+        patientHash,
+        { age: 31, currentConcern: 'Prenatal Checkup - Week 24', bloodGroup: 'O+', whatsappNumber: '918892498859' },
+        { age: 36, currentConcern: 'Diagnostic Ultrasound Review', bloodGroup: 'A+' },
+        { age: 29, currentConcern: 'Bloodwork Review', bloodGroup: 'B+' },
+      ],
+    );
+
+    if (doctor && patients.rowCount) {
+      await client.query('DELETE FROM notifications WHERE user_id = $1 AND metadata->>\'seed\' = \'true\'', [doctor.id]);
+      await client.query('DELETE FROM payments WHERE metadata->>\'seed\' = \'true\'');
+      await client.query('DELETE FROM appointments WHERE doctor_id = $1 AND metadata->>\'seed\' = \'true\'', [doctor.id]);
+      await client.query('DELETE FROM prescriptions WHERE doctor_id = $1 AND metadata->>\'seed\' = \'true\'', [doctor.id]);
+      await client.query('DELETE FROM medical_documents WHERE metadata->>\'seed\' = \'true\'');
+      const [sarah, amanda, beatrice] = patients.rows;
+      const seededAppointments = await client.query(
+        `
+          INSERT INTO appointments (doctor_id, patient_id, appointment_at, service_type, status, location, notes, metadata)
+          VALUES
+            ($1, $2, now()::date + time '09:30', 'Prenatal Checkup', 'IN_PROGRESS', 'Aura Boutique Clinic, Wing A, Room 402', '{"trimester":"second"}', '{"seed":true,"priority":"normal"}'),
+            ($1, $3, now()::date + time '10:15', 'Diagnostic Ultrasound Review', 'SCHEDULED', 'Aura Boutique Clinic, Wing A, Room 405', '{"scanType":"pelvic"}', '{"seed":true,"priority":"normal"}'),
+            ($1, $4, now()::date + time '11:00', 'Bloodwork Review', 'SCHEDULED', 'Virtual Consultation', '{"report":"Full Blood Count"}', '{"seed":true,"priority":"follow-up"}')
+          RETURNING id, patient_id, service_type
+        `,
+        [doctor.id, sarah.id, amanda.id, beatrice.id],
+      );
+      for (const appointment of seededAppointments.rows) {
+        await client.query(
+          'INSERT INTO payments (appointment_id, patient_id, amount, currency, status, metadata) VALUES ($1, $2, $3, $4, $5, $6)',
+          [
+            appointment.id,
+            appointment.patient_id,
+            appointment.service_type === 'Prenatal Checkup' ? 1200 : 800,
+            'INR',
+            appointment.service_type === 'Prenatal Checkup' ? 'PAID' : 'PENDING',
+            { seed: true, source: 'db_setup' },
+          ],
+        );
+      }
       await client.query(
-        'INSERT INTO payments (appointment_id, patient_id, amount, currency, status, metadata) VALUES ($1, $2, $3, $4, $5, $6)',
-        [
-          appointment.id,
-          appointment.patient_id,
-          appointment.service_type === 'Prenatal Checkup' ? 1200 : 800,
-          'INR',
-          appointment.service_type === 'Prenatal Checkup' ? 'PAID' : 'PENDING',
-          { seed: true, source: 'db_setup' },
-        ],
+        `
+          INSERT INTO prescriptions (doctor_id, patient_id, status, medications, instructions, metadata)
+          VALUES
+            ($1, $2, 'FINAL', '[{"name":"Iron Supplement Forte","dosage":"1 tablet","frequency":"Daily","duration":"20 days"}]', '{"advice":"Take after breakfast."}', '{"seed":true}'),
+            ($1, $3, 'PENDING_REVIEW', '[{"name":"Prenatal Multi-Vitamin","frequency":"After food"}]', '{}', '{"seed":true}')
+        `,
+        [doctor.id, sarah.id, amanda.id],
+      );
+      await client.query(
+        `
+          INSERT INTO medical_documents (patient_id, uploaded_by, document_type, name, document_date, file_name, file_path, mime_type, metadata)
+          VALUES ($1, $1, 'REPORT', 'Full Blood Count', current_date - interval '2 days', 'sample-report.txt', '/uploads/sample-report.txt', 'text/plain', '{"seed":true}')
+        `,
+        [sarah.id],
+      );
+      await client.query(
+        `
+          INSERT INTO notifications (user_id, title, body, category, metadata)
+          VALUES
+            ($1, 'Lab Reports Uploaded', 'New bloodwork results available for Beatrice Vance.', 'REPORT', '{"seed":true}'),
+            ($1, 'New Booking', 'Emergency consult requested for tomorrow at 08:00 AM.', 'BOOKING', '{"seed":true}'),
+            ($1, 'Internal Message', 'Case file shared for the Friday procedure.', 'MESSAGE', '{"seed":true}')
+        `,
+        [doctor.id],
       );
     }
-    await client.query(
-      `
-        INSERT INTO prescriptions (doctor_id, patient_id, status, medications, instructions, metadata)
-        VALUES
-          ($1, $2, 'FINAL', '[{"name":"Iron Supplement Forte","dosage":"1 tablet","frequency":"Daily","duration":"20 days"}]', '{"advice":"Take after breakfast."}', '{"seed":true}'),
-          ($1, $3, 'PENDING_REVIEW', '[{"name":"Prenatal Multi-Vitamin","frequency":"After food"}]', '{}', '{"seed":true}')
-      `,
-      [doctor.id, sarah.id, amanda.id],
-    );
-    await client.query(
-      `
-        INSERT INTO medical_documents (patient_id, uploaded_by, document_type, name, document_date, file_name, file_path, mime_type, metadata)
-        VALUES ($1, $1, 'REPORT', 'Full Blood Count', current_date - interval '2 days', 'sample-report.txt', '/uploads/sample-report.txt', 'text/plain', '{"seed":true}')
-      `,
-      [sarah.id],
-    );
-    await client.query(
-      `
-        INSERT INTO notifications (user_id, title, body, category, metadata)
-        VALUES
-          ($1, 'Lab Reports Uploaded', 'New bloodwork results available for Beatrice Vance.', 'REPORT', '{"seed":true}'),
-          ($1, 'New Booking', 'Emergency consult requested for tomorrow at 08:00 AM.', 'BOOKING', '{"seed":true}'),
-          ($1, 'Internal Message', 'Case file shared for the Friday procedure.', 'MESSAGE', '{"seed":true}')
-      `,
-      [doctor.id],
-    );
+  } else {
+    console.log('Skipping seed data because SKIP_DB_SEED=true.');
   }
 
   await client.query(
@@ -336,7 +342,7 @@ createDatabaseIfNeeded()
   .then(setupSchema)
   .then(() => {
     console.log('PostgreSQL schema is ready.');
-    console.log('Seed logins: doctor@aura.test / doctor123, admin@aura.test / admin123');
+    if (process.env.SKIP_DB_SEED !== 'true') console.log('Seed logins: doctor@aura.test / doctor123, admin@aura.test / admin123');
   })
   .catch((error) => {
     console.error('Database setup failed.');

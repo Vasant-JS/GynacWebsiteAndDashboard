@@ -8,6 +8,7 @@
     "dev": "node server.js",
     "start": "node server.js",
     "db:setup": "node scripts/setup-db.js",
+    "db:clear-seed": "node scripts/clear-seed-data.js",
     "dashboard:analyze": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter analyze",
     "dashboard:build": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter build web --base-href /dashboard-app/"
   },
