@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6941ab",
+                    "error": "#ba1a1a",
+                    "surface-container": "#edecff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e6e6ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#e3bdc3",
+                    "on-tertiary-fixed": "#260058",
+                    "on-secondary-fixed-variant": "#005049",
+                    "secondary": "#006a62",
+                    "primary": "#b0004a",
+                    "on-surface": "#000767",
+                    "secondary-container": "#81f3e5",
+                    "inverse-primary": "#ffb2bf",
+                    "on-secondary-fixed": "#00201d",
+                    "primary-fixed": "#ffd9de",
+                    "on-primary-container": "#fff2f3",
+                    "surface-variant": "#e0e0ff",
+                    "primary-fixed-dim": "#ffb2bf",
+                    "on-error-container": "#93000a",
+                    "surface": "#fbf8ff",
+                    "on-surface-variant": "#5a4044",
+                    "outline": "#8e6f74",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#ebdcff",
+                    "on-tertiary-container": "#fbf3ff",
+                    "secondary-fixed-dim": "#66d9cc",
+                    "on-secondary-container": "#006f66",
+                    "on-tertiary-fixed-variant": "#572e99",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#d81b60",
+                    "surface-container-low": "#f4f2ff",
+                    "surface-bright": "#fbf8ff",
+                    "tertiary-fixed-dim": "#d4bbff",
+                    "surface-dim": "#d5d7ff",
+                    "on-primary-fixed": "#3f0016",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#1b247f",
+                    "on-primary-fixed-variant": "#90003b",
+                    "secondary-fixed": "#84f5e8",
+                    "tertiary-container": "#825bc6",
+                    "on-background": "#000767",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f1efff",
+                    "surface-tint": "#bc004f",
+                    "surface-container-highest": "#e0e0ff",
+                    "background": "#fbf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "container-padding-mobile": "16px",
+                    "gutter": "24px",
+                    "container-padding-desktop": "48px",
+                    "section-gap": "64px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "label-sm": ["Manrope"],
+                    "body-sm": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "headline-xl": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .doctor-card-shadow {
+            box-shadow: 0px 4px 20px rgba(26, 35, 126, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-container-padding-desktop max-w-[1200px] mx-auto h-20">
+<div class="text-headline-md font-headline-md font-bold text-primary">Aura Health</div>
+<nav class="hidden md:flex gap-gutter">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Services</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-bold" href="#">Our Doctors</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Clinics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Patient Education</a>
+</nav>
+<div class="flex gap-base">
+<button class="hidden md:block px-6 py-2 rounded-full border border-secondary text-secondary font-label-md hover:bg-secondary-container transition-all">Patient Login</button>
+<button class="bg-primary text-white px-6 py-2 rounded-full font-label-md hover:opacity-90 active:scale-95 transition-all">Book Appointment</button>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-container-padding-desktop py-gutter">
+<!-- Search Section -->
+<section class="mb-gutter">
+<div class="relative w-full max-w-2xl mx-auto">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-12 pr-4 py-4 rounded-xl border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary-fixed bg-surface-container-lowest transition-all text-body-md font-body-md outline-none" placeholder="Search by name, specialization, or hospital..." type="text"/>
+</div>
+</section>
+<div class="flex flex-col md:flex-row gap-gutter">
+<!-- Sidebar Filters -->
+<aside class="w-full md:w-64 flex flex-col gap-gutter shrink-0">
+<div class="bg-surface-container-low p-gutter rounded-xl shadow-sm border border-outline-variant">
+<h3 class="text-label-md font-label-md text-on-surface mb-base uppercase tracking-wider">Specialization</h3>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> Gynecologist
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> Fertility Specialist
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> Obstetrician
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> Pediatrician
+                        </label>
+</div>
+<div class="h-px bg-outline-variant my-gutter"></div>
+<h3 class="text-label-md font-label-md text-on-surface mb-base uppercase tracking-wider">Language</h3>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> Kannada
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> English
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="rounded text-primary focus:ring-primary h-4 w-4" type="checkbox"/> Hindi
+                        </label>
+</div>
+<div class="h-px bg-outline-variant my-gutter"></div>
+<h3 class="text-label-md font-label-md text-on-surface mb-base uppercase tracking-wider">Availability</h3>
+<div class="flex flex-col gap-2">
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary h-4 w-4" name="availability" type="radio"/> Any Day
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4" name="availability" type="radio"/> Today
+                        </label>
+<label class="flex items-center gap-base text-body-sm cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4" name="availability" type="radio"/> Tomorrow
+                        </label>
+</div>
+</div>
+</aside>
+<!-- Doctor Cards Grid -->
+<div class="flex-grow flex flex-col gap-base">
+<p class="text-body-sm text-on-surface-variant font-medium">Showing 42 specialists in Bangalore</p>
+<!-- Doctor Card 1 -->
+<article class="bg-surface-container-lowest doctor-card-shadow rounded-lg p-gutter border-l-4 border-secondary flex flex-col md:flex-row gap-gutter hover:translate-y-[-2px] transition-transform duration-300">
+<div class="relative w-32 h-32 md:w-40 md:h-40 shrink-0 mx-auto md:mx-0">
+<img alt="Dr. Elena Rossi" class="w-full h-full object-cover rounded-lg" data-alt="A professional headshot of a middle-aged female doctor with a kind smile, wearing a white clinical coat and a stethoscope. She is set against a soft-focus, modern clinic background with clean white walls and warm, ambient lighting that evokes a sense of serenity and clinical excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiNA7gFiF4hpSVRvgLm2QJwzkp1gireUkiqMUYBU36dA8kWijVlbJZb8Ehc_wWNz4CwAZVsU0Wfd2iRs_spwo8Nnm0i2Y6x6_BJGRL7mERdMtQkcz9-ajNy09T8Sa2ozZ0JhXVuKjnZDDE9bHuW6EuEaQWafxlj4u6H3egm-s2eltSShl0cXE6xR0Ixu3VX5gpS1IzAPt0Etxq0B9d5h9iBw56tePcj9m4B_W23k_-gsGAFhI70wkgWgoC8fqMuBHiDngx96egjG0"/>
+</div>
+<div class="flex-grow">
+<div class="flex flex-col md:flex-row justify-between items-start mb-2">
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface">Dr. Elena Rossi</h2>
+<p class="text-primary font-label-md">Senior Gynecologist &amp; Obstetrician</p>
+</div>
+<span class="mt-2 md:mt-0 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-label-sm font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_available</span> Next available: Today, 4:30 PM
+                            </span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-base mb-gutter text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">work_history</span> 15+ Years Exp.
+                            </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">translate</span> English, Italian, Hindi
+                            </div>
+<div class="flex items-center gap-2 font-bold text-on-surface">
+<span class="material-symbols-outlined text-outline">payments</span> ₹1,200
+                            </div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-gutter line-clamp-2">Specializing in high-risk pregnancies and minimally invasive laparoscopic surgeries with a focus on compassionate patient-centric care.</p>
+<div class="flex flex-wrap gap-base">
+<button class="px-6 py-2 rounded-full border border-outline text-on-surface font-label-md hover:bg-surface-variant transition-all">View Profile</button>
+<button class="px-6 py-2 rounded-full bg-primary text-white font-label-md hover:opacity-90 active:scale-95 shadow-sm transition-all">Book Now</button>
+</div>
+</div>
+</article>
+<!-- Doctor Card 2 -->
+<article class="bg-surface-container-lowest doctor-card-shadow rounded-lg p-gutter border-l-4 border-secondary flex flex-col md:flex-row gap-gutter hover:translate-y-[-2px] transition-transform duration-300">
+<div class="relative w-32 h-32 md:w-40 md:h-40 shrink-0 mx-auto md:mx-0">
+<img alt="Dr. Rajesh Kumar" class="w-full h-full object-cover rounded-lg" data-alt="A professional male doctor in his late 30s with short dark hair and a confident expression, wearing professional medical attire. The background is a clean, bright medical consultation room with subtle lavender accents, conveying a premium and boutique healthcare environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBnZMyNA7yt41ZQyUYPJDVT1LNoQQM735bIOKp5oUFLqqSeydqqLqfT2db7qNPT2_1TKHb7Hpmop88JZIiRwPzCfb_NccccrshcHscQ0U8rCOGMscxo-f0o1rb8DPl5HMPwSknodokASpRGmYXQ39c3rmifd-mW1EPXRaaxba9-9ViowWdG98ZTZwoCg46xTt60YBhFMqkVGWCq0Hk0tuz4obcT6_J0sGSyVMbsk3K8taTHwe1bIU2quQXW4GDGlpgVBl_8-pKfew"/>
+</div>
+<div class="flex-grow">
+<div class="flex flex-col md:flex-row justify-between items-start mb-2">
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface">Dr. Rajesh Kumar</h2>
+<p class="text-primary font-label-md">Fertility &amp; IVF Specialist</p>
+</div>
+<span class="mt-2 md:mt-0 bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_month</span> Next: Tomorrow, 10:00 AM
+                            </span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-base mb-gutter text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">work_history</span> 10 Years Exp.
+                            </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">translate</span> English, Kannada, Hindi
+                            </div>
+<div class="flex items-center gap-2 font-bold text-on-surface">
+<span class="material-symbols-outlined text-outline">payments</span> ₹1,500
+                            </div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-gutter line-clamp-2">Renowned for advanced reproductive endocrinology and personalized IVF treatments with high success rates at Aura Fertility Center.</p>
+<div class="flex flex-wrap gap-base">
+<button class="px-6 py-2 rounded-full border border-outline text-on-surface font-label-md hover:bg-surface-variant transition-all">View Profile</button>
+<button class="px-6 py-2 rounded-full bg-primary text-white font-label-md hover:opacity-90 active:scale-95 shadow-sm transition-all">Book Now</button>
+</div>
+</div>
+</article>
+<!-- Doctor Card 3 -->
+<article class="bg-surface-container-lowest doctor-card-shadow rounded-lg p-gutter border-l-4 border-outline-variant flex flex-col md:flex-row gap-gutter hover:translate-y-[-2px] transition-transform duration-300">
+<div class="relative w-32 h-32 md:w-40 md:h-40 shrink-0 mx-auto md:mx-0">
+<img alt="Dr. Priya Sharma" class="w-full h-full object-cover rounded-lg" data-alt="A portrait of a young female pediatrician with a warm, welcoming smile, wearing a subtle stethoscope. The lighting is bright and high-key, creating an atmosphere of assured calm and safety within a modern, minimalist boutique healthcare setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALOdVUCBvdnQx4icw86n5wF9m6pcjHTWdbg6R5XBSqUlU9NpoHBLwNKxTzfNjf9Jfs-1RY67LFRy9f-sdxa90rIrxuJfJm_QqqpIoUB1lI1cDS9DjMbMnjXz777Zp-wfmcYtdrgTkbSTk-pFLAbv8dOZcAOX0dyCAKRI51mXFVnTqNjIYsKsP6bYtnJbX9px7cM5Rfly1niNkh0UBaixR1JSM8hjGDD0qSxxR8GxOFiAmlUrbN6DjahrXG9OmlFbSycjHrn2Qx9T4"/>
+</div>
+<div class="flex-grow">
+<div class="flex flex-col md:flex-row justify-between items-start mb-2">
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface">Dr. Priya Sharma</h2>
+<p class="text-primary font-label-md">Consultant Pediatrician</p>
+</div>
+<span class="mt-2 md:mt-0 bg-error-container text-on-error-container px-3 py-1 rounded-full text-label-sm font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> Urgent: Available in 15 mins
+                            </span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-base mb-gutter text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">work_history</span> 8 Years Exp.
+                            </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">translate</span> English, Hindi
+                            </div>
+<div class="flex items-center gap-2 font-bold text-on-surface">
+<span class="material-symbols-outlined text-outline">payments</span> ₹900
+                            </div>
+</div>
+<p class="text-body-sm text-on-surface-variant mb-gutter line-clamp-2">Expert in neonatal care and developmental pediatrics, providing a child-friendly environment for comprehensive health screenings.</p>
+<div class="flex flex-wrap gap-base">
+<button class="px-6 py-2 rounded-full border border-outline text-on-surface font-label-md hover:bg-surface-variant transition-all">View Profile</button>
+<button class="px-6 py-2 rounded-full bg-primary text-white font-label-md hover:opacity-90 active:scale-95 shadow-sm transition-all">Book Now</button>
+</div>
+</div>
+</article>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-lowest mt-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full max-w-[1200px] mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="text-headline-md font-headline-md font-bold text-on-surface mb-base">Aura Health</div>
+<p class="text-body-sm text-on-surface-variant">Transforming women's healthcare through clinical excellence and empathetic design.</p>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-base">Quick Links</h4>
+<ul class="flex flex-col gap-2">
+<li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a></li>
+<li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-base">Clinics</h4>
+<ul class="flex flex-col gap-2">
+<li class="text-body-sm text-on-surface-variant">Bangalore - Indiranagar</li>
+<li class="text-body-sm text-on-surface-variant">Bangalore - Jayanagar</li>
+<li class="text-body-sm text-on-surface-variant">Mumbai - Bandra</li>
+</ul>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-base">Connect</h4>
+<div class="flex gap-base">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">social_leaderboard</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">share_location</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">mail</span>
+</div>
+</div>
+</div>
+<div class="w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter">
+<div class="h-px bg-outline-variant w-full mb-gutter opacity-30"></div>
+<p class="text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+</div>
+</footer>
+<script src="/assets/js/design-live.js"></script></body></html>

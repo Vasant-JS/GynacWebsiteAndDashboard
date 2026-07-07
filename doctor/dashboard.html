@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#6941ab",
+                    "error": "#ba1a1a",
+                    "surface-container": "#edecff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e6e6ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#e3bdc3",
+                    "on-tertiary-fixed": "#260058",
+                    "on-secondary-fixed-variant": "#005049",
+                    "secondary": "#006a62",
+                    "primary": "#b0004a",
+                    "on-surface": "#000767",
+                    "secondary-container": "#81f3e5",
+                    "inverse-primary": "#ffb2bf",
+                    "on-secondary-fixed": "#00201d",
+                    "primary-fixed": "#ffd9de",
+                    "on-primary-container": "#fff2f3",
+                    "surface-variant": "#e0e0ff",
+                    "primary-fixed-dim": "#ffb2bf",
+                    "on-error-container": "#93000a",
+                    "surface": "#fbf8ff",
+                    "on-surface-variant": "#5a4044",
+                    "outline": "#8e6f74",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#ebdcff",
+                    "on-tertiary-container": "#fbf3ff",
+                    "secondary-fixed-dim": "#66d9cc",
+                    "on-secondary-container": "#006f66",
+                    "on-tertiary-fixed-variant": "#572e99",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#d81b60",
+                    "surface-container-low": "#f4f2ff",
+                    "surface-bright": "#fbf8ff",
+                    "tertiary-fixed-dim": "#d4bbff",
+                    "surface-dim": "#d5d7ff",
+                    "on-primary-fixed": "#3f0016",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#1b247f",
+                    "on-primary-fixed-variant": "#90003b",
+                    "secondary-fixed": "#84f5e8",
+                    "tertiary-container": "#825bc6",
+                    "on-background": "#000767",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f1efff",
+                    "surface-tint": "#bc004f",
+                    "surface-container-highest": "#e0e0ff",
+                    "background": "#fbf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "container-padding-mobile": "16px",
+                    "gutter": "24px",
+                    "container-padding-desktop": "48px",
+                    "section-gap": "64px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "label-sm": ["Manrope"],
+                    "body-sm": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "headline-xl": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface flex min-h-screen">
+<!-- Sidebar Navigation: Predicted Component Mapping -->
+<aside class="h-screen sticky left-0 w-72 flex flex-col bg-surface-container shadow-sm py-8 space-y-4">
+<div class="px-8 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Aura Health</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant opacity-70">Physician Dashboard</p>
+</div>
+<div class="flex items-center px-8 mb-8 gap-base">
+<img class="w-12 h-12 rounded-full object-cover border-2 border-primary-fixed" data-alt="A professional headshot of a female physician in her late 30s with a warm and confident expression. She is wearing a white medical coat over a soft lavender silk blouse, set against a blurred high-end clinic interior with soft natural light. The photography style is premium and corporate, using a bright and clean color palette consistent with boutique healthcare branding." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqe-c3MR_qTEv1W3h2kpaHevJyvt_ERq8SnhJwaRgZAPibqYineBUd5mAieVYez5G-MnyY9KTglmGd7-eLZXzVfd-6KiD5Txbszvoz2RhHNgl6o3t74XRPUCvT6P5Kpy2BJtjG-p4CyESPuEw-prQGEIVDlmpLhv9NdmBJCFftACbprvA44th6nd24lp16GXpiI3VFj0GlR5Fvntw9Yxw6ppXGsEcktTOmplhVtGjkUccgN92JC5KpE2HVjXng8wHDA8_n373WzJY"/>
+<div class="flex flex-col">
+<span class="text-body-md font-bold text-on-surface">Dr. Elena Rossi</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Chief Gynecologist</span>
+</div>
+</div>
+<nav class="flex flex-col flex-grow">
+<!-- Active: Clinic Overview (Active determination: Home/Dashboard intent) -->
+<a class="text-primary font-bold bg-white rounded-l-full ml-4 pl-4 py-3 flex items-center gap-4 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+<span class="text-label-md font-label-md">Clinic Overview</span>
+</a>
+<a class="text-on-surface-variant px-8 py-3 flex items-center gap-4 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="text-label-md font-label-md">Daily Schedule</span>
+</a>
+<a class="text-on-surface-variant px-8 py-3 flex items-center gap-4 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-label-md font-label-md">Patient Registry</span>
+</a>
+<a class="text-on-surface-variant px-8 py-3 flex items-center gap-4 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="text-label-md font-label-md">Slot Management</span>
+</a>
+</nav>
+<div class="mt-auto px-8">
+<button class="flex items-center gap-4 text-on-surface-variant hover:text-error transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-label-md font-label-md">Sign Out</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow p-container-padding-desktop">
+<!-- Top Search Bar & Greeting -->
+<header class="flex justify-between items-center mb-section-gap">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Good Morning, Dr. Rossi</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">You have 12 appointments scheduled for today.</p>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="relative w-80">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-body-sm font-body-sm" placeholder="Quick patient search..." type="text"/>
+</div>
+<button class="relative p-3 bg-surface-container-high rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-3 h-3 bg-primary border-2 border-surface rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Stats Overview (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-gap">
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-sm border-l-4 border-secondary">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="calendar_month">calendar_month</span>
+</div>
+<span class="text-label-sm font-label-sm text-secondary bg-secondary-container/30 px-2 py-1 rounded">Today</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Today's Appointments</p>
+<p class="text-headline-xl font-headline-xl text-on-surface mt-2">12</p>
+<p class="text-label-sm font-label-sm text-on-secondary-fixed-variant mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+                    85% capacity filled
+                </p>
+</div>
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-sm border-l-4 border-primary">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary-fixed rounded-lg">
+<span class="material-symbols-outlined text-on-primary-fixed-variant" data-icon="prescriptions">prescriptions</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary bg-primary-fixed/30 px-2 py-1 rounded">Urgent</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Pending Prescriptions</p>
+<p class="text-headline-xl font-headline-xl text-on-surface mt-2">04</p>
+<p class="text-label-sm font-label-sm text-error mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="priority_high">priority_high</span>
+                    Requires immediate review
+                </p>
+</div>
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-sm border-l-4 border-tertiary">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-tertiary-fixed rounded-lg">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="task_alt">task_alt</span>
+</div>
+<span class="text-label-sm font-label-sm text-tertiary bg-tertiary-fixed/30 px-2 py-1 rounded">Complete</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Consultations Done</p>
+<p class="text-headline-xl font-headline-xl text-on-surface mt-2">08</p>
+<p class="text-label-sm font-label-sm text-on-tertiary-fixed-variant mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+                    66% of daily goal
+                </p>
+</div>
+</div>
+<!-- Main Grid: Schedule and Notifications -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Today's Schedule Timeline -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-gutter rounded-xl shadow-sm">
+<div class="flex justify-between items-center mb-gutter">
+<h3 class="text-headline-md font-headline-md text-on-surface">Today's Schedule</h3>
+<button class="text-primary text-label-md font-label-md flex items-center gap-1 hover:underline">
+                        View Full Calendar
+                        <span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="space-y-base">
+<!-- Timeline Item: Ongoing -->
+<div class="flex gap-gutter items-start group">
+<div class="w-16 pt-2 text-right">
+<p class="text-label-sm font-label-sm text-primary">09:30</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">AM</p>
+</div>
+<div class="relative flex-grow bg-secondary-container/20 p-4 rounded-lg border-l-4 border-secondary group-hover:shadow-md transition-all">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-label-md font-label-md text-on-secondary-container">Ongoing Consultation</p>
+<p class="text-body-md font-bold text-on-surface">Sarah Mitchell</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Prenatal Checkup - Week 24</p>
+</div>
+<span class="bg-secondary text-white text-label-sm font-label-sm px-3 py-1 rounded-full">In Progress</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="flex gap-gutter items-start group">
+<div class="w-16 pt-2 text-right">
+<p class="text-label-sm font-label-sm text-on-surface-variant">10:15</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant opacity-60">AM</p>
+</div>
+<div class="relative flex-grow bg-surface p-4 rounded-lg border border-outline-variant group-hover:border-primary transition-all">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant">Next Visit</p>
+<p class="text-body-md font-bold text-on-surface">Amanda K. Reed</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Diagnostic Ultrasound Review</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined" data-icon="history">history</span></button>
+<button class="p-2 text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="flex gap-gutter items-start group">
+<div class="w-16 pt-2 text-right">
+<p class="text-label-sm font-label-sm text-on-surface-variant">11:00</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant opacity-60">AM</p>
+</div>
+<div class="relative flex-grow bg-surface p-4 rounded-lg border border-outline-variant group-hover:border-primary transition-all">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant">Follow-up</p>
+<p class="text-body-md font-bold text-on-surface">Dr. Sofia Chen (Referral)</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Post-Op Recovery Evaluation</p>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant text-label-sm font-label-sm px-3 py-1 rounded-full">New Patient</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item -->
+<div class="flex gap-gutter items-start group">
+<div class="w-16 pt-2 text-right">
+<p class="text-label-sm font-label-sm text-on-surface-variant">12:30</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant opacity-60">PM</p>
+</div>
+<div class="relative flex-grow bg-surface-container/50 p-4 rounded-lg border-l-4 border-outline-variant group-hover:shadow-md transition-all italic">
+<p class="text-body-md font-bold text-on-surface-variant">Lunch Break / Admin Work</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Clinic Level 2 Cafeteria</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Notifications Panel -->
+<div class="bg-surface-container-lowest p-gutter rounded-xl shadow-sm border border-outline-variant/30">
+<h3 class="text-headline-md font-headline-md text-on-surface mb-gutter">Recent Updates</h3>
+<div class="space-y-gutter">
+<!-- Notification Item -->
+<div class="flex gap-base items-start pb-base border-b border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<div class="flex flex-col">
+<p class="text-body-sm font-bold text-on-surface">Lab Reports Uploaded</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">New bloodwork results available for <span class="text-primary font-medium">Beatrice Vance</span>.</p>
+<span class="text-label-sm font-label-sm text-outline mt-1">12 mins ago</span>
+</div>
+</div>
+<!-- Notification Item -->
+<div class="flex gap-base items-start pb-base border-b border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="add_task">add_task</span>
+</div>
+<div class="flex flex-col">
+<p class="text-body-sm font-bold text-on-surface">New Booking</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Emergency consult requested by <span class="text-primary font-medium">Clara Oswald</span> for tomorrow at 08:00 AM.</p>
+<span class="text-label-sm font-label-sm text-outline mt-1">45 mins ago</span>
+</div>
+</div>
+<!-- Notification Item -->
+<div class="flex gap-base items-start pb-base border-b border-outline-variant/20">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-icon="mail">mail</span>
+</div>
+<div class="flex flex-col">
+<p class="text-body-sm font-bold text-on-surface">Internal Message</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Dr. Jameson shared a case file regarding the robotic surgery scheduled for Friday.</p>
+<span class="text-label-sm font-label-sm text-outline mt-1">2 hours ago</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-gutter py-3 rounded-lg border border-primary text-primary text-label-md font-label-md hover:bg-primary-fixed transition-colors">
+                    Mark All as Read
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer: Shared Component -->
+<footer class="fixed bottom-0 right-0 left-72 bg-surface-container-highest dark:bg-surface-container-lowest grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-base w-[calc(100%-18rem)] z-40 border-t border-outline-variant/10">
+<div class="col-span-2">
+<p class="text-label-sm font-label-sm text-on-surface-variant opacity-60">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+</div>
+<div class="col-span-2 flex justify-end gap-gutter">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+<script src="/assets/js/design-live.js"></script></body></html>

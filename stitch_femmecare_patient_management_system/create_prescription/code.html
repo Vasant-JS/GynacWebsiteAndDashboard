@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Prescription Builder - Aura Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#6941ab",
+                        "error": "#ba1a1a",
+                        "surface-container": "#edecff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e6e6ff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#e3bdc3",
+                        "on-tertiary-fixed": "#260058",
+                        "on-secondary-fixed-variant": "#005049",
+                        "secondary": "#006a62",
+                        "primary": "#b0004a",
+                        "on-surface": "#000767",
+                        "secondary-container": "#81f3e5",
+                        "inverse-primary": "#ffb2bf",
+                        "on-secondary-fixed": "#00201d",
+                        "primary-fixed": "#ffd9de",
+                        "on-primary-container": "#fff2f3",
+                        "surface-variant": "#e0e0ff",
+                        "primary-fixed-dim": "#ffb2bf",
+                        "on-error-container": "#93000a",
+                        "surface": "#fbf8ff",
+                        "on-surface-variant": "#5a4044",
+                        "outline": "#8e6f74",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ebdcff",
+                        "on-tertiary-container": "#fbf3ff",
+                        "secondary-fixed-dim": "#66d9cc",
+                        "on-secondary-container": "#006f66",
+                        "on-tertiary-fixed-variant": "#572e99",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#d81b60",
+                        "surface-container-low": "#f4f2ff",
+                        "surface-bright": "#fbf8ff",
+                        "tertiary-fixed-dim": "#d4bbff",
+                        "surface-dim": "#d5d7ff",
+                        "on-primary-fixed": "#3f0016",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#1b247f",
+                        "on-primary-fixed-variant": "#90003b",
+                        "secondary-fixed": "#84f5e8",
+                        "tertiary-container": "#825bc6",
+                        "on-background": "#000767",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f1efff",
+                        "surface-tint": "#bc004f",
+                        "surface-container-highest": "#e0e0ff",
+                        "background": "#fbf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-padding-mobile": "16px",
+                        "gutter": "24px",
+                        "container-padding-desktop": "48px",
+                        "section-gap": "64px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-xl": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<div class="flex min-h-screen">
+<!-- SideNavBar - Surgeon/Physician Context -->
+<aside class="h-screen sticky top-0 w-72 flex flex-col bg-surface-container dark:bg-surface-dim shadow-sm py-8 space-y-4">
+<div class="px-8 mb-8">
+<span class="text-headline-md font-headline-md font-bold text-primary">Aura Health</span>
+<div class="flex items-center mt-6 gap-3">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="Dr. Elena Rossi" class="w-full h-full object-cover" data-alt="A professional headshot of a female doctor in her late 30s with a warm and confident expression. She is wearing a clean white lab coat over a soft lavender blouse. The background is a blurred, high-end medical clinic with soft lighting and calming teal accents, reflecting a modern boutique healthcare environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWN1IW1HPydl43DHdcbyjBwrLgkmThGEj_lH9aR7edtaETe2ptKw2OQmsIRprKRUXepPRGeK5dY2ZaHXtzlEoSM9ARZfbPYnnLMvlen92oN9NtIkCzS2ScKA8npRIj_tlGzAWkHLlSg12GVT65XaWnwfMIxXuwX5vlq-HVf8VmaNDtjWcQ8bYloQIyt7jatdw-TDpyQgsXiNtUjdHn6DFEGcGlra92OyhE9R6SsfiSCe2Z6YkLAn5_D9cboQkq6Rjgbp6ldaUMVTY"/>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface">Dr. Elena Rossi</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Physician</p>
+</div>
+</div>
+</div>
+<nav class="flex-1">
+<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+<span class="text-label-md font-label-md">Clinic Overview</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+<span class="text-label-md font-label-md">Daily Schedule</span>
+</a>
+<a class="flex items-center gap-4 text-primary font-bold bg-white dark:bg-inverse-surface rounded-l-full ml-4 pl-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-label-md font-label-md">Patient Registry</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="text-label-md font-label-md">Slot Management</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-container-padding-desktop py-base bg-surface-bright">
+<!-- Top Bar -->
+<header class="flex justify-between items-center h-20 mb-base">
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-on-surface">Prescription Builder</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Creating digital record for Patient #AR-9023</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-gutter py-3 rounded-xl border border-secondary text-secondary font-label-md hover:bg-secondary-container transition-all">
+<span class="material-symbols-outlined" data-icon="save">save</span>
+                        Save Draft
+                    </button>
+<button class="flex items-center gap-2 px-gutter py-3 rounded-xl bg-primary text-on-primary font-label-md hover:opacity-90 shadow-sm transition-all">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+                        Generate PDF
+                    </button>
+</div>
+</header>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Patient Profile Header Card -->
+<section class="col-span-12 bg-white rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] p-gutter border-l-4 border-secondary">
+<div class="flex justify-between items-start">
+<div class="flex gap-gutter">
+<div class="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[40px]" data-icon="person_filled">person</span>
+</div>
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface">Sarah Jenkins</h2>
+<div class="flex gap-gutter mt-2">
+<span class="text-body-md font-body-md text-on-surface-variant">Age: <strong>32</strong></span>
+<span class="text-body-md font-body-md text-on-surface-variant">Gender: <strong>Female</strong></span>
+<span class="text-body-md font-body-md text-on-surface-variant">Blood: <strong>O+</strong></span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm mb-2">Booked</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Last Visit: 12 Oct 2023</p>
+</div>
+</div>
+</section>
+<!-- Prescription Table Section -->
+<section class="col-span-12 lg:col-span-8 space-y-gutter">
+<div class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] overflow-hidden">
+<div class="bg-surface-container-low px-gutter py-4 border-b border-outline-variant">
+<h3 class="text-label-md font-label-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="medication">medication</span>
+                                PRESCRIBED MEDICINES
+                            </h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-label-sm text-on-surface-variant">
+<th class="px-gutter py-3 font-bold">Medicine Name</th>
+<th class="px-gutter py-3 font-bold">Dosage</th>
+<th class="px-gutter py-3 font-bold">Frequency</th>
+<th class="px-gutter py-3 font-bold">Duration</th>
+<th class="px-gutter py-3 font-bold">Instructions</th>
+<th class="px-gutter py-3 font-bold"></th>
+</tr>
+</thead>
+<tbody class="text-body-sm text-on-surface divide-y divide-surface-container">
+<tr>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50 font-medium" placeholder="e.g. Amoxicillin" type="text" value="Metformin Hydrochloride"/>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="500mg" type="text" value="500mg"/>
+</td>
+<td class="px-gutter py-4">
+<select class="bg-transparent border-none focus:ring-0 text-on-surface w-full">
+<option>1-0-1 (Twice daily)</option>
+<option selected="">1-1-1 (Thrice daily)</option>
+<option>0-0-1 (Nightly)</option>
+</select>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="7 Days" type="text" value="15 Days"/>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="After food" type="text" value="After breakfast &amp; dinner"/>
+</td>
+<td class="px-gutter py-4 text-right">
+<button class="text-error hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</td>
+</tr>
+<tr class="bg-surface-bright/50">
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50" placeholder="Medicine Name" type="text"/>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="Dosage" type="text"/>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="Frequency" type="text"/>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="Duration" type="text"/>
+</td>
+<td class="px-gutter py-4">
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-surface" placeholder="Instructions" type="text"/>
+</td>
+<td class="px-gutter py-4 text-right">
+<button class="text-secondary hover:opacity-70">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-gutter py-4 border-t border-outline-variant bg-surface-container-lowest">
+<button class="text-primary font-label-md flex items-center gap-2 hover:underline">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                                Add Another Medicine
+                            </button>
+</div>
+</div>
+<!-- General Advice Rich Text Area -->
+<div class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] p-gutter space-y-4">
+<div class="flex justify-between items-center border-b border-surface-container pb-2">
+<label class="text-label-md font-label-md text-on-surface-variant">GENERAL ADVICE &amp; OBSERVATIONS</label>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-body-md" data-icon="format_bold">format_bold</span></button>
+<button class="p-1 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-body-md" data-icon="format_italic">format_italic</span></button>
+<button class="p-1 hover:bg-surface-container rounded transition-colors"><span class="material-symbols-outlined text-body-md" data-icon="format_list_bulleted">format_list_bulleted</span></button>
+</div>
+</div>
+<textarea class="w-full h-40 border-none focus:ring-0 text-body-md text-on-surface placeholder:text-outline-variant" placeholder="Enter patient-specific lifestyle advice, dietary restrictions, or clinical notes here...">Patient reports mild fatigue. Advised increased hydration and maintaining a consistent sleep cycle. Monitor blood glucose levels twice weekly for the next 15 days.</textarea>
+</div>
+</section>
+<!-- Right Sidebar Details -->
+<aside class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Follow up Picker -->
+<div class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] p-gutter">
+<label class="text-label-md font-label-md text-on-surface-variant block mb-4 uppercase">Follow-up Appointment</label>
+<div class="relative group">
+<input class="w-full p-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" type="date" value="2024-11-15"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant pointer-events-none" data-icon="calendar_month">calendar_month</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-4 leading-relaxed">
+                            A notification will be sent to the patient 24 hours prior to this date.
+                        </p>
+</div>
+<!-- Clinical Support Card -->
+<div class="bg-tertiary-container text-on-tertiary-container rounded-xl p-gutter space-y-3">
+<h4 class="text-label-md font-label-md flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="lightbulb">lightbulb</span>
+                            SMART SUGGESTIONS
+                        </h4>
+<p class="text-body-sm font-body-sm">Based on patient history, consider screening for Vitamin D deficiency during the next visit.</p>
+<button class="text-label-sm font-label-sm underline hover:no-underline">View detailed history</button>
+</div>
+<!-- Final Actions -->
+<div class="space-y-3">
+<button class="w-full py-4 rounded-xl bg-[#25D366] text-white font-label-md flex items-center justify-center gap-3 hover:opacity-90 shadow-md transition-all">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                            Send via WhatsApp
+                        </button>
+<button class="w-full py-4 rounded-xl border-2 border-primary text-primary font-label-md flex items-center justify-center gap-3 hover:bg-primary-fixed transition-all">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+                            Print Prescription
+                        </button>
+</div>
+</aside>
+</div>
+<!-- Spacer for padding -->
+<div class="h-section-gap"></div>
+</main>
+</div>
+<!-- Footer - Fixed UI pattern -->
+<footer class="w-full bg-surface-container-highest dark:bg-surface-container-lowest py-section-gap px-container-padding-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter border-t border-outline-variant/20">
+<div class="col-span-1">
+<span class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Aura Health</span>
+<p class="mt-4 text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+                Empowering gynecological care through clinical excellence and patient empathy.
+            </p>
+</div>
+<div class="col-span-1 flex flex-col gap-3">
+<p class="text-label-sm font-label-sm text-on-surface uppercase tracking-wider">Quick Links</p>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Clinic Overview</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Registry</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Doctor Portal</a>
+</div>
+<div class="col-span-1 flex flex-col gap-3">
+<p class="text-label-sm font-label-sm text-on-surface uppercase tracking-wider">Legal</p>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
+</div>
+<div class="col-span-1">
+<p class="text-label-sm font-label-sm text-on-surface uppercase tracking-wider mb-4">Newsletter</p>
+<div class="flex">
+<input class="bg-surface-container-low border border-outline-variant px-4 py-2 rounded-l-lg w-full focus:ring-1 focus:ring-primary outline-none text-body-sm" placeholder="Email" type="email"/>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-r-lg">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+<div class="col-span-full border-t border-outline-variant pt-base mt-base text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+</div>
+</footer>
+</body></html>

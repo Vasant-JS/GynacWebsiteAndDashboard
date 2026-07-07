@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Health | FemmeCare Gynecology</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#6941ab",
+                        "error": "#ba1a1a",
+                        "surface-container": "#edecff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e6e6ff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#e3bdc3",
+                        "on-tertiary-fixed": "#260058",
+                        "on-secondary-fixed-variant": "#005049",
+                        "secondary": "#006a62",
+                        "primary": "#b0004a",
+                        "on-surface": "#000767",
+                        "secondary-container": "#81f3e5",
+                        "inverse-primary": "#ffb2bf",
+                        "on-secondary-fixed": "#00201d",
+                        "primary-fixed": "#ffd9de",
+                        "on-primary-container": "#fff2f3",
+                        "surface-variant": "#e0e0ff",
+                        "primary-fixed-dim": "#ffb2bf",
+                        "on-error-container": "#93000a",
+                        "surface": "#fbf8ff",
+                        "on-surface-variant": "#5a4044",
+                        "outline": "#8e6f74",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ebdcff",
+                        "on-tertiary-container": "#fbf3ff",
+                        "secondary-fixed-dim": "#66d9cc",
+                        "on-secondary-container": "#006f66",
+                        "on-tertiary-fixed-variant": "#572e99",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#d81b60",
+                        "surface-container-low": "#f4f2ff",
+                        "surface-bright": "#fbf8ff",
+                        "tertiary-fixed-dim": "#d4bbff",
+                        "surface-dim": "#d5d7ff",
+                        "on-primary-fixed": "#3f0016",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#1b247f",
+                        "on-primary-fixed-variant": "#90003b",
+                        "secondary-fixed": "#84f5e8",
+                        "tertiary-container": "#825bc6",
+                        "on-background": "#000767",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f1efff",
+                        "surface-tint": "#bc004f",
+                        "surface-container-highest": "#e0e0ff",
+                        "background": "#fbf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-padding-mobile": "16px",
+                        "gutter": "24px",
+                        "container-padding-desktop": "48px",
+                        "section-gap": "64px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-xl": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "400px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fbf8ff;
+            color: #000767;
+        }
+        .tonal-elevation {
+            box-shadow: 0px 4px 20px rgba(26, 35, 126, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 z-50 shadow-sm bg-surface sticky">
+<nav class="flex justify-between items-center w-full px-container-padding-desktop max-w-[1200px] mx-auto h-20">
+<div class="text-headline-md font-headline-md font-bold text-primary">Aura Health</div>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Services</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Our Doctors</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Clinics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Patient Education</a>
+</div>
+<div class="flex items-center gap-base">
+<button class="px-gutter py-2 text-primary font-bold hover:opacity-80 transition-all text-label-md font-label-md">Patient Login</button>
+<button class="bg-primary text-on-primary px-gutter py-3 rounded-full font-bold hover:opacity-90 scale-95 transition-all text-label-md font-label-md">Book Appointment</button>
+</div>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-surface py-section-gap">
+<div class="max-w-[1200px] mx-auto px-container-padding-desktop flex flex-col md:flex-row items-center gap-section-gap">
+<div class="w-full md:w-1/2 space-y-gutter">
+<h1 class="text-headline-xl font-headline-xl text-on-surface">Compassionate Care for Every Stage of Womanhood</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-md">Experience world-class gynecological excellence in a serene, boutique environment designed specifically for your comfort and long-term health journey.</p>
+<div class="flex gap-base">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold text-label-md font-label-md hover:opacity-90 transition-all">Book Now</button>
+<button class="border-2 border-secondary text-secondary px-8 py-4 rounded-full font-bold text-label-md font-label-md hover:bg-secondary hover:text-on-secondary transition-all">View Our Clinics</button>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="rounded-3xl overflow-hidden tonal-elevation">
+<img class="w-full h-[500px] object-cover" data-alt="A serene and professionally lit photography of a female gynecologist in a modern, boutique medical office. The setting is filled with soft natural light, warm rose and muted teal accents, and clean white surfaces. The doctor is smiling warmly, embodying a sense of empathy and clinical excellence, while the background shows a minimalist, high-end consultation room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZSw-Xiu3l_zYEfa7Sch2igx4EU-6jVMpyTBmJMfmPq1iXexLfnKnvQDthhbx-aY-OyUdwDyI7HVhZ3jiQlm3KNekJbAlIiTMgK9mwiLir9QSdTkgAsOHtG2kk14gPa91_TKgXbVVt6PccbRhsVAlM9cvNRVXapk96O7Kg1v_JUANptewWCeHsWQN1DYlENhB4jzkkXLuHWJIChEDqpFq0q2-yXyd9OLSDcGqIZVZdVZVXlBTYZeV40FUUWeOgjqE_rgCe1ED08IA"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Consultation Process -->
+<section class="bg-surface-container-low py-section-gap">
+<div class="max-w-[1200px] mx-auto px-container-padding-desktop">
+<div class="text-center mb-section-gap">
+<span class="text-primary font-bold text-label-sm font-label-sm uppercase tracking-widest">How it works</span>
+<h2 class="text-headline-lg font-headline-lg text-on-surface mt-2">Simple Consultation Process</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-gutter">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">how_to_reg</span>
+</div>
+<h3 class="font-bold text-on-surface font-headline-md text-body-md">Register</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Create your secure patient profile.</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">person_search</span>
+</div>
+<h3 class="font-bold text-on-surface font-headline-md text-body-md">Choose Doctor</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Select from our expert specialists.</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">event_available</span>
+</div>
+<h3 class="font-bold text-on-surface font-headline-md text-body-md">Select Slot</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Pick a time that fits your schedule.</p>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">check_circle</span>
+</div>
+<h3 class="font-bold text-on-surface font-headline-md text-body-md">Confirmation</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Instant booking notification.</p>
+</div>
+<!-- Step 5 -->
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">call</span>
+</div>
+<h3 class="font-bold text-on-surface font-headline-md text-body-md">Consult by Phone</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Connect with your doctor easily.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Grid -->
+<section class="py-section-gap bg-surface">
+<div class="max-w-[1200px] mx-auto px-container-padding-desktop">
+<div class="flex flex-col md:flex-row justify-between items-end mb-section-gap gap-gutter">
+<div class="max-w-xl">
+<span class="text-primary font-bold text-label-sm font-label-sm uppercase">Our Expertise</span>
+<h2 class="text-headline-lg font-headline-lg text-on-surface mt-2">Comprehensive Gynecological Services</h2>
+</div>
+<button class="text-primary font-bold text-label-md font-label-md flex items-center gap-2">View All Services <span class="material-symbols-outlined">arrow_forward</span></button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Pregnancy -->
+<div class="bg-white p-gutter rounded-xl tonal-elevation border-l-4 border-secondary hover:translate-y-[-4px] transition-all">
+<span class="material-symbols-outlined text-secondary text-[40px] mb-4">pregnant_woman</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Pregnancy</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Expert prenatal, natal, and postpartum care to ensure a healthy journey for you and your baby.</p>
+</div>
+<!-- PCOD/PCOS -->
+<div class="bg-white p-gutter rounded-xl tonal-elevation border-l-4 border-secondary hover:translate-y-[-4px] transition-all">
+<span class="material-symbols-outlined text-secondary text-[40px] mb-4">clinical_notes</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">PCOD/PCOS</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Personalized management plans for hormonal balance and metabolic health restoration.</p>
+</div>
+<!-- Menstrual issues -->
+<div class="bg-white p-gutter rounded-xl tonal-elevation border-l-4 border-secondary hover:translate-y-[-4px] transition-all">
+<span class="material-symbols-outlined text-secondary text-[40px] mb-4">cycle</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Menstrual Issues</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Treatment for irregular cycles, heavy bleeding, and painful periods with compassionate care.</p>
+</div>
+<!-- Fertility -->
+<div class="bg-white p-gutter rounded-xl tonal-elevation border-l-4 border-secondary hover:translate-y-[-4px] transition-all">
+<span class="material-symbols-outlined text-secondary text-[40px] mb-4">eco</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Fertility</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Advanced reproductive support and fertility counseling for couples aspiring to parenthood.</p>
+</div>
+<!-- General Gyn -->
+<div class="bg-white p-gutter rounded-xl tonal-elevation border-l-4 border-secondary hover:translate-y-[-4px] transition-all">
+<span class="material-symbols-outlined text-secondary text-[40px] mb-4">female</span>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">General Gynecology</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Routine checkups, cancer screenings, and preventive health for women of all ages.</p>
+</div>
+<!-- Special Case CTA -->
+<div class="bg-primary-container p-gutter rounded-xl flex flex-col justify-center items-center text-center">
+<h3 class="text-headline-md font-headline-md text-on-primary-container mb-4">Need a specialized consultation?</h3>
+<button class="bg-white text-primary px-gutter py-3 rounded-full font-bold text-label-md font-label-md shadow-sm">Chat with Us</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Doctors Preview -->
+<section class="py-section-gap bg-surface-container">
+<div class="max-w-[1200px] mx-auto px-container-padding-desktop">
+<div class="text-center mb-section-gap">
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Meet Our Leading Specialists</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mt-4">A team of globally recognized experts committed to women's healthcare excellence.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Dr 1 -->
+<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up professional portrait of a senior female gynecologist with a kind smile, wearing a white clinical coat and a stethoscope. The photography is clean and bright, utilizing soft lighting to emphasize professional trust and empathy. Background is a blurred medical office in warm lavender and soft white tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB2Cw_mgj7BIMzaUq650NlNsMyPksM838YmEARRpYf0lkWTnZMC7tZm-DLQ_HJPV4VPRpnxtMoaHBVx_RYf_ZX0gEkBBLD2vg4jBeObKZEFgKOSlWcK__gj-jdrbQ5Z1EaWwjUCAfaVUMIKqa8wRmTe-30pm2zg7UAFo9CC3cZrfhxuMz1qMH-3tOFqbf_0dvlgQ2UBUAQGmajPEBbTj_I5SsG6o7GBHwyOEwET6wxB6sgkiPj7dXfWiZcT-NG5a54xOvlp0JQyiM"/>
+</div>
+<div class="p-gutter">
+<h4 class="font-bold text-on-surface text-body-lg">Dr. Elena Rossi</h4>
+<p class="text-primary font-bold text-label-sm uppercase">Senior Consultant</p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-on-surface-variant">15+ Yrs Exp</span>
+<span class="material-symbols-outlined text-secondary">star_rate</span>
+</div>
+</div>
+</div>
+<!-- Dr 2 -->
+<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Portrait of a professional female obstetrician in her 40s, looking confident and caring. She is standing in a brightly lit modern clinic with minimalist decor. The color palette features whites, warm rose accents, and soft greys. High-end medical photography style with shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV5mjHpC8KDhv2CZSubIcJwA1VWza2o3DISaAiKW7wTjYP4uKsgn-MhmK5tloU-jYPX71ObZDpVMuhwqaCY1ddosE-BcqQOMFkxwT-8jFi6BdqzWsM-98rXeMjgWvv7fnP30EITYjUZ7FXhIe9YpgdRac940M4tK00H5LBznlS1-ys1mcOkMaljz4fXO5iPo6LNpYmgz2N7NZnlPAyHKbLvcOrbiSQ-Fkrn19USOetw_lLTzkrI7uwYS9Q-LwMYHl8IGqSb6wmcf4"/>
+</div>
+<div class="p-gutter">
+<h4 class="font-bold text-on-surface text-body-lg">Dr. Sarah Jenkins</h4>
+<p class="text-primary font-bold text-label-sm uppercase">Fertility Specialist</p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-on-surface-variant">12+ Yrs Exp</span>
+<span class="material-symbols-outlined text-secondary">star_rate</span>
+</div>
+</div>
+</div>
+<!-- Dr 3 -->
+<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional medical headshot of a female gynecologist with a warm and welcoming expression. The lighting is bright and airy, typical of a luxury boutique clinic. The doctor is wearing a dark teal medical top under her lab coat, matching the brand colors of Aura Health. Serene and professional atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3JIRlvPVszPJPA7vBjdAcV-ABNoOVxnrHWlhQ0wSwsEx9tnAsj4H4PjfaQlH7Z8lBsT0cjb7uapyMZIdRe1vnI4fyjU3Aw3eDfuz7U-hGHtCgZ8g4RysZhterDOD5uhiZWHNpSgNldqXJNa0AfneTr3srfqXMsS5QuTICjnFccHz1UHyS9GGLueWZ11U9zZ-hApQ7Yb1cyZWuTpcXFyV1n_gwWKWO4qxGiaUjUvB1JwmzcSNKJQYNjytO93oX6sNxdAuGlHf9ALM"/>
+</div>
+<div class="p-gutter">
+<h4 class="font-bold text-on-surface text-body-lg">Dr. Maya Patel</h4>
+<p class="text-primary font-bold text-label-sm uppercase">Adolescent Health</p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-on-surface-variant">8+ Yrs Exp</span>
+<span class="material-symbols-outlined text-secondary">star_rate</span>
+</div>
+</div>
+</div>
+<!-- Dr 4 -->
+<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group">
+<div class="h-64 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional portrait of a compassionate female specialist in maternity care. She is posing in a modern clinic hallway with large windows and soft diffused sunlight. The aesthetic is corporate yet approachable, focusing on premium healthcare standards. Colors are soft whites, lavenders, and rose." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuNLRLO985-Cjl-EhaGUC2GBYgvW5S0FoUZRp1cHi6N7D886olWBBNap6N8JKanRjRhnUwBKDt-kLZcLSBWosNdzUZmR1x53x6zOUac32uH2iMuMAbyCv2KK16R3KAfbWVKpuAki8ht5qdPcDjCjyIqXZ_p6qnMphIaqa14cuMRYZtuSnopcMxcFrKLzBNmgG_hQUkh1UuxeO43xzd-Th6gWAi-BP4Lrt8_zojO7iojGIgVPtp9ntCMIuaUZMkUrr4DAbI5uFWcjI"/>
+</div>
+<div class="p-gutter">
+<h4 class="font-bold text-on-surface text-body-lg">Dr. Chloe Chen</h4>
+<p class="text-primary font-bold text-label-sm uppercase">Maternity Lead</p>
+<div class="mt-4 pt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="text-body-sm font-body-sm text-on-surface-variant">20+ Yrs Exp</span>
+<span class="material-symbols-outlined text-secondary">star_rate</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-section-gap bg-surface">
+<div class="max-w-[1200px] mx-auto px-container-padding-desktop">
+<div class="bg-white rounded-3xl p-12 tonal-elevation flex flex-col md:flex-row gap-gutter items-center">
+<div class="w-full md:w-1/3">
+<div class="w-24 h-24 rounded-full overflow-hidden mb-6">
+<img class="w-full h-full object-cover" data-alt="A warm, candid portrait of a woman in her 30s smiling happily. The lighting is soft and natural, suggesting a peaceful home environment or a relaxing garden setting. The overall mood is one of gratitude and health, reflecting a successful recovery or positive medical experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVpSmvmU1i5XqJP1uDhcP80K5aWWqklImwfbuMCyEWZDV1HTrUJ5HvkGmi_tv1vfpbrmW-oH89k07x-z5WzLkFhg8ii1B3e5msNesV8GG1JmRYeBSWjlSiLLIeLRN4oQXT_yvd0H1yE12ZaPPDWgnHIhVPMNhVd8X3Ui8cQvZdMQWevalIUw6NLDykv5z4V1nC72EzKcK5puIdWQ9rDPv1QMsrZ2F-NQiIFMis-GWuCXBfeipTE0FoXb5Dj-ryMGMQoizQ8XJU66o"/>
+</div>
+<p class="font-bold text-on-surface text-body-lg">Jessica Thompson</p>
+<p class="text-on-surface-variant text-body-sm">Patient for 4 Years</p>
+</div>
+<div class="w-full md:w-2/3">
+<span class="material-symbols-outlined text-primary text-[48px] mb-4">format_quote</span>
+<p class="text-headline-md font-headline-md text-on-surface leading-relaxed">"The level of care I received at Aura Health was truly exceptional. From my first prenatal checkup to the delivery of my daughter, the doctors and staff treated me with such empathy and professionalism. I've never felt so heard in a medical setting."</p>
+<div class="flex gap-1 mt-6 text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full max-w-[1200px] mx-auto">
+<div class="space-y-gutter">
+<div class="text-headline-md font-headline-md font-bold text-on-surface">Aura Health</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Leading the way in gynecological excellence and empathetic patient care for women worldwide.</p>
+<div class="flex gap-base">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">public</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">mail</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">call</span>
+</div>
+</div>
+<div>
+<h5 class="text-label-md font-label-md text-on-surface mb-gutter uppercase tracking-widest">Resources</h5>
+<ul class="space-y-base">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Patient Education</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Our Clinics</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Medical Reports</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Latest News</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-label-md font-label-md text-on-surface mb-gutter uppercase tracking-widest">Legal</h5>
+<ul class="space-y-base">
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Terms of Service</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Patient Rights</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-colors text-body-sm font-body-sm" href="#">Contact Support</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-label-md font-label-md text-on-surface mb-gutter uppercase tracking-widest">Subscribe</h5>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-4">Stay updated with health tips and clinic news.</p>
+<div class="flex">
+<input class="bg-surface border-none rounded-l-lg text-body-sm font-body-sm w-full focus:ring-2 focus:ring-primary" placeholder="Your email" type="email"/>
+<button class="bg-primary text-on-primary px-4 rounded-r-lg"><span class="material-symbols-outlined">send</span></button>
+</div>
+</div>
+</div>
+<div class="max-w-[1200px] mx-auto px-container-padding-desktop py-base border-t border-outline-variant text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Health - Book Consultation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#6941ab",
+                      "error": "#ba1a1a",
+                      "surface-container": "#edecff",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-high": "#e6e6ff",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#e3bdc3",
+                      "on-tertiary-fixed": "#260058",
+                      "on-secondary-fixed-variant": "#005049",
+                      "secondary": "#006a62",
+                      "primary": "#b0004a",
+                      "on-surface": "#000767",
+                      "secondary-container": "#81f3e5",
+                      "inverse-primary": "#ffb2bf",
+                      "on-secondary-fixed": "#00201d",
+                      "primary-fixed": "#ffd9de",
+                      "on-primary-container": "#fff2f3",
+                      "surface-variant": "#e0e0ff",
+                      "primary-fixed-dim": "#ffb2bf",
+                      "on-error-container": "#93000a",
+                      "surface": "#fbf8ff",
+                      "on-surface-variant": "#5a4044",
+                      "outline": "#8e6f74",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#ebdcff",
+                      "on-tertiary-container": "#fbf3ff",
+                      "secondary-fixed-dim": "#66d9cc",
+                      "on-secondary-container": "#006f66",
+                      "on-tertiary-fixed-variant": "#572e99",
+                      "error-container": "#ffdad6",
+                      "primary-container": "#d81b60",
+                      "surface-container-low": "#f4f2ff",
+                      "surface-bright": "#fbf8ff",
+                      "tertiary-fixed-dim": "#d4bbff",
+                      "surface-dim": "#d5d7ff",
+                      "on-primary-fixed": "#3f0016",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-surface": "#1b247f",
+                      "on-primary-fixed-variant": "#90003b",
+                      "secondary-fixed": "#84f5e8",
+                      "tertiary-container": "#825bc6",
+                      "on-background": "#000767",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#f1efff",
+                      "surface-tint": "#bc004f",
+                      "surface-container-highest": "#e0e0ff",
+                      "background": "#fbf8ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "8px",
+                      "container-padding-mobile": "16px",
+                      "gutter": "24px",
+                      "container-padding-desktop": "48px",
+                      "section-gap": "64px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Manrope"],
+                      "headline-md": ["Manrope"],
+                      "body-md": ["Manrope"],
+                      "label-sm": ["Manrope"],
+                      "body-sm": ["Manrope"],
+                      "headline-lg": ["Manrope"],
+                      "headline-xl": ["Manrope"],
+                      "label-md": ["Manrope"],
+                      "headline-lg-mobile": ["Manrope"]
+              },
+              "fontSize": {
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface shadow-sm docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-container-padding-desktop max-w-[1200px] mx-auto h-20">
+<div class="text-headline-md font-headline-md font-bold text-primary">Aura Health</div>
+<nav class="hidden md:flex gap-gutter">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Services</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Our Doctors</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Clinics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Patient Education</a>
+</nav>
+<div class="flex gap-4">
+<button class="text-label-md font-label-md px-4 py-2 text-primary hover:opacity-80 transition-all">Patient Login</button>
+<button class="bg-primary text-white px-6 py-2 rounded-lg text-label-md font-label-md hover:opacity-90 transition-all">Book Appointment</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-container-padding-desktop py-gutter">
+<!-- Progress Stepper -->
+<div class="flex items-center justify-center mb-section-gap">
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2 opacity-50">
+<span class="w-8 h-8 rounded-full bg-outline-variant flex items-center justify-center text-white font-bold">1</span>
+<span class="font-label-md">Selection</span>
+</div>
+<div class="w-12 h-px bg-outline-variant"></div>
+<div class="flex items-center space-x-2 opacity-50">
+<span class="w-8 h-8 rounded-full bg-outline-variant flex items-center justify-center text-white font-bold">2</span>
+<span class="font-label-md">Details</span>
+</div>
+<div class="w-12 h-px bg-outline-variant"></div>
+<div class="flex items-center space-x-2">
+<span class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold">3</span>
+<span class="font-label-md text-primary">Schedule</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left: Calendar & Timeslots -->
+<div class="lg:col-span-8 space-y-gutter">
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] overflow-hidden">
+<div class="p-gutter grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Calendar Section -->
+<div class="space-y-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Select Date</h3>
+<div class="flex space-x-2">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="text-center font-bold text-primary mb-2">October 2024</div>
+<div class="calendar-grid text-center text-label-sm text-on-surface-variant mb-2">
+<div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+</div>
+<div class="calendar-grid gap-1">
+<!-- Calendar filler/dates -->
+<div class="p-2 opacity-20">29</div><div class="p-2 opacity-20">30</div>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">1</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">2</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">3</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">4</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">5</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">6</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">7</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">8</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">9</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">10</button>
+<button class="p-2 rounded-lg bg-primary text-white font-bold rounded-lg shadow-sm">11</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">12</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">13</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">14</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">15</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">16</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">17</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">18</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">19</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">20</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">21</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">22</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">23</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">24</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">25</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">26</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">27</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">28</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">29</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">30</button>
+<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">31</button>
+</div>
+</div>
+<!-- Time Selection Section -->
+<div class="space-y-6">
+<h3 class="font-headline-md text-headline-md text-on-surface">Available Slots</h3>
+<div class="space-y-4">
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-base">light_mode</span>
+                                        Morning
+                                    </div>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">09:00 AM</button>
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">09:30 AM</button>
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">10:30 AM</button>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-base">sunny</span>
+                                        Afternoon
+                                    </div>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 border-2 border-primary bg-secondary-container text-on-secondary-container rounded-lg font-label-md">01:00 PM</button>
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">02:30 PM</button>
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">04:00 PM</button>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-base">dark_mode</span>
+                                        Evening
+                                    </div>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">06:30 PM</button>
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">07:00 PM</button>
+<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">07:30 PM</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-gutter">
+<button class="flex items-center gap-2 text-label-md text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+                        Back to Previous Step
+                    </button>
+<button class="bg-primary text-white px-10 py-4 rounded-xl font-headline-md shadow-lg hover:scale-105 active:scale-95 transition-all">
+                        Confirm Slot
+                    </button>
+</div>
+</div>
+<!-- Right: Summary Sidebar -->
+<aside class="lg:col-span-4 space-y-gutter">
+<div class="bg-surface-container-low rounded-xl p-gutter border-l-4 border-secondary shadow-sm">
+<h4 class="text-label-sm text-secondary uppercase tracking-widest mb-4">Appointment Summary</h4>
+<!-- Doctor Info -->
+<div class="flex items-center gap-4 mb-gutter">
+<img alt="Doctor portrait" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A professional portrait of a female gynecologist with a kind, reassuring smile, wearing a white clinical coat over a soft navy blue blouse. She is set against a clean, brightly lit modern clinic interior with soft, out-of-focus medical equipment in the background. The lighting is warm and natural, conveying a mood of clinical excellence mixed with deep empathy and corporate professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7KhyKhyojeW4Kg2ILL_NhRYOkeuefEeXQkS-E7buHZK5mhv-IysbsSheG4IikZpNlqhC3jszoW-Q5iAK3zKooINVXtVDcc4ZWCypya-1RN_STA-uvwURtEZ_revzXQrLBBHmHNbOwWfHDtJrbMcPR0rvbbDoTzI8VTR25WqKoZdfVVcF62R2KchEp2t5Te-46YW1xYbIhQJRhwKnejnF-5Bog_iydzVhQHEpy9gUCm-puVTsjYBfJ8DzoL-Cpq8zdSRh6jcBnRrk"/>
+<div>
+<p class="font-headline-md text-on-surface">Dr. Elena Rossi</p>
+<p class="text-body-sm text-on-surface-variant">Senior Gynecologist</p>
+</div>
+</div>
+<!-- Details List -->
+<div class="space-y-4">
+<div class="flex justify-between items-start py-2 border-b border-outline-variant/30">
+<div>
+<p class="text-label-sm text-on-surface-variant">Service</p>
+<p class="font-label-md">Annual Wellness Checkup</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">edit</span>
+</div>
+<div class="flex justify-between items-start py-2 border-b border-outline-variant/30">
+<div>
+<p class="text-label-sm text-on-surface-variant">Reason for Visit</p>
+<p class="font-label-md">Routine screening and fertility consultation</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">edit</span>
+</div>
+<div class="flex justify-between items-start py-2 border-b border-outline-variant/30">
+<div>
+<p class="text-label-sm text-on-surface-variant">Selected Time</p>
+<p class="font-label-md text-primary">Friday, Oct 11 • 01:00 PM</p>
+</div>
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+</div>
+<div class="pt-4">
+<div class="bg-white/50 p-4 rounded-lg flex gap-3 items-center">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+<p class="text-body-sm text-on-secondary-fixed-variant">Insurance accepted: BlueShield Platinum</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Help Card -->
+<div class="bg-surface-container-highest rounded-xl p-gutter">
+<h5 class="font-label-md text-on-surface mb-2">Need assistance?</h5>
+<p class="text-body-sm text-on-surface-variant mb-4">Our patient support team is available 24/7 to help you with your booking.</p>
+<a class="flex items-center gap-2 text-primary font-bold hover:underline" href="#">
+<span class="material-symbols-outlined">call</span>
+                        Contact Support
+                    </a>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest mt-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full max-w-[1200px] mx-auto">
+<div class="space-y-4">
+<div class="text-headline-md font-headline-md font-bold text-on-surface">Aura Health</div>
+<p class="text-body-sm text-on-surface-variant">Clinical excellence and empathy at the heart of women's healthcare.</p>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-label-sm font-label-sm uppercase text-on-surface-variant mb-2">Patient Resources</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-label-sm font-label-sm uppercase text-on-surface-variant mb-2">Quick Links</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Our Doctors</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Clinical Studies</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Health Blog</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Locations</a>
+</div>
+<div class="space-y-4">
+<span class="text-label-sm font-label-sm uppercase text-on-surface-variant mb-2">Stay Connected</span>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">share</span>
+<span class="material-symbols-outlined text-primary cursor-pointer">mail</span>
+<span class="material-symbols-outlined text-primary cursor-pointer">phone_in_talk</span>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant/30 py-base text-center">
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+</div>
+</footer>
+</body></html>

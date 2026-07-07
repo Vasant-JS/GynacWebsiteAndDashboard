@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manage Doctors | Aura Health Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#6941ab",
+                        "error": "#ba1a1a",
+                        "surface-container": "#edecff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e6e6ff",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#e3bdc3",
+                        "on-tertiary-fixed": "#260058",
+                        "on-secondary-fixed-variant": "#005049",
+                        "secondary": "#006a62",
+                        "primary": "#b0004a",
+                        "on-surface": "#000767",
+                        "secondary-container": "#81f3e5",
+                        "inverse-primary": "#ffb2bf",
+                        "on-secondary-fixed": "#00201d",
+                        "primary-fixed": "#ffd9de",
+                        "on-primary-container": "#fff2f3",
+                        "surface-variant": "#e0e0ff",
+                        "primary-fixed-dim": "#ffb2bf",
+                        "on-error-container": "#93000a",
+                        "surface": "#fbf8ff",
+                        "on-surface-variant": "#5a4044",
+                        "outline": "#8e6f74",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ebdcff",
+                        "on-tertiary-container": "#fbf3ff",
+                        "secondary-fixed-dim": "#66d9cc",
+                        "on-secondary-container": "#006f66",
+                        "on-tertiary-fixed-variant": "#572e99",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#d81b60",
+                        "surface-container-low": "#f4f2ff",
+                        "surface-bright": "#fbf8ff",
+                        "tertiary-fixed-dim": "#d4bbff",
+                        "surface-dim": "#d5d7ff",
+                        "on-primary-fixed": "#3f0016",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#1b247f",
+                        "on-primary-fixed-variant": "#90003b",
+                        "secondary-fixed": "#84f5e8",
+                        "tertiary-container": "#825bc6",
+                        "on-background": "#000767",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f1efff",
+                        "surface-tint": "#bc004f",
+                        "surface-container-highest": "#e0e0ff",
+                        "background": "#fbf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-padding-mobile": "16px",
+                        "gutter": "24px",
+                        "container-padding-desktop": "48px",
+                        "section-gap": "64px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-xl": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<div class="flex min-h-screen">
+<!-- SideNavBar - Admin Central -->
+<aside class="h-screen sticky left-0 w-64 border-r border-outline-variant flex flex-col bg-surface-container-lowest dark:bg-surface-dim py-gutter">
+<div class="px-8 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Aura Health</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Admin Central</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant opacity-70 mt-1 uppercase tracking-wider">Super Admin Access</p>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="insights">insights</span>
+                    Global Analytics
+                </a>
+<a class="flex items-center text-on-primary-container bg-primary-container dark:bg-primary dark:text-on-primary rounded-lg mx-4 px-4 py-2 font-bold text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="medical_services">medical_services</span>
+                    Doctor Management
+                </a>
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="folder_shared">folder_shared</span>
+                    Patient Records
+                </a>
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="payments">payments</span>
+                    Revenue
+                </a>
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                    System Settings
+                </a>
+</nav>
+<div class="px-8 mt-auto pt-gutter border-t border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">AD</div>
+<div>
+<p class="text-label-md font-label-md">Admin User</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Sign Out</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto">
+<!-- Top Bar Section -->
+<header class="bg-surface sticky top-0 z-40 px-container-padding-desktop h-20 flex justify-between items-center shadow-sm">
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface">Manage Doctors</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Directory of medical practitioners</p>
+</div>
+<button class="bg-primary text-on-primary px-gutter py-3 rounded-full flex items-center gap-2 font-label-md text-label-md hover:opacity-90 transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Add New Doctor
+                </button>
+</header>
+<div class="p-container-padding-desktop space-y-gutter">
+<!-- Filters & Search -->
+<div class="flex flex-col md:flex-row gap-gutter items-center bg-white p-6 rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] border border-surface-container">
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary-fixed outline-none text-body-md font-body-md transition-all" placeholder="Search by name or ID..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto w-full no-scrollbar">
+<button class="bg-primary-fixed text-on-primary-fixed px-4 py-2 rounded-full text-label-md font-label-md whitespace-nowrap">All Doctors</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full text-label-md font-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Gynecology</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full text-label-md font-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Obstetrics</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full text-label-md font-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Fertility</button>
+<button class="bg-surface border border-outline-variant text-on-surface-variant px-4 py-2 rounded-full text-label-md font-label-md whitespace-nowrap hover:bg-surface-container-high transition-colors">Oncology</button>
+</div>
+<button class="ml-auto text-secondary flex items-center gap-2 font-label-md text-label-md hover:underline">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+                        Advanced Filters
+                    </button>
+</div>
+<!-- Doctors Table -->
+<div class="bg-white rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] border border-surface-container overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-outline-variant">
+<tr>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Photo</th>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Name</th>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Specialization</th>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Fees</th>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Doctor 1 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female doctor with a kind expression, wearing a white lab coat and a stethoscope. The background is a soft, out-of-focus modern clinic with warm lighting and a calm, clinical atmosphere. The visual style is premium and corporate, featuring high-end medical photography quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4uOOR-TgnaeKyrqLYr86W1aLca6dH8HusTFOYCl1v1ve2xCQSnh13A-f2cGDeXND0SF01fbrJ89bwXv6Tmdu8nGvnbziB-QD5_XiOXJqS7UcI4ip5G6oN0akjSUq4u_kYQUM63ZhPC-fLxGIxU5cUM5kTzwja5NhhtISbMa2RPnfu6xPnpKWe7HLpoZwLU5d60TDXf6omoNE8YCKqBl4SJ7SMw5v87GpKsbHamOH5l3rE8_3M2RKLwS3u5HZGxSDyURf6w0MRCnE"/>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-body-md font-bold text-on-surface">Dr. Elena Rossi</p>
+<p class="text-body-sm text-on-surface-variant">ID: AUR-DR-042</p>
+</td>
+<td class="px-6 py-4">
+<span class="text-body-md font-body-md text-on-surface">Senior Gynecologist</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-body-md font-bold text-on-surface">$180.00</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">per session</p>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2"></span> Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed transition-all" title="Edit Profile">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-tertiary hover:bg-tertiary-fixed transition-all" title="Slot Management">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-error hover:bg-error-container transition-all" title="Deactivate">
+<span class="material-symbols-outlined" data-icon="block">block</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Doctor 2 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A studio portrait of a male doctor in a professional navy medical uniform. He looks confident and approachable, standing against a minimalist light grey backdrop. The lighting is crisp and even, reflecting a clinical yet empathetic medical professional environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4GtX4R2ayWOW8HHP6zy80CAqu9vz98Lzzc5YjJvzHIEZfxYSYv6nHUYoeaw5AYKWRmVDs4P0iUAwOffV8djNKSrjxFsiXYKBgN8PK5X5azqsbLAeXy1lD5hFZDc2YFLMAIUz9rIW1-dbjFEV5Vy1JSZHLxmvvI4Dzl12GO6Y6-41eZWOwB13ngH-9OGh-4vpqBf62npjB85piwTCYBPzCeSwTudOuYmFdskTWja60NF2pwmR3RYvlw5OeL8jerX0AR9AI8mM8NFU"/>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-body-md font-bold text-on-surface">Dr. Marcus Sterling</p>
+<p class="text-body-sm text-on-surface-variant">ID: AUR-DR-055</p>
+</td>
+<td class="px-6 py-4">
+<span class="text-body-md font-body-md text-on-surface">Fertility Specialist</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-body-md font-bold text-on-surface">$250.00</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">per session</p>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant text-label-sm font-label-sm">
+<span class="w-2 h-2 rounded-full bg-outline mr-2"></span> Inactive
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed transition-all" title="Edit Profile">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-tertiary hover:bg-tertiary-fixed transition-all" title="Slot Management">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:bg-secondary-container transition-all" title="Activate">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Doctor 3 -->
+<tr class="hover:bg-surface-container transition-colors group">
+<td class="px-6 py-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed">
+<img class="w-full h-full object-cover" data-alt="A high-quality portrait of a female physician with glasses, dressed in a contemporary lab coat. She is positioned in a bright, modern office with soft natural light streaming in through a window. The mood is highly professional, trustworthy, and welcoming, embodying a boutique healthcare experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARjRozvthwXN0i416lb7eP6X5oPFRPw2wwQY4lfkR86julOFCEB244ptH_meueEXAB-u1Vo-EwEbpPchXE0DaqFTMdjGaKzUhJDajlI9JliItsqJD1k5c0O893A2XPD_OsVjaSwuIINRHXqckjQE1ZAUyNgieKs2Rz-0Mf6JCDPQpsPcuyZial4Jc68UblhPoQ_xyT-d_1sfknM2hUwzV-GcTcjex_p1JjxrETdMTEaNcV1D9_LoaVUA7gbLMLYtTjzt-RS-g_wBQ"/>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-body-md font-bold text-on-surface">Dr. Sarah Chen</p>
+<p class="text-body-sm text-on-surface-variant">ID: AUR-DR-029</p>
+</td>
+<td class="px-6 py-4">
+<span class="text-body-md font-body-md text-on-surface">Obstetrician</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-body-md font-bold text-on-surface">$200.00</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">per session</p>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary mr-2"></span> Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed transition-all" title="Edit Profile">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-tertiary hover:bg-tertiary-fixed transition-all" title="Slot Management">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:text-error hover:bg-error-container transition-all" title="Deactivate">
+<span class="material-symbols-outlined" data-icon="block">block</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Table Pagination -->
+<div class="px-6 py-4 bg-surface-container-low flex justify-between items-center border-t border-outline-variant">
+<p class="text-body-sm font-body-sm text-on-surface-variant">Showing 3 of 42 doctors</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center text-label-sm font-label-sm">1</button>
+<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors text-label-sm font-label-sm">2</button>
+<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors text-label-sm font-label-sm">3</button>
+<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="bg-white p-6 rounded-xl border-l-4 border-primary shadow-[0px_4px_20px_rgba(26,35,126,0.05)]">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Total Doctors</p>
+<h4 class="text-headline-md font-headline-md text-primary mt-2">42</h4>
+<div class="flex items-center gap-1 text-secondary mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="text-label-sm font-label-sm">+3 this month</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl border-l-4 border-secondary shadow-[0px_4px_20px_rgba(26,35,126,0.05)]">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Avg. Consultation Fee</p>
+<h4 class="text-headline-md font-headline-md text-secondary mt-2">$215.00</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Based on active registry</p>
+</div>
+<div class="bg-white p-6 rounded-xl border-l-4 border-tertiary shadow-[0px_4px_20px_rgba(26,35,126,0.05)]">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Active Slots Today</p>
+<h4 class="text-headline-md font-headline-md text-tertiary mt-2">128</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">across all departments</p>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest dark:bg-surface-container-lowest grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full mt-section-gap">
+<div class="col-span-1 md:col-span-1">
+<h3 class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Aura Health</h3>
+<p class="text-body-sm font-body-sm mt-4 text-on-surface-variant opacity-80">Providing clinical excellence and empathetic care to our patients worldwide.</p>
+</div>
+<div class="flex flex-col gap-2">
+<h5 class="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant">Management</h5>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Clinic Overview</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Daily Schedule</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Registry</a>
+</div>
+<div class="flex flex-col gap-2">
+<h5 class="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant">Admin Legal</h5>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
+</div>
+<div class="flex flex-col gap-2">
+<h5 class="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant">Support</h5>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+</div>
+<div class="col-span-1 md:col-span-4 mt-8 pt-8 border-t border-outline-variant/30 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-label-sm font-label-sm text-on-surface-variant opacity-70">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer" data-icon="facebook">social_leaderboard</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer" data-icon="language">language</span>
+</div>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

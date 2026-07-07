@@ -1,0 +1,23 @@
+{
+  "name": "gynecologist-consultation-website",
+  "version": "1.0.0",
+  "description": "Aura Health gynecologist consultation website with patient, doctor and admin modules.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "db:setup": "node scripts/setup-db.js",
+    "dashboard:analyze": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter analyze",
+    "dashboard:build": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter build web --base-href /dashboard-app/"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.1.1",
+    "pg": "^8.21.0"
+  }
+}
