@@ -16,26 +16,26 @@
                     "colors": {
                         "tertiary": "#6941ab",
                         "error": "#ba1a1a",
-                        "surface-container": "#fff3f6",
+                        "surface-container": "#edecff",
                         "on-tertiary": "#ffffff",
-                        "surface-container-high": "#fff7f9",
+                        "surface-container-high": "#e6e6ff",
                         "on-secondary": "#ffffff",
                         "outline-variant": "#e3bdc3",
                         "on-tertiary-fixed": "#260058",
                         "on-secondary-fixed-variant": "#005049",
                         "secondary": "#006a62",
                         "primary": "#b0004a",
-                        "on-surface": "#271525",
+                        "on-surface": "#000767",
                         "secondary-container": "#81f3e5",
                         "inverse-primary": "#ffb2bf",
                         "on-secondary-fixed": "#00201d",
                         "primary-fixed": "#ffd9de",
                         "on-primary-container": "#fff2f3",
-                        "surface-variant": "#f4e6eb",
+                        "surface-variant": "#e0e0ff",
                         "primary-fixed-dim": "#ffb2bf",
                         "on-error-container": "#93000a",
-                        "surface": "#fffafb",
-                        "on-surface-variant": "#684c55",
+                        "surface": "#fbf8ff",
+                        "on-surface-variant": "#5a4044",
                         "outline": "#8e6f74",
                         "on-primary": "#ffffff",
                         "tertiary-fixed": "#ebdcff",
@@ -45,8 +45,8 @@
                         "on-tertiary-fixed-variant": "#572e99",
                         "error-container": "#ffdad6",
                         "primary-container": "#d81b60",
-                        "surface-container-low": "#fff6f8",
-                        "surface-bright": "#ffffff",
+                        "surface-container-low": "#f4f2ff",
+                        "surface-bright": "#fbf8ff",
                         "tertiary-fixed-dim": "#d4bbff",
                         "surface-dim": "#d5d7ff",
                         "on-primary-fixed": "#3f0016",
@@ -55,12 +55,12 @@
                         "on-primary-fixed-variant": "#90003b",
                         "secondary-fixed": "#84f5e8",
                         "tertiary-container": "#825bc6",
-                        "on-background": "#271525",
+                        "on-background": "#000767",
                         "on-error": "#ffffff",
                         "inverse-on-surface": "#f1efff",
                         "surface-tint": "#bc004f",
-                        "surface-container-highest": "#fff1f5",
-                        "background": "#fffafb"
+                        "surface-container-highest": "#e0e0ff",
+                        "background": "#fbf8ff"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -110,8 +110,8 @@
         }
         body {
             font-family: 'Manrope', sans-serif;
-            background-color: #fffafb;
-            color: #271525;
+            background-color: #fbf8ff;
+            color: #000767;
         }
         html {
             scroll-behavior: smooth;
@@ -120,7 +120,7 @@
             scroll-margin-top: 40px;
         }
         .tonal-elevation {
-            box-shadow: 0px 14px 38px rgba(176, 0, 74, 0.06);
+            box-shadow: 0px 10px 40px rgba(26, 35, 126, 0.04);
         }
         .organic-mask {
             clip-path: polygon(10% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 15%);
@@ -138,25 +138,13 @@
         }
         .header-glass {
             backdrop-filter: blur(8px);
-            background-color: rgba(255, 250, 251, 0.92);
+            background-color: rgba(251, 248, 255, 0.8);
         }
         main {
             overflow: hidden;
         }
         h1, h2, h3, h4, p, a, button, span {
             letter-spacing: 0;
-        }
-        section {
-            background-color: #fffafb;
-        }
-        .bg-surface-container\/30 {
-            background-color: rgba(255, 243, 246, 0.55);
-        }
-        .botanical-pattern {
-            background-image: radial-gradient(#ffd9de 1px, transparent 1px);
-        }
-        .header-glass.shadow-lg {
-            box-shadow: 0 12px 28px rgba(176, 0, 74, 0.08);
         }
         .organic-mask {
             max-height: min(650px, 68vh);
@@ -194,11 +182,11 @@
                 width: 42px;
                 height: 42px;
                 padding: 0 !important;
-                border: 1px solid #f4e6eb;
+                border: 1px solid #e3bdc3;
                 border-radius: 999px;
                 background: #ffffff;
                 color: #b0004a;
-                box-shadow: 0 10px 22px rgba(176, 0, 74, 0.07);
+                box-shadow: 0 10px 22px rgba(26, 35, 126, 0.07);
             }
             .nav-toggle[aria-expanded="true"] {
                 background: #fff2f3;
@@ -219,10 +207,10 @@
                 justify-content: flex-start;
                 gap: .35rem;
                 padding: .75rem;
-                border: 1px solid #f4e6eb;
+                border: 1px solid #e3bdc3;
                 border-radius: 1rem;
                 background: rgba(255, 255, 255, .98);
-                box-shadow: 0 22px 50px rgba(176, 0, 74, 0.14);
+                box-shadow: 0 22px 50px rgba(26, 35, 126, 0.14);
                 z-index: 60;
             }
             .site-nav.is-open {
@@ -234,7 +222,7 @@
                 min-height: 42px;
                 border-radius: .75rem;
                 padding: .7rem .85rem;
-                background: #fffafb;
+                background: #fbf8ff;
             }
             .site-nav a:hover {
                 background: #fff2f3;
