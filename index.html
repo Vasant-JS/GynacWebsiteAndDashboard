@@ -161,6 +161,9 @@
         .organic-mask {
             max-height: min(650px, 68vh);
         }
+        .nav-toggle {
+            display: none;
+        }
         @media (max-width: 1023px) {
             .px-container-padding-desktop {
                 padding-left: 1.5rem !important;
@@ -172,6 +175,7 @@
             }
             nav {
                 min-height: 88px;
+                position: relative;
             }
             nav .justify-self-end {
                 gap: .5rem;
@@ -179,6 +183,61 @@
             nav button {
                 padding: .65rem .9rem;
                 white-space: nowrap;
+            }
+            .patient-login-action {
+                display: none !important;
+            }
+            .nav-toggle {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 42px;
+                height: 42px;
+                padding: 0 !important;
+                border: 1px solid #f4e6eb;
+                border-radius: 999px;
+                background: #ffffff;
+                color: #b0004a;
+                box-shadow: 0 10px 22px rgba(176, 0, 74, 0.07);
+            }
+            .nav-toggle[aria-expanded="true"] {
+                background: #fff2f3;
+            }
+            .book-appointment-action {
+                padding: .8rem 1.2rem !important;
+                font-size: 13px !important;
+                border-radius: .5rem !important;
+            }
+            .site-nav {
+                position: absolute;
+                top: calc(100% + .65rem);
+                left: 1.5rem;
+                right: 1.5rem;
+                display: none !important;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: flex-start;
+                gap: .35rem;
+                padding: .75rem;
+                border: 1px solid #f4e6eb;
+                border-radius: 1rem;
+                background: rgba(255, 255, 255, .98);
+                box-shadow: 0 22px 50px rgba(176, 0, 74, 0.14);
+                z-index: 60;
+            }
+            .site-nav.is-open {
+                display: flex !important;
+            }
+            .site-nav a {
+                display: flex;
+                align-items: center;
+                min-height: 42px;
+                border-radius: .75rem;
+                padding: .7rem .85rem;
+                background: #fffafb;
+            }
+            .site-nav a:hover {
+                background: #fff2f3;
             }
             .text-headline-xl {
                 font-size: 44px !important;
@@ -221,35 +280,15 @@
             nav .justify-self-end {
                 flex: 0 1 auto !important;
             }
-            nav .justify-self-end button:first-child {
-                display: none;
-            }
-            nav .justify-self-end button:last-child {
+            .book-appointment-action {
                 padding: .75rem .95rem !important;
                 font-size: 12px !important;
                 border-radius: .5rem !important;
             }
-            .mobile-nav {
-                order: 3;
-                flex-basis: 100%;
-                display: flex !important;
-                justify-content: flex-start;
-                gap: .75rem;
-                overflow-x: auto;
-                padding-top: .35rem;
-                scrollbar-width: none;
-            }
-            .mobile-nav::-webkit-scrollbar {
-                display: none;
-            }
-            .mobile-nav a {
-                flex: 0 0 auto;
-                border: 1px solid #f4e6eb;
-                border-radius: 999px;
-                background: #ffffff;
-                padding: .55rem .8rem;
-                font-size: 12px;
-                box-shadow: 0 8px 18px rgba(176, 0, 74, 0.05);
+            .site-nav {
+                left: 1rem;
+                right: 1rem;
+                top: calc(100% + .5rem);
             }
             .text-headline-xl {
                 font-size: 36px !important;
@@ -320,9 +359,9 @@
             nav .justify-self-start {
                 font-size: 18px !important;
             }
-            nav .justify-self-end button:last-child {
-                padding-left: .75rem;
-                padding-right: .75rem;
+            .book-appointment-action {
+                padding-left: .75rem !important;
+                padding-right: .75rem !important;
             }
         }
     </style>
@@ -332,7 +371,7 @@
 <header class="fixed left-0 right-0 top-0 z-50 w-full transition-all duration-300 header-glass border-b border-surface-variant/30">
 <nav class="grid grid-cols-[auto_1fr_auto] items-center w-full h-24 px-6 md:px-10">
 <div class="justify-self-start text-headline-md font-bold text-primary tracking-tight whitespace-nowrap">Aura <span class="font-light italic text-on-surface">Health</span></div>
-<div class="mobile-nav hidden md:flex items-center justify-center gap-10">
+<div class="site-nav hidden lg:flex items-center justify-center gap-10" id="site-nav">
 <a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#about">About us</a>
 <a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#doctors">Doctors</a>
 <a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#services">Services</a>
@@ -340,8 +379,11 @@
 <a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#contact">Contact</a>
 </div>
 <div class="justify-self-end flex items-center gap-4">
-<button class="px-4 py-2 text-on-surface-variant font-bold hover:text-primary transition-soft text-label-md" onclick="window.location.href='/patient/login.html'">Patient Login</button>
-<button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:-translate-y-0.5 transition-soft text-label-md active:scale-95" onclick="window.location.href='/patient/login.html?next=/patient/book-reason.html'">Book Appointment</button>
+<button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-nav">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<button class="patient-login-action px-4 py-2 text-on-surface-variant font-bold hover:text-primary transition-soft text-label-md" onclick="window.location.href='/patient/login.html'">Patient Login</button>
+<button class="book-appointment-action bg-primary text-on-primary px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:-translate-y-0.5 transition-soft text-label-md active:scale-95" onclick="window.location.href='/patient/login.html?next=/patient/book-reason.html'">Book Appointment</button>
 </div>
 </nav>
 </header>
@@ -785,6 +827,38 @@
     document.querySelectorAll('.testimonial-next').forEach((button) => {
         button.addEventListener('click', () => showTestimonial(activeTestimonial + 1));
     });
+
+    const navToggle = document.querySelector('.nav-toggle');
+    const siteNav = document.getElementById('site-nav');
+
+    function closeNavMenu() {
+        if (!navToggle || !siteNav) return;
+        navToggle.setAttribute('aria-expanded', 'false');
+        siteNav.classList.remove('is-open');
+    }
+
+    if (navToggle && siteNav) {
+        navToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', String(!isOpen));
+            siteNav.classList.toggle('is-open', !isOpen);
+        });
+
+        siteNav.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', closeNavMenu);
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!siteNav.contains(event.target) && !navToggle.contains(event.target)) {
+                closeNavMenu();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) closeNavMenu();
+        });
+    }
 
     window.addEventListener('scroll', () => {
         const header = document.querySelector('header');
