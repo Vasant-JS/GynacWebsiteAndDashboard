@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: aura-health
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: USE_PG_SESSION
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
