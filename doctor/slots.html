@@ -1,1 +1,102 @@
-<!doctype html><html><head><meta http-equiv="refresh" content="0; url=/doctor/schedule.html"><title>Slots</title></head><body><a href="/doctor/schedule.html">Slot Management</a></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slot Management | Sumohan Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/assets/css/aura-portal.css" rel="stylesheet">
+</head>
+<body>
+  <div class="aura-shell">
+    <aside class="aura-sidebar"></aside>
+    <main class="aura-main">
+      <section class="aura-page">
+        <p class="aura-eyebrow" id="schedule-status">Loading availability...</p>
+        <h1 class="aura-title">Slot Management</h1>
+        <p class="aura-subtitle">Choose a date, keep the slot list intact, and uncheck only the date/time combinations patients should not book.</p>
+
+        <form class="aura-card aura-card--padded mt-8" id="availability-form">
+          <div class="grid gap-4 lg:grid-cols-[260px_1fr]">
+            <div>
+              <label class="text-sm font-extrabold text-[#5a4044]" for="availability-date">Available Date</label>
+              <input id="availability-date" class="aura-field mt-2 p-3" type="date">
+              <label class="mt-4 flex items-center gap-2 rounded-lg border border-[#e3bdc3] bg-white p-3 font-extrabold">
+                <input checked id="availability-available" type="checkbox">
+                Available for booking
+              </label>
+              <button class="aura-button mt-4 w-full" type="submit">Save Slots</button>
+              <p class="mt-3 font-bold text-[#006a62]" id="availability-message"></p>
+            </div>
+
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <h2 class="text-2xl font-extrabold">Select Slots</h2>
+                <button class="inline-flex items-center gap-2 rounded-lg border border-[#006a62] px-4 py-2 font-extrabold text-[#006a62]" id="edit-slots-button" type="button">
+                  <span class="material-symbols-outlined text-lg">edit_calendar</span>
+                  Edit Slots
+                </button>
+              </div>
+              <div class="mt-4 flex flex-wrap gap-3" id="slot-options-list">
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="09:00 AM" type="checkbox"> 09:00 AM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="09:30 AM" type="checkbox"> 09:30 AM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="10:30 AM" type="checkbox"> 10:30 AM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="01:00 PM" type="checkbox"> 01:00 PM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="02:30 PM" type="checkbox"> 02:30 PM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="04:00 PM" type="checkbox"> 04:00 PM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="06:30 PM" type="checkbox"> 06:30 PM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="07:00 PM" type="checkbox"> 07:00 PM</label>
+                <label class="rounded-lg border border-[#e3bdc3] px-3 py-2 font-bold"><input checked data-slot-option value="07:30 PM" type="checkbox"> 07:30 PM</label>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <section class="aura-card aura-card--padded mt-8">
+          <h2 class="text-3xl font-extrabold">Unavailable Dates & Slots</h2>
+          <div class="mt-5 grid gap-4" id="monthly-schedule"></div>
+        </section>
+
+        <section class="hidden">
+          <div id="daily-schedule"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4" id="slot-editor-modal">
+    <div class="w-full max-w-2xl rounded-xl bg-white p-6 shadow-2xl">
+      <div class="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p class="aura-eyebrow">Slot Management</p>
+          <h2 class="text-2xl font-extrabold">Edit Slots</h2>
+        </div>
+        <button class="grid h-10 w-10 place-items-center rounded-full border border-[#e3bdc3] text-[#5a4044]" id="slot-editor-close" type="button" aria-label="Close slot editor">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="rounded-lg bg-[#f4f2ff] p-3 text-sm text-[#5a4044]">
+        Add a start time and end time for each bookable slot. End time defaults to 15 minutes after the start, but you can edit it.
+      </div>
+      <div class="mt-5 grid max-h-[50vh] gap-3 overflow-auto pr-1" id="slot-editor-rows"></div>
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <button class="inline-flex items-center gap-2 rounded-lg border border-[#006a62] px-4 py-2 font-extrabold text-[#006a62]" id="slot-editor-add" type="button">
+          <span class="material-symbols-outlined text-lg">add</span>
+          Add Slot
+        </button>
+        <div class="flex flex-wrap gap-3">
+          <button class="rounded-lg border border-[#8e6f74] px-5 py-3 font-bold text-[#5a4044]" id="slot-editor-cancel" type="button">Cancel</button>
+          <button class="aura-button px-5 py-3" id="slot-editor-save" type="button">Update Slots</button>
+        </div>
+      </div>
+      <p class="mt-3 min-h-5 font-bold text-[#ba1a1a]" id="slot-editor-message"></p>
+    </div>
+  </div>
+
+  <nav class="aura-mobile-nav"></nav>
+  <script src="/assets/js/doctor-slots.js?v=202609066"></script>
+  <script src="/assets/js/aura-sidebar.js?v=202609065"></script>
+</body>
+</html>

@@ -31,6 +31,7 @@
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Login failed.');
+      if (data.user) localStorage.setItem(`auraSessionUser_${data.user.role}`, JSON.stringify(data.user));
       window.location.href = data.redirectTo;
     } catch (error) {
       message.textContent = error.message;

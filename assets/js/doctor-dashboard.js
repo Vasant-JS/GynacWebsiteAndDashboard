@@ -1,55 +1,80 @@
 (function () {
-  const status = document.getElementById('doctor-status');
-  const schedule = document.getElementById('doctor-schedule-list');
-  const updates = document.getElementById('doctor-updates-list');
-  const search = document.getElementById('doctor-patient-search');
-  const searchResults = document.getElementById('doctor-search-results');
+  const { $, $all, bindTabs, escapeHtml, loadingMarkup, setText, todayKey } = window.Aura;
+  const { appointmentCard, emptyAppointmentsLabel, filterAppointments, updateAppointmentStatus, api, searchPatientCard } = window.AuraDoctor;
 
-  async function updateAppointment(id, statusValue) {
-    const response = await fetch(`/api/doctor/appointments/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: statusValue }) });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Could not update appointment.');
-    await load();
+  const status = $('#doctor-status');
+  const schedule = $('#doctor-schedule-list');
+  const updates = $('#doctor-updates-list');
+  const search = $('#doctor-patient-search');
+  const searchResults = $('#doctor-search-results');
+  const tabButtons = $all('[data-dashboard-appointment-tab]');
+  if (!status || !schedule || !updates) return;
+
+  let activeTab = 'today';
+  let appointments = [];
+  const syncTabs = bindTabs(tabButtons, () => activeTab, (tab) => { activeTab = tab; }, renderSchedule);
+
+  function renderSchedule() {
+    syncTabs();
+    const items = filterAppointments(appointments, activeTab, todayKey());
+    schedule.innerHTML = items.length
+      ? items.map(appointmentCard).join('')
+      : `<p class="rounded-xl bg-white p-5 text-[#5a4044]">${emptyAppointmentsLabel(activeTab)}</p>`;
   }
 
-  function renderSchedule(items) {
-    schedule.innerHTML = items.length ? items.map((item) => `
-      <article class="rounded-xl border border-[#e3bdc3] bg-white p-5">
-        <p class="font-extrabold text-[#b0004a]">${item.time} ${item.meridiem} - ${item.label}</p>
-        <h3 class="mt-1 text-2xl font-extrabold">${item.patientName}</h3>
-        <p class="text-[#5a4044]">${item.serviceType}</p>
-        <div class="mt-4 flex flex-wrap gap-2"><a class="rounded-lg bg-[#006a62] px-4 py-2 font-bold text-white" href="/doctor/appointment-details.html?appointmentId=${item.id}">Attend Patient</a><button class="rounded-lg border border-[#ba1a1a] px-4 py-2 font-bold text-[#ba1a1a]" data-cancel="${item.id}" type="button">Cancel</button></div>
-      </article>
-    `).join('') : '<p class="rounded-xl bg-white p-5 text-[#5a4044]">No appointments today.</p>';
-    schedule.querySelectorAll('[data-cancel]').forEach((button) => button.addEventListener('click', () => updateAppointment(button.dataset.cancel, 'CANCELLED')));
+  function renderStats(data) {
+    setText($('#total-appointments'), data.stats.totalAppointments ?? data.stats.todaysAppointments);
+    setText($('#pending-appointments'), data.stats.pendingAppointments ?? 0);
+    setText($('#missed-appointments'), data.stats.missedAppointments ?? 0);
+  }
+
+  function renderUpdates(notifications) {
+    updates.innerHTML = notifications.length
+      ? notifications.map((item) => `<article class="border-b border-[#e3bdc3] py-4"><h4 class="font-extrabold">${escapeHtml(item.title)}</h4><p class="text-[#5a4044]">${escapeHtml(item.body)}</p></article>`).join('')
+      : '<p class="text-[#5a4044]">No updates.</p>';
   }
 
   async function load() {
+    schedule.innerHTML = loadingMarkup('Loading appointments...');
+    updates.innerHTML = loadingMarkup('Loading updates...');
     try {
-      const response = await fetch('/api/doctor/dashboard');
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Unable to load dashboard.');
-      status.textContent = `Connected to PostgreSQL • ${data.doctor.displayName}`;
-      document.getElementById('todays-appointments').textContent = data.stats.todaysAppointments;
-      document.getElementById('pending-prescriptions').textContent = data.stats.pendingPrescriptions;
-      document.getElementById('consultations-done').textContent = data.stats.consultationsDone;
-      renderSchedule(data.schedule || []);
-      updates.innerHTML = data.notifications.length ? data.notifications.map((item) => `<article class="border-b border-[#e3bdc3] py-4"><h4 class="font-extrabold">${item.title}</h4><p class="text-[#5a4044]">${item.body}</p></article>`).join('') : '<p class="text-[#5a4044]">No updates.</p>';
+      const date = todayKey();
+      const [dashboard, scheduleData] = await Promise.all([api.dashboard(), api.schedule(date, date.slice(0, 7))]);
+      setText(status, `Connected to PostgreSQL - ${dashboard.doctor.displayName}`);
+      appointments = scheduleData.monthly || [];
+      renderStats(dashboard);
+      renderSchedule();
+      renderUpdates(dashboard.notifications || []);
     } catch (error) {
-      status.textContent = error.message;
+      setText(status, error.message);
+      schedule.innerHTML = `<p class="rounded-xl bg-white p-5 text-[#ba1a1a]">${escapeHtml(error.message)}</p>`;
+      updates.innerHTML = '<p class="text-[#5a4044]">No updates loaded.</p>';
     }
   }
 
-  search?.addEventListener('input', async () => {
+  async function searchPatients() {
     const q = search.value.trim();
     if (q.length < 2) {
       searchResults.innerHTML = '';
       return;
     }
-    const response = await fetch(`/api/doctor/patients/search?q=${encodeURIComponent(q)}`);
-    const data = await response.json();
-    searchResults.innerHTML = (data.patients || []).map((patient) => `<article class="rounded-lg bg-white p-3"><h4 class="font-bold">${patient.name}</h4><p class="text-[#5a4044]">${patient.phone || ''} • ${patient.concern}</p></article>`).join('');
+    searchResults.innerHTML = loadingMarkup('Searching patients...');
+    try {
+      const data = await api.patientSearch(q);
+      searchResults.innerHTML = (data.patients || []).map(searchPatientCard).join('');
+    } catch (error) {
+      searchResults.innerHTML = `<p class="aura-card aura-card--padded text-[#ba1a1a]">${escapeHtml(error.message)}</p>`;
+    }
+  }
+
+  schedule.addEventListener('click', async (event) => {
+    const cancelButton = event.target.closest('[data-cancel]');
+    if (!cancelButton) return;
+    schedule.innerHTML = loadingMarkup('Updating appointment...');
+    await updateAppointmentStatus(cancelButton.dataset.cancel, 'CANCELLED');
+    await load();
   });
+  search?.addEventListener('input', window.Aura.debounce(searchPatients, 250));
 
   load();
 })();

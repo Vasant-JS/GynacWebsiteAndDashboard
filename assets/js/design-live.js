@@ -92,6 +92,15 @@
       message.textContent = text;
       message.className = `mt-base font-bold ${error ? 'text-error' : 'text-secondary'}`;
     }
+    function mobileValue() {
+      return String(phoneInput?.value || '').replace(/\D/g, '').slice(0, 10);
+    }
+    phoneInput?.addEventListener('input', () => {
+      phoneInput.value = mobileValue();
+    });
+    if (new URLSearchParams(window.location.search).get('registered') === '1') {
+      show('Registration completed. Please login with your mobile number.');
+    }
     function formatCountdown(seconds) {
       return `00:${String(seconds).padStart(2, '0')}`;
     }
@@ -121,7 +130,12 @@
     }
     async function requestOtp(event) {
       event.preventDefault();
-      currentPhone = phoneInput?.value?.trim() || '8892498859';
+      currentPhone = mobileValue();
+      if (!/^[6-9]\d{9}$/.test(currentPhone)) {
+        show('Enter a valid 10-digit mobile number without +91.', true);
+        phoneInput?.focus();
+        return;
+      }
       try {
         show('Generating OTP...');
         setResendDisabled(true);
@@ -164,8 +178,8 @@
   async function initPatientDashboard() {
     try {
       const data = await jsonFetch('/api/patient/dashboard');
-      const h1 = textIncludes('h1,h2', 'Aura Health');
-      if (h1) h1.textContent = 'Aura Health';
+      const h1 = textIncludes('h1,h2', 'Sumohan Care');
+      if (h1) h1.textContent = 'Sumohan Care';
       const subtitle = Array.from(document.querySelectorAll('p')).find((p) => p.textContent.includes('busy health week'));
       if (subtitle) subtitle.textContent = `Welcome back, ${data.patient.name}. Connected to PostgreSQL.`;
       const upcomingTitle = textIncludes('h2,h3', 'PostgreSQL required') || textIncludes('h2,h3', 'Prenatal');
@@ -184,15 +198,37 @@
   function initReason() {
     const cards = Array.from(document.querySelectorAll('.reason-card'));
     const next = Array.from(document.querySelectorAll('button')).find((button) => button.textContent.trim() === 'Next');
-    let selected = '';
+    let selectedService = '';
     let other = document.getElementById('other-reason-input');
     if (!other) {
+      const fieldWrap = document.createElement('div');
+      fieldWrap.className = 'max-w-[900px] mx-auto mb-gutter';
+      fieldWrap.innerHTML = '<label class="block mb-base font-label-md text-label-md text-on-surface" for="other-reason-input">Reason for Visit</label>';
       other = document.createElement('textarea');
       other.id = 'other-reason-input';
-      other.placeholder = 'If needed, describe your concern';
-      other.className = 'w-full max-w-[900px] mt-gutter min-h-24 rounded-lg border-outline-variant bg-surface-container-lowest px-4 py-3';
-      document.querySelector('.max-w-\\[1400px\\]')?.appendChild(other);
+      other.placeholder = 'Type the reason you want to discuss with the doctor';
+      other.required = true;
+      other.className = 'w-full min-h-24 rounded-lg border-outline-variant bg-surface-container-lowest px-4 py-3';
+      fieldWrap.appendChild(other);
+      const actions = next?.closest('.flex');
+      actions?.parentElement?.insertBefore(fieldWrap, actions);
     }
+    const syncNext = () => {
+      const canContinue = Boolean(selectedService && other.value.trim());
+      if (!next) return;
+      next.disabled = !canContinue;
+      next.toggleAttribute('disabled', !canContinue);
+      next.classList.toggle('opacity-50', !canContinue);
+      next.classList.toggle('cursor-not-allowed', !canContinue);
+      next.classList.toggle('bg-surface-container', !canContinue);
+      next.classList.toggle('text-on-surface-variant', !canContinue);
+      next.classList.toggle('bg-primary', canContinue);
+      next.classList.toggle('text-white', canContinue);
+      next.style.backgroundColor = canContinue ? '#b0004a' : '';
+      next.style.color = canContinue ? '#ffffff' : '';
+      next.style.opacity = canContinue ? '1' : '';
+      next.style.cursor = canContinue ? 'pointer' : '';
+    };
     cards.forEach((card) => {
       card.addEventListener('click', () => {
         cards.forEach((item) => {
@@ -203,30 +239,27 @@
         card.classList.add('border-primary', 'ring-2', 'ring-primary');
         card.style.borderColor = '#b0004a';
         card.style.boxShadow = '0 0 0 2px #b0004a';
-        selected = card.querySelector('h3')?.textContent.trim() || '';
-        sessionStorage.setItem('bookingReason', selected);
-        if (next) {
-          next.disabled = false;
-          next.removeAttribute('disabled');
-          next.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-surface-container', 'text-on-surface-variant');
-          next.classList.add('bg-primary', 'text-white');
-          next.style.backgroundColor = '#b0004a';
-          next.style.color = '#ffffff';
-          next.style.opacity = '1';
-          next.style.cursor = 'pointer';
-        }
+        selectedService = card.querySelector('h3')?.textContent.trim() || '';
+        sessionStorage.setItem('bookingService', selectedService);
+        syncNext();
       });
+    });
+    other.addEventListener('input', () => {
+      sessionStorage.setItem('bookingReason', other.value.trim());
+      syncNext();
     });
     next?.addEventListener('click', async (event) => {
       event.preventDefault();
-      if (!selected) return;
+      const typedReason = other.value.trim();
+      if (!selectedService || !typedReason) return;
       const data = await jsonFetch('/api/patient/booking/reason', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason: selected, otherReason: other.value.trim() }),
+        body: JSON.stringify({ service: selectedService, reason: typedReason, otherReason: typedReason }),
       });
       window.location.href = data.redirectTo;
     });
+    syncNext();
   }
 
   function initSlot() {

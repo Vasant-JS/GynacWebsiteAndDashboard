@@ -1,13 +1,44 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Aura Health | FemmeCare Gynecology</title>
+<title>Sumohan Care | FemmeCare Gynecology</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .aura-developer-credit {
+        display: block;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 48px 24px;
+        color: #5a4044;
+        font-size: 0.75rem;
+        font-weight: 800;
+        line-height: 1.25rem;
+        text-align: left;
+    }
+
+    .aura-developer-credit a {
+        color: #b0004a;
+        text-decoration: none;
+    }
+
+    .aura-developer-credit a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .aura-developer-credit {
+            padding-right: 16px;
+            padding-left: 16px;
+            text-align: center;
+        }
+    }
+</style>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -172,7 +203,7 @@
                 padding: .65rem .9rem;
                 white-space: nowrap;
             }
-            .patient-login-action {
+            .doctor-login-action {
                 display: none !important;
             }
             .nav-toggle {
@@ -358,7 +389,7 @@
 <!-- TopNavBar -->
 <header class="fixed left-0 right-0 top-0 z-50 w-full transition-all duration-300 header-glass border-b border-surface-variant/30">
 <nav class="grid grid-cols-[auto_1fr_auto] items-center w-full h-24 px-6 md:px-10">
-<div class="justify-self-start text-headline-md font-bold text-primary tracking-tight whitespace-nowrap">Aura <span class="font-light italic text-on-surface">Health</span></div>
+<div class="justify-self-start text-headline-md font-bold text-primary tracking-tight whitespace-nowrap">Sumohan <span class="font-light italic text-on-surface">Care</span></div>
 <div class="site-nav hidden lg:flex items-center justify-center gap-10" id="site-nav">
 <a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#about">About us</a>
 <a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#doctors">Doctors</a>
@@ -370,7 +401,7 @@
 <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-nav">
 <span class="material-symbols-outlined">menu</span>
 </button>
-<button class="patient-login-action px-4 py-2 text-on-surface-variant font-bold hover:text-primary transition-soft text-label-md" onclick="window.location.href='/patient/login.html'">Patient Login</button>
+<button class="doctor-login-action border border-outline-variant bg-white text-on-surface px-6 py-3 rounded-lg font-bold hover:bg-surface-container-low hover:text-primary transition-soft text-label-md active:scale-95" onclick="window.location.href='/doctor/login.html'">Doctor Login</button>
 <button class="book-appointment-action bg-primary text-on-primary px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:-translate-y-0.5 transition-soft text-label-md active:scale-95" onclick="window.location.href='/patient/login.html?next=/patient/book-reason.html'">Book Appointment</button>
 </div>
 </nav>
@@ -420,7 +451,7 @@
 <div class="max-w-2xl mx-auto text-center mb-16">
 <span class="text-primary font-bold text-label-sm uppercase tracking-[0.2em]">About us</span>
 <h2 class="text-headline-lg text-on-surface mt-4">A Calm, Complete Gynecology Care Experience</h2>
-<p class="text-on-surface-variant mt-4">Aura Health brings specialist-led consultations, clear follow-ups, and thoughtful digital support into one patient-first care journey.</p>
+<p class="text-on-surface-variant mt-4">Sumohan Care brings specialist-led consultations, clear follow-ups, and thoughtful digital support into one patient-first care journey.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
 <!-- Step 1 -->
@@ -581,72 +612,82 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 <!-- Pregnancy -->
-<div class="group bg-white p-10 rounded-2xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[160px] text-secondary">pregnant_woman</span>
+<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-[120px] text-secondary">pregnant_woman</span>
 </div>
-<div class="w-16 h-16 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary mb-8">
-<span class="material-symbols-outlined text-[32px]">pregnant_woman</span>
+<div class="relative z-10 flex items-center gap-4 mb-5">
+<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">pregnant_woman</span>
 </div>
-<h3 class="text-headline-md text-on-surface mb-4">Pregnancy</h3>
-<p class="text-body-md text-on-surface-variant mb-6 leading-relaxed">Expert prenatal, natal, and postpartum care to ensure a healthy journey for you and your baby.</p>
+<h3 class="text-headline-md text-on-surface">Pregnancy</h3>
+</div>
+<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Expert prenatal, natal, and postpartum care to ensure a healthy journey for you and your baby.</p>
 <!-- Original link: # -->
-<a class="inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
+<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
 </div>
 <!-- PCOD/PCOS -->
-<div class="group bg-white p-10 rounded-2xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[160px] text-secondary">clinical_notes</span>
+<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-[120px] text-secondary">clinical_notes</span>
 </div>
-<div class="w-16 h-16 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary mb-8">
-<span class="material-symbols-outlined text-[32px]">clinical_notes</span>
+<div class="relative z-10 flex items-center gap-4 mb-5">
+<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">clinical_notes</span>
 </div>
-<h3 class="text-headline-md text-on-surface mb-4">PCOD/PCOS</h3>
-<p class="text-body-md text-on-surface-variant mb-6 leading-relaxed">Personalized management plans for hormonal balance and metabolic health restoration.</p>
+<h3 class="text-headline-md text-on-surface">PCOD/PCOS</h3>
+</div>
+<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Personalized management plans for hormonal balance and metabolic health restoration.</p>
 <!-- Original link: # -->
-<a class="inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
+<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
 </div>
 <!-- Menstrual issues -->
-<div class="group bg-white p-10 rounded-2xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[160px] text-secondary">cycle</span>
+<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-[120px] text-secondary">cycle</span>
 </div>
-<div class="w-16 h-16 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary mb-8">
-<span class="material-symbols-outlined text-[32px]">cycle</span>
+<div class="relative z-10 flex items-center gap-4 mb-5">
+<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">cycle</span>
 </div>
-<h3 class="text-headline-md text-on-surface mb-4">Menstrual Issues</h3>
-<p class="text-body-md text-on-surface-variant mb-6 leading-relaxed">Treatment for irregular cycles, heavy bleeding, and painful periods with compassionate care.</p>
+<h3 class="text-headline-md text-on-surface">Menstrual Issues</h3>
+</div>
+<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Treatment for irregular cycles, heavy bleeding, and painful periods with compassionate care.</p>
 <!-- Original link: # -->
-<a class="inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
+<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
 </div>
 <!-- Fertility -->
-<div class="group bg-white p-10 rounded-2xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[160px] text-secondary">eco</span>
+<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-[120px] text-secondary">eco</span>
 </div>
-<div class="w-16 h-16 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary mb-8">
-<span class="material-symbols-outlined text-[32px]">eco</span>
+<div class="relative z-10 flex items-center gap-4 mb-5">
+<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">eco</span>
 </div>
-<h3 class="text-headline-md text-on-surface mb-4">Fertility</h3>
-<p class="text-body-md text-on-surface-variant mb-6 leading-relaxed">Advanced reproductive support and fertility counseling for couples aspiring to parenthood.</p>
+<h3 class="text-headline-md text-on-surface">Fertility</h3>
+</div>
+<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Advanced reproductive support and fertility counseling for couples aspiring to parenthood.</p>
 <!-- Original link: # -->
-<a class="inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
+<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
 </div>
 <!-- General Gyn -->
-<div class="group bg-white p-10 rounded-2xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[160px] text-secondary">female</span>
+<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
+<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-[120px] text-secondary">female</span>
 </div>
-<div class="w-16 h-16 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary mb-8">
-<span class="material-symbols-outlined text-[32px]">female</span>
+<div class="relative z-10 flex items-center gap-4 mb-5">
+<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">female</span>
 </div>
-<h3 class="text-headline-md text-on-surface mb-4">General Gynecology</h3>
-<p class="text-body-md text-on-surface-variant mb-6 leading-relaxed">Routine checkups, cancer screenings, and preventive health for women of all ages.</p>
+<h3 class="text-headline-md text-on-surface">General Gynecology</h3>
+</div>
+<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Routine checkups, cancer screenings, and preventive health for women of all ages.</p>
 <!-- Original link: # -->
-<a class="inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
+<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
 </div>
 <!-- Special Case CTA -->
-<div class="bg-primary-container p-10 rounded-2xl flex flex-col justify-center items-center text-center relative overflow-hidden group">
+<div class="bg-primary-container p-7 rounded-xl flex flex-col justify-center items-center text-center relative overflow-hidden group">
 <div class="absolute inset-0 bg-primary hover:scale-110 transition-transform duration-700 opacity-90"></div>
 <div class="relative z-10">
 <h3 class="text-headline-md text-on-primary mb-6">Need a specialized consultation?</h3>
@@ -685,7 +726,7 @@
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
 </div>
 <h3 id="testimonial-quote" class="text-headline-lg font-serif italic text-on-surface leading-tight">
-                        "The level of care I received at Aura Health was truly exceptional. From my first prenatal checkup to the delivery of my daughter, I've never felt so heard in a medical setting."
+                        "The level of care I received at Sumohan Care was truly exceptional. From my first prenatal checkup to the delivery of my daughter, I've never felt so heard in a medical setting."
                     </h3>
 <div class="flex items-center gap-4">
 <div class="h-px w-12 bg-outline-variant"></div>
@@ -712,7 +753,7 @@
 <div class="max-w-[1400px] mx-auto px-container-padding-desktop">
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 pb-20">
 <div class="space-y-8">
-<div class="text-headline-md font-bold text-primary">Aura <span class="font-light italic text-on-surface">Health</span></div>
+<div class="text-headline-md font-bold text-primary">Sumohan <span class="font-light italic text-on-surface">Care</span></div>
 <p class="text-body-md text-on-surface-variant leading-relaxed">
                     Leading the way in gynecological excellence and empathetic patient care for women worldwide. Your health, our priority.
                 </p>
@@ -725,7 +766,7 @@
 <div>
 <h5 class="text-label-md font-bold text-on-surface mb-8 uppercase tracking-widest">Contact</h5>
 <ul class="space-y-4">
-<li class="text-on-surface-variant text-body-sm flex gap-3"><span class="material-symbols-outlined text-primary text-[20px]">location_on</span><span>Aura Health Women Care, Main Clinic</span></li>
+<li class="text-on-surface-variant text-body-sm flex gap-3"><span class="material-symbols-outlined text-primary text-[20px]">location_on</span><span>Sumohan Care, Main Clinic</span></li>
 <li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm flex gap-3" href="tel:+919876543210"><span class="material-symbols-outlined text-primary text-[20px]">call</span><span>+91 98765 43210</span></a></li>
 <li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm flex gap-3" href="mailto:care@aurahealth.example"><span class="material-symbols-outlined text-primary text-[20px]">mail</span><span>care@aurahealth.example</span></a></li>
 <li class="text-on-surface-variant text-body-sm flex gap-3"><span class="material-symbols-outlined text-primary text-[20px]">schedule</span><span>Mon-Sat, 9:00 AM - 7:30 PM</span></li>
@@ -764,12 +805,13 @@
 <p class="text-label-sm text-on-surface-variant flex items-center gap-2">Designed with <span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">favorite</span> for Womanhood</p>
 </div>
 </div>
+<p class="aura-developer-credit w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
 <script>
     const testimonials = [
         {
             image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCVpSmvmU1i5XqJP1uDhcP80K5aWWqklImwfbuMCyEWZDV1HTrUJ5HvkGmi_tv1vfpbrmW-oH89k07x-z5WzLkFhg8ii1B3e5msNesV8GG1JmRYeBSWjlSiLLIeLRN4oQXT_yvd0H1yE12ZaPPDWgnHIhVPMNhVd8X3Ui8cQvZdMQWevalIUw6NLDykv5z4V1nC72EzKcK5puIdWQ9rDPv1QMsrZ2F-NQiIFMis-GWuCXBfeipTE0FoXb5Dj-ryMGMQoizQ8XJU66o',
-            quote: '"The level of care I received at Aura Health was truly exceptional. From my first prenatal checkup to the delivery of my daughter, I have never felt so heard in a medical setting."',
+            quote: '"The level of care I received at Sumohan Care was truly exceptional. From my first prenatal checkup to the delivery of my daughter, I have never felt so heard in a medical setting."',
             name: 'Jessica Thompson',
             meta: 'Patient for 4 Years'
         },
@@ -787,7 +829,7 @@
         },
         {
             image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3JIRlvPVszPJPA7vBjdAcV-ABNoOVxnrHWlhQ0wSwsEx9tnAsj4H4PjfaQlH7Z8lBsT0cjb7uapyMZIdRe1vnI4fyjU3Aw3eDfuz7U-hGHtCgZ8g4RysZhterDOD5uhiZWHNpSgNldqXJNa0AfneTr3srfqXMsS5QuTICjnFccHz1UHyS9GGLueWZ11U9zZ-hApQ7Yb1cyZWuTpcXFyV1n_gwWKWO4qxGiaUjUvB1JwmzcSNKJQYNjytO93oX6sNxdAuGlHf9ALM',
-            quote: '"Aura Health gave me confidence during my pregnancy. The consultations were warm, punctual, and detailed, and the care team always knew exactly what was happening next."',
+            quote: '"Sumohan Care gave me confidence during my pregnancy. The consultations were warm, punctual, and detailed, and the care team always knew exactly what was happening next."',
             name: 'Maria Fernandes',
             meta: 'Prenatal Care Patient'
         }

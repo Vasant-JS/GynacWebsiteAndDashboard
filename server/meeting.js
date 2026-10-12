@@ -6,7 +6,7 @@ function whatsappUrl(phone, text) {
 
 async function createConsultationMeeting({ appointmentId, appointmentAt, serviceType, patient, doctor }) {
   const meetLink = `https://meet.google.com/dev-${String(appointmentId).slice(0, 3)}-${String(appointmentId).slice(3, 7)}-${String(appointmentId).slice(7, 10)}`;
-  const message = `Aura Health appointment confirmed with ${doctor.display_name || doctor.displayName || 'doctor'} for ${serviceType} at ${appointmentAt}. Meet link: ${meetLink}`;
+  const message = `Sumohan Care appointment confirmed with ${doctor.display_name || doctor.displayName || 'doctor'} for ${serviceType} at ${appointmentAt}. Meet link: ${meetLink}`;
   return {
     provider: 'google_meet',
     mode: 'development_placeholder',

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Patient Registration | Sumohan Care</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="/assets/css/aura-portal.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#b0004a',
+            secondary: '#006a62',
+            surface: '#fbf8ff',
+            'surface-container-lowest': '#ffffff',
+            'surface-container-low': '#f4f2ff',
+            'surface-container-highest': '#e0e0ff',
+            'on-surface': '#000767',
+            'on-surface-variant': '#5a4044',
+            'outline-variant': '#e3bdc3',
+            error: '#ba1a1a',
+          },
+          fontFamily: { manrope: ['Manrope', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-surface text-on-surface font-manrope overflow-x-hidden">
+  <header class="w-full h-20 px-6 md:px-12 flex items-center justify-between max-w-[1200px] mx-auto">
+    <a class="text-2xl font-extrabold text-primary" href="/patient/login.html">Sumohan Care</a>
+    <a class="text-sm font-bold text-on-surface-variant hover:text-primary" href="/patient/login.html">Back to Login</a>
+  </header>
+
+  <main class="min-h-[calc(100vh-160px)] flex items-center justify-center px-4 md:px-12 py-12">
+    <section class="w-full max-w-[980px] grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-6 items-stretch">
+      <div class="hidden lg:flex rounded-xl overflow-hidden relative min-h-[640px]">
+        <img alt="Sumohan Care clinic" class="absolute inset-0 h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV3dM2OOvCaUi8tUzjv9JXnrspakVQrYhuKhQtKEpDaubPxP3X3VSPSTfQxVZabgxrg-kOAEEMfCHOC6R3Juh1gZcBN_85bCn1OICcDdZP73EgGqzk7UmF36tv6FFTelKRdKymJdggmtrEQeX3xgwdnYonikHUcWpn_wz9by9VFDm8kuwdhTQfnpvxkuEgsOLwanlxGSdeHbYPqJnIafTrO5bgwph5uQR0tt7cVh0DXFcVNL9-YSSmVh58N2DcRhFAPTRf_o4xAho">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#000767]/70 to-transparent"></div>
+        <div class="relative z-10 mt-auto p-8 text-white">
+          <h1 class="text-3xl font-extrabold leading-tight">Join Sumohan Care</h1>
+          <p class="mt-3 text-base leading-7 opacity-90">Create your patient record once, then use your mobile number for quick OTP login.</p>
+        </div>
+      </div>
+
+      <form class="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 md:p-10 shadow-[0px_4px_20px_rgba(26,35,126,0.05)]" id="patient-register-form">
+        <div class="mb-8">
+          <p class="text-xs font-extrabold uppercase tracking-widest text-secondary">Patient Registration</p>
+          <h2 class="mt-2 text-3xl font-extrabold text-on-surface">Create Patient Profile</h2>
+          <p class="mt-2 text-on-surface-variant">Enter your details so your care team has the right profile before your first consultation.</p>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-2">
+          <label class="grid gap-2 md:col-span-2">
+            <span class="text-sm font-bold text-on-surface-variant">Full Name</span>
+            <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" maxlength="80" minlength="2" name="name" pattern="[A-Za-z][A-Za-z\s.'-]{1,79}" required>
+          </label>
+          <label class="grid gap-2">
+            <span class="text-sm font-bold text-on-surface-variant">Age</span>
+            <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" min="1" max="120" name="age" required type="number">
+          </label>
+          <label class="grid gap-2">
+            <span class="text-sm font-bold text-on-surface-variant">Mobile Number</span>
+            <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" inputmode="numeric" maxlength="10" minlength="10" name="mobile" pattern="[6-9][0-9]{9}" placeholder="9876543210" required type="tel">
+          </label>
+          <label class="grid gap-2 md:col-span-2">
+            <span class="text-sm font-bold text-on-surface-variant">Email Address</span>
+            <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="email" required type="email">
+          </label>
+          <label class="grid gap-2 md:col-span-2">
+            <span class="text-sm font-bold text-on-surface-variant">Medical History <span class="font-normal">(optional)</span></span>
+            <textarea class="min-h-24 rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="history" placeholder="Past surgeries, pregnancy history, cycle concerns, medications"></textarea>
+          </label>
+          <label class="grid gap-2 md:col-span-2">
+            <span class="text-sm font-bold text-on-surface-variant">Allergies <span class="font-normal">(optional)</span></span>
+            <textarea class="min-h-20 rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="allergies" placeholder="Medicine, food, latex, or other allergies"></textarea>
+          </label>
+        </div>
+
+        <fieldset class="mt-5 rounded-lg border border-outline-variant/70 p-4">
+          <legend class="px-2 text-sm font-bold text-on-surface-variant">Known Conditions <span class="font-normal">(optional)</span></legend>
+          <div class="mt-2 grid gap-3 md:grid-cols-2">
+            <label class="flex items-center gap-3 rounded-lg bg-surface-container-low px-4 py-3">
+              <input class="rounded border-outline-variant text-primary focus:ring-primary" name="diabetes" type="checkbox">
+              <span class="font-bold text-on-surface">Diabetes</span>
+            </label>
+            <label class="flex items-center gap-3 rounded-lg bg-surface-container-low px-4 py-3">
+              <input class="rounded border-outline-variant text-primary focus:ring-primary" name="bloodPressure" type="checkbox">
+              <span class="font-bold text-on-surface">Blood Pressure / BP</span>
+            </label>
+          </div>
+          <label class="mt-4 grid gap-2">
+            <span class="text-sm font-bold text-on-surface-variant">Other Conditions</span>
+            <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="otherConditions" placeholder="Thyroid, PCOS, anemia, etc.">
+          </label>
+        </fieldset>
+
+        <p class="mt-5 text-sm font-bold text-secondary" id="patient-register-message"></p>
+        <button class="mt-6 w-full rounded-lg bg-primary py-4 font-extrabold text-white transition hover:opacity-90 active:scale-[0.99]" type="submit">Register as Patient</button>
+        <p class="mt-5 text-center text-sm text-on-surface-variant">Already registered? <a class="font-extrabold text-primary hover:underline" href="/patient/login.html">Login here</a></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="w-full bg-surface-container-highest py-3 px-6 md:px-12">
+    <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-xs font-bold text-on-surface-variant">© 2024 Sumohan Care. Clinical Excellence & Empathy.</p>
+      <div class="flex gap-6">
+        <a class="text-xs font-bold text-on-surface-variant hover:text-primary" href="#">Privacy Policy</a>
+        <a class="text-xs font-bold text-on-surface-variant hover:text-primary" href="#">Terms of Service</a>
+        <a class="text-xs font-bold text-on-surface-variant hover:text-primary" href="#">Patient Rights</a>
+      </div>
+    </div>
+  <p class="aura-developer-credit w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
+</footer>
+  <script src="/assets/js/patient-register.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "name": "gynecologist-consultation-website",
   "version": "1.0.0",
-  "description": "Aura Health gynecologist consultation website with patient, doctor and admin modules.",
+  "description": "Sumohan Care gynecologist consultation website with patient, doctor and admin modules.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {

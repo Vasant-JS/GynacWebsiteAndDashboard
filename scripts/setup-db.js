@@ -272,8 +272,8 @@ async function setupSchema() {
         `
           INSERT INTO appointments (doctor_id, patient_id, appointment_at, service_type, status, location, notes, metadata)
           VALUES
-            ($1, $2, now()::date + time '09:30', 'Prenatal Checkup', 'IN_PROGRESS', 'Aura Boutique Clinic, Wing A, Room 402', '{"trimester":"second"}', '{"seed":true,"priority":"normal"}'),
-            ($1, $3, now()::date + time '10:15', 'Diagnostic Ultrasound Review', 'SCHEDULED', 'Aura Boutique Clinic, Wing A, Room 405', '{"scanType":"pelvic"}', '{"seed":true,"priority":"normal"}'),
+            ($1, $2, now()::date + time '09:30', 'Prenatal Checkup', 'IN_PROGRESS', 'Sumohan Care Clinic, Wing A, Room 402', '{"trimester":"second"}', '{"seed":true,"priority":"normal"}'),
+            ($1, $3, now()::date + time '10:15', 'Diagnostic Ultrasound Review', 'SCHEDULED', 'Sumohan Care Clinic, Wing A, Room 405', '{"scanType":"pelvic"}', '{"seed":true,"priority":"normal"}'),
             ($1, $4, now()::date + time '11:00', 'Bloodwork Review', 'SCHEDULED', 'Virtual Consultation', '{"report":"Full Blood Count"}', '{"seed":true,"priority":"follow-up"}')
           RETURNING id, patient_id, service_type
         `,

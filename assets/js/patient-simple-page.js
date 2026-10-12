@@ -22,8 +22,16 @@
     return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
   }
 
+  function loadingMarkup(label) {
+    return `<div class="aura-loading aura-card aura-card--padded"><span class="aura-spinner" aria-hidden="true"></span><span>${label}</span></div>`;
+  }
+
   async function load() {
     try {
+      if (target) {
+        const label = mode === 'appointments' ? 'Loading appointments...' : mode === 'reports' ? 'Loading reports and prescriptions...' : 'Loading profile...';
+        target.innerHTML = loadingMarkup(label);
+      }
       const endpoint = mode === 'appointments' ? '/api/patient/appointments' : mode === 'reports' ? '/api/patient/reports' : '/api/patient/profile';
       const response = await fetch(endpoint);
       const data = await response.json();
@@ -39,11 +47,11 @@
       }
       if (mode === 'profile') {
         const patient = data.patient;
-        target.innerHTML = `<section class="rounded-xl border border-[#e3bdc3] bg-white p-6"><h3 class="text-2xl font-extrabold">${patient.display_name}</h3><p class="mt-2 text-[#5a4044]">${patient.phone || ''} ${patient.email || ''}</p><pre class="mt-5 overflow-auto rounded-lg bg-[#f4f2ff] p-4 text-sm">${JSON.stringify(patient.profile || {}, null, 2)}</pre></section>`;
+        target.innerHTML = `<section class="aura-card aura-card--padded"><h3 class="text-2xl font-extrabold">${patient.display_name}</h3><p class="mt-2 text-[#5a4044]">${patient.phone || ''} ${patient.email || ''}</p><pre class="mt-5 overflow-auto rounded-lg bg-[#f4f2ff] p-4 text-sm">${JSON.stringify(patient.profile || {}, null, 2)}</pre></section>`;
       }
     } catch (error) {
       if (status) status.textContent = error.message;
-      target.innerHTML = '<p class="rounded-xl bg-white p-5 text-[#ba1a1a]">PostgreSQL is required to show exact data from DB.</p>';
+      target.innerHTML = '<p class="aura-card aura-card--padded text-[#ba1a1a]">PostgreSQL is required to show exact data from DB.</p>';
     }
   }
 
@@ -63,7 +71,7 @@
       button.classList.toggle('text-[#5a4044]', !active);
     });
     const visible = appointments.filter((item) => (currentAppointmentTab === 'upcoming' ? isFutureAppointment(item) : !isFutureAppointment(item)));
-    target.innerHTML = visible.length ? visible.map(appointmentCard).join('') : `<p class="rounded-xl bg-white p-5 text-[#5a4044]">No ${currentAppointmentTab === 'upcoming' ? 'upcoming' : 'past'} appointments found.</p>`;
+    target.innerHTML = visible.length ? visible.map(appointmentCard).join('') : `<p class="aura-card aura-card--padded text-[#5a4044]">No ${currentAppointmentTab === 'upcoming' ? 'upcoming' : 'past'} appointments found.</p>`;
     wireAppointmentActions();
   }
 
@@ -73,8 +81,10 @@
     const canComplete = item.status !== 'COMPLETED' && item.status !== 'CANCELLED';
     const hasPayment = Boolean(item.payment_id);
     const paymentLabel = hasPayment ? `${item.payment_currency || 'INR'} ${item.payment_amount || 0} - ${item.payment_status}` : 'Payment not started';
+    const disabledClass = 'cursor-not-allowed opacity-40';
+    const menuItemClass = 'flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-bold text-[#000767] hover:bg-[#f4f2ff] disabled:cursor-not-allowed disabled:opacity-40';
     return `
-      <article class="rounded-xl border border-[#e3bdc3] bg-white p-5">
+      <article class="aura-card aura-card--padded">
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p class="text-sm font-bold text-[#b0004a]">${formatDate(item.appointment_at)}</p>
@@ -84,12 +94,33 @@
             <p class="mt-2 text-sm font-bold text-[#006a62]">${paymentLabel}</p>
             ${feedback ? `<p class="mt-3 text-sm text-[#5a4044]">Feedback: ${'★'.repeat(feedback.rating)} ${feedback.comment || ''}</p>` : ''}
           </div>
-          <div class="flex flex-wrap justify-end gap-2">
-            <button class="rounded-lg border border-[#ba1a1a] px-4 py-2 font-bold text-[#ba1a1a] disabled:opacity-40" data-appointment-cancel="${item.id}" ${canChange ? '' : 'disabled'} type="button">Cancel</button>
-            <button class="rounded-lg border border-[#006a62] px-4 py-2 font-bold text-[#006a62] disabled:opacity-40" data-appointment-reschedule="${item.id}" ${canChange ? '' : 'disabled'} type="button">Reschedule</button>
-            <button class="rounded-lg bg-[#006a62] px-4 py-2 font-bold text-white disabled:opacity-40" data-appointment-complete="${item.id}" ${canComplete ? '' : 'disabled'} type="button">Mark Completed</button>
-            <button class="rounded-lg bg-[#b0004a] px-4 py-2 font-bold text-white" data-appointment-feedback="${item.id}" type="button">Feedback</button>
-            ${item.payment_status === 'PAID' ? `<a class="rounded-lg border border-[#000767] px-4 py-2 font-bold text-[#000767]" href="/api/patient/payments/${item.payment_id}/receipt" target="_blank">Receipt</a>` : `<button class="rounded-lg bg-[#000767] px-4 py-2 font-bold text-white" data-appointment-pay="${item.id}" data-payment-id="${item.payment_id || ''}" type="button">${hasPayment ? 'Pay Now' : 'Create Payment'}</button>`}
+          <div class="relative">
+            <button class="grid h-11 w-11 place-items-center rounded-full border border-[#e3bdc3] bg-white text-[#000767] hover:bg-[#f4f2ff]" data-appointment-menu-toggle="${item.id}" type="button" aria-label="Open appointment actions" aria-expanded="false">
+              <span class="material-symbols-outlined">more_vert</span>
+            </button>
+            <div class="absolute right-0 top-12 z-20 hidden min-w-56 overflow-hidden rounded-xl border border-[#e3bdc3] bg-white shadow-xl" data-appointment-menu="${item.id}">
+              <button class="${menuItemClass} text-[#ba1a1a] ${canChange ? '' : disabledClass}" data-appointment-cancel="${item.id}" ${canChange ? '' : 'disabled'} type="button">
+                <span class="material-symbols-outlined text-lg">event_busy</span>Cancel
+              </button>
+              <button class="${menuItemClass} ${canChange ? '' : disabledClass}" data-appointment-reschedule="${item.id}" ${canChange ? '' : 'disabled'} type="button">
+                <span class="material-symbols-outlined text-lg">edit_calendar</span>Reschedule
+              </button>
+              <button class="${menuItemClass} ${canComplete ? '' : disabledClass}" data-appointment-complete="${item.id}" ${canComplete ? '' : 'disabled'} type="button">
+                <span class="material-symbols-outlined text-lg">task_alt</span>Mark Completed
+              </button>
+              <button class="${menuItemClass}" data-appointment-feedback="${item.id}" type="button">
+                <span class="material-symbols-outlined text-lg">rate_review</span>Feedback
+              </button>
+              ${item.payment_status === 'PAID' ? `
+                <a class="${menuItemClass}" href="/api/patient/payments/${item.payment_id}/receipt" target="_blank">
+                  <span class="material-symbols-outlined text-lg">receipt_long</span>Receipt
+                </a>
+              ` : `
+                <button class="${menuItemClass}" data-appointment-pay="${item.id}" data-payment-id="${item.payment_id || ''}" type="button">
+                  <span class="material-symbols-outlined text-lg">payments</span>${hasPayment ? 'Pay Now' : 'Create Payment'}
+                </button>
+              `}
+            </div>
           </div>
         </div>
       </article>
@@ -117,6 +148,7 @@
   }
 
   async function updateAppointmentStatus(id, statusValue) {
+    target.innerHTML = loadingMarkup('Updating appointment...');
     const response = await fetch(`/api/patient/appointments/${id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -128,6 +160,17 @@
   }
 
   function wireAppointmentActions() {
+    target.querySelectorAll('[data-appointment-menu-toggle]').forEach((button) => button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const menu = target.querySelector(`[data-appointment-menu="${button.dataset.appointmentMenuToggle}"]`);
+      const willOpen = menu?.classList.contains('hidden');
+      target.querySelectorAll('[data-appointment-menu]').forEach((node) => node.classList.add('hidden'));
+      target.querySelectorAll('[data-appointment-menu-toggle]').forEach((node) => node.setAttribute('aria-expanded', 'false'));
+      if (menu && willOpen) {
+        menu.classList.remove('hidden');
+        button.setAttribute('aria-expanded', 'true');
+      }
+    }));
     target.querySelectorAll('[data-appointment-cancel]').forEach((button) => button.addEventListener('click', async () => {
       if (!confirm('Cancel this appointment?')) return;
       await updateAppointmentStatus(button.dataset.appointmentCancel, 'CANCELLED');
@@ -137,7 +180,7 @@
       const item = appointmentById(button.dataset.appointmentReschedule);
       button.addEventListener('click', () => {
         const currentDate = new Date(item.appointment_at).toISOString().slice(0, 10);
-        openModal('Reschedule Appointment', item.service_type, `<input class="rounded-lg border-[#e3bdc3]" name="date" type="date" value="${currentDate}" required><select class="rounded-lg border-[#e3bdc3]" name="time">${['09:00 AM','09:30 AM','10:30 AM','01:00 PM','02:30 PM','04:00 PM','06:30 PM','07:00 PM','07:30 PM'].map((s) => `<option>${s}</option>`).join('')}</select><button class="rounded-lg bg-[#b0004a] px-5 py-3 font-bold text-white" type="submit">Save Reschedule</button>`, async (event) => {
+        openModal('Reschedule Appointment', item.service_type, `<input class="aura-field rounded-lg p-3" name="date" type="date" value="${currentDate}" required><select class="aura-field rounded-lg p-3" name="time">${['09:00 AM','09:30 AM','10:30 AM','01:00 PM','02:30 PM','04:00 PM','06:30 PM','07:00 PM','07:30 PM'].map((s) => `<option>${s}</option>`).join('')}</select><button class="aura-button" type="submit">Save Reschedule</button>`, async (event) => {
           event.preventDefault();
           const formData = new FormData(modalForm);
           try {
@@ -200,21 +243,26 @@
       target.innerHTML = lastData.prescriptions.length ? lastData.prescriptions.map((item) => {
         const medication = item.medications?.[0] || {};
         const advice = item.instructions?.advice || '';
-        return `<article class="rounded-xl border border-[#e3bdc3] bg-white p-5"><p class="text-sm font-bold text-[#b0004a]">${formatDate(item.created_at)}</p><h3 class="text-xl font-extrabold">${medication.name || 'Prescription'}</h3><p class="text-[#5a4044]">${[medication.dosage, medication.frequency, medication.duration].filter(Boolean).join(' - ') || item.status}</p>${advice ? `<p class="mt-3 text-[#5a4044]">${advice}</p>` : ''}</article>`;
-      }).join('') : '<p class="rounded-xl bg-white p-5 text-[#5a4044]">No doctor prescriptions found in DB.</p>';
+        return `<article class="aura-card aura-card--padded"><p class="text-sm font-bold text-[#b0004a]">${formatDate(item.created_at)}</p><h3 class="text-xl font-extrabold">${medication.name || 'Prescription'}</h3><p class="text-[#5a4044]">${[medication.dosage, medication.frequency, medication.duration].filter(Boolean).join(' - ') || item.status}</p>${advice ? `<p class="mt-3 text-[#5a4044]">${advice}</p>` : ''}</article>`;
+      }).join('') : '<p class="aura-card aura-card--padded text-[#5a4044]">No doctor prescriptions found in DB.</p>';
       return;
     }
     const reports = lastData.reports || [];
-    target.innerHTML = reports.length ? reports.map((report) => `<article class="rounded-xl border border-[#e3bdc3] bg-white p-5"><p class="text-sm font-bold text-[#b0004a]">${report.document_type === 'OLD_PRESCRIPTION' ? 'Old Prescription' : 'Uploaded Report'}</p><h3 class="text-xl font-extrabold">${report.name}</h3><p class="text-[#5a4044]">${report.document_date || report.status || 'Uploaded'}${report.file_name ? ` - ${report.file_name}` : ''}</p>${report.file_name ? `<a class="mt-3 inline-flex rounded-lg border border-[#b0004a] px-4 py-2 font-bold text-[#b0004a]" href="/api/patient/documents/${report.id}/download">Download</a>` : ''}</article>`).join('') : '<p class="rounded-xl bg-white p-5 text-[#5a4044]">No uploaded reports found in DB.</p>';
+    target.innerHTML = reports.length ? reports.map((report) => `<article class="aura-card aura-card--padded"><p class="text-sm font-bold text-[#b0004a]">${report.document_type === 'OLD_PRESCRIPTION' ? 'Uploaded Prescription' : 'Uploaded Report'}</p><h3 class="text-xl font-extrabold">${report.name}</h3><p class="text-[#5a4044]">${report.document_date || report.status || 'Uploaded'}${report.file_name ? ` - ${report.file_name}` : ''}</p>${report.file_name ? `<a class="mt-3 inline-flex rounded-lg border border-[#b0004a] px-4 py-2 font-bold text-[#b0004a]" href="/api/patient/documents/${report.id}/download">Download</a>` : ''}</article>`).join('') : '<p class="aura-card aura-card--padded text-[#5a4044]">No uploaded reports found in DB.</p>';
   }
 
   tabButtons.forEach((button) => button.addEventListener('click', () => { currentDocumentTab = button.dataset.documentTab; renderDocumentTab(); }));
   appointmentTabs.forEach((button) => button.addEventListener('click', () => { currentAppointmentTab = button.dataset.appointmentTab; renderAppointments(); }));
+  document.addEventListener('click', (event) => {
+    if (target?.contains(event.target) && event.target.closest('[data-appointment-menu], [data-appointment-menu-toggle]')) return;
+    target.querySelectorAll('[data-appointment-menu]').forEach((node) => node.classList.add('hidden'));
+    target.querySelectorAll('[data-appointment-menu-toggle]').forEach((node) => node.setAttribute('aria-expanded', 'false'));
+  });
   modalClose?.addEventListener('click', closeModal);
   actionModal?.addEventListener('click', (event) => { if (event.target === actionModal) closeModal(); });
   uploadForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
-    uploadMessage.textContent = 'Uploading...';
+    uploadMessage.innerHTML = '<span class="aura-loading"><span class="aura-spinner" aria-hidden="true"></span><span>Uploading...</span></span>';
     try {
       const response = await fetch('/api/patient/documents', { method: 'POST', body: new FormData(uploadForm) });
       const body = await response.json();

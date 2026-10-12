@@ -3,9 +3,10 @@
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Aura Health - Book Consultation</title>
+<title>Sumohan Care - Book Consultation</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/assets/css/aura-portal.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -115,7 +116,7 @@
 <!-- TopNavBar -->
 <header class="bg-surface shadow-sm docked full-width top-0 z-50">
 <div class="flex justify-between items-center w-full px-container-padding-desktop max-w-[1200px] mx-auto h-20">
-<div class="text-headline-md font-headline-md font-bold text-primary">Aura Health</div>
+<div class="text-headline-md font-headline-md font-bold text-primary">Sumohan Care</div>
 <nav class="hidden md:flex gap-gutter">
 <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Services</a>
 <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200" href="#">Our Doctors</a>
@@ -128,7 +129,7 @@
 </div>
 </div>
 </header>
-<main class="max-w-[1200px] mx-auto px-container-padding-desktop py-gutter">
+<main class="w-full py-gutter">
 <!-- Progress Stepper -->
 <div class="flex items-center justify-center mb-section-gap">
 <div class="flex items-center space-x-4">
@@ -148,162 +149,77 @@
 </div>
 </div>
 </div>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="grid grid-cols-1 xl:grid-cols-[minmax(640px,1fr)_430px] gap-gutter items-start">
 <!-- Left: Calendar & Timeslots -->
-<div class="lg:col-span-8 space-y-gutter">
+<div class="space-y-gutter min-w-0">
 <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(26,35,126,0.05)] overflow-hidden">
 <div class="p-gutter grid grid-cols-1 md:grid-cols-2 gap-gutter">
-<!-- Calendar Section -->
 <div class="space-y-4">
 <div class="flex items-center justify-between mb-4">
 <h3 class="font-headline-md text-headline-md text-on-surface">Select Date</h3>
 <div class="flex space-x-2">
-<button class="p-2 rounded-full hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="p-2 rounded-full hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors" id="prev-month" type="button" aria-label="Previous month"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors" id="next-month" type="button" aria-label="Next month"><span class="material-symbols-outlined">chevron_right</span></button>
 </div>
 </div>
-<div class="text-center font-bold text-primary mb-2">October 2024</div>
+<div class="text-center font-bold text-primary mb-2" id="month-label">Loading...</div>
 <div class="calendar-grid text-center text-label-sm text-on-surface-variant mb-2">
 <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
 </div>
-<div class="calendar-grid gap-1">
-<!-- Calendar filler/dates -->
-<div class="p-2 opacity-20">29</div><div class="p-2 opacity-20">30</div>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">1</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">2</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">3</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">4</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">5</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">6</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">7</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">8</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">9</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">10</button>
-<button class="p-2 rounded-lg bg-primary text-white font-bold rounded-lg shadow-sm">11</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">12</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">13</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">14</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">15</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">16</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">17</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">18</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">19</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">20</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">21</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">22</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">23</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">24</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">25</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">26</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">27</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">28</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">29</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">30</button>
-<button class="p-2 rounded-lg hover:bg-secondary-container transition-colors">31</button>
+<div class="calendar-grid gap-1" id="date-grid">
+<span class="col-span-7 p-4 text-center text-on-surface-variant">Loading dates...</span>
 </div>
 </div>
-<!-- Time Selection Section -->
 <div class="space-y-6">
 <h3 class="font-headline-md text-headline-md text-on-surface">Available Slots</h3>
-<div class="space-y-4">
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-label-md text-on-surface-variant">
-<span class="material-symbols-outlined text-base">light_mode</span>
-                                        Morning
-                                    </div>
-<div class="grid grid-cols-3 gap-2">
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">09:00 AM</button>
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">09:30 AM</button>
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">10:30 AM</button>
-</div>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-label-md text-on-surface-variant">
-<span class="material-symbols-outlined text-base">sunny</span>
-                                        Afternoon
-                                    </div>
-<div class="grid grid-cols-3 gap-2">
-<button class="py-2 border-2 border-primary bg-secondary-container text-on-secondary-container rounded-lg font-label-md">01:00 PM</button>
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">02:30 PM</button>
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">04:00 PM</button>
-</div>
-</div>
-<div class="space-y-2">
-<div class="flex items-center gap-2 text-label-md text-on-surface-variant">
-<span class="material-symbols-outlined text-base">dark_mode</span>
-                                        Evening
-                                    </div>
-<div class="grid grid-cols-3 gap-2">
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">06:30 PM</button>
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">07:00 PM</button>
-<button class="py-2 border border-outline-variant rounded-lg font-label-md hover:bg-secondary-container hover:border-secondary transition-all">07:30 PM</button>
-</div>
-</div>
+<div class="space-y-4" id="slots-container">
+<p class="text-on-surface-variant">Select an available date to view slots.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="flex items-center justify-between pt-gutter">
-<button class="flex items-center gap-2 text-label-md text-on-surface-variant hover:text-primary transition-colors">
+<a class="flex items-center gap-2 text-label-md text-on-surface-variant hover:text-primary transition-colors" href="/patient/book-reason.html">
 <span class="material-symbols-outlined">arrow_back</span>
-                        Back to Previous Step
-                    </button>
-<button class="bg-primary text-white px-10 py-4 rounded-xl font-headline-md shadow-lg hover:scale-105 active:scale-95 transition-all">
-                        Confirm Slot
-                    </button>
+Back to Previous Step
+</a>
+<button class="bg-primary text-white px-10 py-4 rounded-xl font-headline-md shadow-lg hover:scale-105 active:scale-95 transition-all" id="confirm-slot" type="button">
+Proceed to Payment
+</button>
 </div>
+<p class="mt-4 font-bold text-[#006a62]" id="slot-message"></p>
 </div>
 <!-- Right: Summary Sidebar -->
-<aside class="lg:col-span-4 space-y-gutter">
+<aside class="space-y-gutter min-w-0">
 <div class="bg-surface-container-low rounded-xl p-gutter border-l-4 border-secondary shadow-sm">
 <h4 class="text-label-sm text-secondary uppercase tracking-widest mb-4">Appointment Summary</h4>
-<!-- Doctor Info -->
 <div class="flex items-center gap-4 mb-gutter">
-<img alt="Doctor portrait" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A professional portrait of a female gynecologist with a kind, reassuring smile, wearing a white clinical coat over a soft navy blue blouse. She is set against a clean, brightly lit modern clinic interior with soft, out-of-focus medical equipment in the background. The lighting is warm and natural, conveying a mood of clinical excellence mixed with deep empathy and corporate professionalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7KhyKhyojeW4Kg2ILL_NhRYOkeuefEeXQkS-E7buHZK5mhv-IysbsSheG4IikZpNlqhC3jszoW-Q5iAK3zKooINVXtVDcc4ZWCypya-1RN_STA-uvwURtEZ_revzXQrLBBHmHNbOwWfHDtJrbMcPR0rvbbDoTzI8VTR25WqKoZdfVVcF62R2KchEp2t5Te-46YW1xYbIhQJRhwKnejnF-5Bog_iydzVhQHEpy9gUCm-puVTsjYBfJ8DzoL-Cpq8zdSRh6jcBnRrk"/>
-<div>
-<label class="sr-only" for="doctor-select">Doctor</label>
-<select id="doctor-select" class="w-full rounded-lg border border-outline-variant bg-white px-3 py-2 font-headline-md text-on-surface focus:border-primary focus:ring-primary">
-<option selected>Dr. Elena Rossi</option>
-<option>Dr. Sarah Jenkins</option>
-<option>Dr. Maya Patel</option>
-<option>Dr. Chloe Chen</option>
-</select>
-<p id="summary-doctor-name" class="sr-only">Dr. Elena Rossi</p>
-<p id="summary-doctor-info" class="mt-1 text-body-sm text-on-surface-variant">Senior Gynecologist</p>
+<img alt="Doctor portrait" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7KhyKhyojeW4Kg2ILL_NhRYOkeuefEeXQkS-E7buHZK5mhv-IysbsSheG4IikZpNlqhC3jszoW-Q5iAK3zKooINVXtVDcc4ZWCypya-1RN_STA-uvwURtEZ_revzXQrLBBHmHNbOwWfHDtJrbMcPR0rvbbDoTzI8VTR25WqKoZdfVVcF62R2KchEp2t5Te-46YW1xYbIhQJRhwKnejnF-5Bog_iydzVhQHEpy9gUCm-puVTsjYBfJ8DzoL-Cpq8zdSRh6jcBnRrk"/>
+<div class="min-w-0 flex-1">
+<label class="sr-only" for="summary-doctor-select">Doctor</label>
+<select id="summary-doctor-select" class="w-full min-w-0 rounded-lg border border-outline-variant bg-white px-3 py-2 text-body-md font-bold text-on-surface focus:border-primary focus:ring-primary"></select>
+<p id="summary-doctor" class="mt-1 text-body-sm text-on-surface-variant">-</p>
 </div>
 </div>
-<!-- Details List -->
 <div class="space-y-4">
 <div class="flex justify-between items-start py-2 border-b border-outline-variant/30">
 <div class="w-full pr-3">
-<label class="text-label-sm text-on-surface-variant" for="service-select">Service</label>
-<select id="service-select" class="mt-2 w-full rounded-lg border border-outline-variant bg-white px-3 py-2 font-label-md text-on-surface focus:border-primary focus:ring-primary">
-<option selected>Annual Wellness Checkup</option>
-<option>Pregnancy Consultation</option>
-<option>PCOD/PCOS Management</option>
-<option>Menstrual Health Consultation</option>
-<option>Fertility Consultation</option>
-<option>General Gynecology Visit</option>
-</select>
-<p id="summary-service-label" class="sr-only">Annual Wellness Checkup</p>
+<p class="text-label-sm text-on-surface-variant">Service</p>
+<p id="summary-service" class="mt-2 font-label-md text-on-surface">-</p>
 </div>
 <span class="material-symbols-outlined text-on-surface-variant">edit</span>
 </div>
 <div class="flex justify-between items-start py-2 border-b border-outline-variant/30">
 <div>
 <p class="text-label-sm text-on-surface-variant">Reason for Visit</p>
-<p id="summary-reason-label" class="font-label-md">Routine screening and fertility consultation</p>
+<p id="summary-reason" class="font-label-md">-</p>
 </div>
 <span class="material-symbols-outlined text-on-surface-variant">edit</span>
 </div>
 <div class="flex justify-between items-start py-2 border-b border-outline-variant/30">
 <div>
 <p class="text-label-sm text-on-surface-variant">Selected Time</p>
-<p class="font-label-md text-primary">Friday, Oct 11 • 01:00 PM</p>
+<p class="font-label-md text-primary" id="summary-time">-</p>
 </div>
 <span class="material-symbols-outlined text-primary">calendar_today</span>
 </div>
@@ -315,14 +231,10 @@
 </div>
 </div>
 </div>
-<!-- Help Card -->
 <div class="bg-surface-container-highest rounded-xl p-gutter">
 <h5 class="font-label-md text-on-surface mb-2">Need assistance?</h5>
 <p class="text-body-sm text-on-surface-variant mb-4">Our patient support team is available 24/7 to help you with your booking.</p>
-<a class="flex items-center gap-2 text-primary font-bold hover:underline" href="#">
-<span class="material-symbols-outlined">call</span>
-                        Contact Support
-                    </a>
+<a class="flex items-center gap-2 text-primary font-bold hover:underline" href="#"><span class="material-symbols-outlined">call</span>Contact Support</a>
 </div>
 </aside>
 </div>
@@ -331,7 +243,7 @@
 <footer class="bg-surface-container-highest mt-section-gap">
 <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full max-w-[1200px] mx-auto">
 <div class="space-y-4">
-<div class="text-headline-md font-headline-md font-bold text-on-surface">Aura Health</div>
+<div class="text-headline-md font-headline-md font-bold text-on-surface">Sumohan Care</div>
 <p class="text-body-sm text-on-surface-variant">Clinical excellence and empathy at the heart of women's healthcare.</p>
 </div>
 <div class="flex flex-col gap-2">
@@ -358,7 +270,10 @@
 </div>
 </div>
 <div class="border-t border-outline-variant/30 py-base text-center">
-<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Sumohan Care. Clinical Excellence &amp; Empathy.</p>
 </div>
+<p class="aura-developer-credit w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
-<script src="/assets/js/design-live.js"></script></body></html>
+<script src="/assets/js/book-slot.js?v=2026070811"></script>
+<script src="/assets/js/aura-sidebar.js?v=2026070812"></script>
+</body></html>

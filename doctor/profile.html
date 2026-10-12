@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doctor Profile | Sumohan Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/assets/css/aura-portal.css" rel="stylesheet">
+</head>
+<body>
+  <div class="aura-shell">
+    <aside class="aura-sidebar"></aside>
+    <main class="aura-main">
+      <section class="aura-page">
+        <p class="aura-eyebrow" id="doctor-profile-status">Loading profile...</p>
+        <h1 class="aura-title">Doctor Profile</h1>
+        <p class="aura-subtitle">Your clinic identity, specialization, and consultation information.</p>
+
+        <section class="aura-card aura-card--padded mt-8">
+          <div class="flex flex-col gap-5 md:flex-row md:items-center">
+            <div class="grid h-20 w-20 place-items-center rounded-full border-2 border-[#ffb2bf] bg-white text-[#b0004a]">
+              <span class="material-symbols-outlined text-4xl">stethoscope</span>
+            </div>
+            <div>
+              <h2 class="text-3xl font-extrabold" id="doctor-profile-name">Doctor</h2>
+              <p class="mt-1 text-[#5a4044]" id="doctor-profile-title">Care dashboard</p>
+            </div>
+          </div>
+
+          <div class="mt-8 grid gap-5 md:grid-cols-2">
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-wide text-[#5a4044]">Email</p>
+              <p class="mt-1 text-lg font-bold" id="doctor-profile-email">-</p>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-wide text-[#5a4044]">Specialization</p>
+              <p class="mt-1 text-lg font-bold" id="doctor-profile-specialization">-</p>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-wide text-[#5a4044]">Experience</p>
+              <p class="mt-1 text-lg font-bold" id="doctor-profile-experience">-</p>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-wide text-[#5a4044]">Consultation Fee</p>
+              <p class="mt-1 text-lg font-bold" id="doctor-profile-fee">-</p>
+            </div>
+            <div class="md:col-span-2">
+              <p class="text-xs font-extrabold uppercase tracking-wide text-[#5a4044]">Languages</p>
+              <p class="mt-1 text-lg font-bold" id="doctor-profile-languages">-</p>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <nav class="aura-mobile-nav"></nav>
+  <script src="/assets/js/doctor-profile.js?v=2026070811"></script>
+  <script src="/assets/js/aura-sidebar.js?v=2026070816"></script>
+</body>
+</html>

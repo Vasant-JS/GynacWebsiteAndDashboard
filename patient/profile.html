@@ -1,4 +1,425 @@
-<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Profile | Aura Health</title><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"><style>body{font-family:Manrope,sans-serif;background:#fbf8ff;color:#000767}.side{position:fixed;inset:0 auto 0 0;width:260px;background:#edecff}</style></head>
-<body data-patient-page="profile"><aside class="side p-6"><h1 class="text-3xl font-extrabold text-[#b0004a]">Patient Portal</h1><nav class="mt-8 grid gap-2 font-bold"><a class="rounded-lg px-4 py-3 hover:bg-white" href="/patient/dashboard.html">Dashboard</a><a class="rounded-lg px-4 py-3 hover:bg-white" href="/patient/appointments.html">Appointments</a><a class="rounded-lg px-4 py-3 hover:bg-white" href="/patient/reports.html">Medical Reports</a><a class="rounded-lg bg-white px-4 py-3 text-[#b0004a]" href="/patient/profile.html">Profile</a></nav></aside><main class="ml-[260px] p-10"><h1 class="text-5xl font-extrabold">Profile</h1><p class="mt-2 font-bold text-[#006a62]" id="patient-page-status">Loading from PostgreSQL...</p><section class="mt-8" id="patient-page-content"></section></main><script src="/assets/js/patient-simple-page.js"></script></body></html>
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Patient Profile | Sumohan Care FemmeCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <link href="/assets/css/aura-portal.css" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "outline-variant": "#e3bdc3",
+            "on-tertiary-container": "#fbf3ff",
+            "on-tertiary-fixed-variant": "#572e99",
+            "surface": "#fbf8ff",
+            "outline": "#8e6f74",
+            "on-primary": "#ffffff",
+            "inverse-on-surface": "#f1efff",
+            "secondary": "#006a62",
+            "error-container": "#ffdad6",
+            "primary-fixed-dim": "#ffb2bf",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#ffb2bf",
+            "primary": "#b0004a",
+            "on-error-container": "#93000a",
+            "primary-fixed": "#ffd9de",
+            "on-tertiary-fixed": "#260058",
+            "on-surface": "#000767",
+            "tertiary-fixed": "#ebdcff",
+            "on-primary-container": "#fff2f3",
+            "surface-container-highest": "#e0e0ff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed-variant": "#90003b",
+            "on-error": "#ffffff",
+            "surface-container": "#edecff",
+            "secondary-fixed": "#84f5e8",
+            "surface-container-low": "#f4f2ff",
+            "surface-tint": "#bc004f",
+            "background": "#fbf8ff",
+            "on-primary-fixed": "#3f0016",
+            "primary-container": "#d81b60",
+            "on-background": "#000767",
+            "tertiary-container": "#825bc6",
+            "error": "#ba1a1a",
+            "surface-bright": "#fbf8ff",
+            "tertiary": "#6941ab",
+            "inverse-surface": "#1b247f",
+            "surface-dim": "#d5d7ff",
+            "on-secondary-fixed-variant": "#005049",
+            "tertiary-fixed-dim": "#d4bbff",
+            "secondary-fixed-dim": "#66d9cc",
+            "surface-container-high": "#e6e6ff",
+            "on-secondary-container": "#006f66",
+            "secondary-container": "#81f3e5",
+            "surface-variant": "#e0e0ff",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#5a4044",
+            "on-secondary-fixed": "#00201d"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+          spacing: {
+            "section-gap": "64px",
+            base: "8px",
+            "container-padding-mobile": "16px",
+            "container-padding-desktop": "48px",
+            gutter: "24px"
+          },
+          fontFamily: {
+            "body-lg": ["Manrope"],
+            "headline-xl": ["Manrope"],
+            "headline-lg-mobile": ["Manrope"],
+            "label-sm": ["Manrope"],
+            "headline-md": ["Manrope"],
+            "body-md": ["Manrope"],
+            "body-sm": ["Manrope"],
+            "label-md": ["Manrope"],
+            "headline-lg": ["Manrope"]
+          },
+          fontSize: {
+            "body-lg": ["18px", {lineHeight: "28px", fontWeight: "400"}],
+            "headline-xl": ["40px", {lineHeight: "52px", fontWeight: "700"}],
+            "headline-lg-mobile": ["28px", {lineHeight: "36px", fontWeight: "700"}],
+            "label-sm": ["12px", {lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700"}],
+            "headline-md": ["24px", {lineHeight: "32px", fontWeight: "600"}],
+            "body-md": ["16px", {lineHeight: "24px", fontWeight: "400"}],
+            "body-sm": ["14px", {lineHeight: "20px", fontWeight: "400"}],
+            "label-md": ["14px", {lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600"}],
+            "headline-lg": ["32px", {lineHeight: "40px", fontWeight: "700"}]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .tonal-elevation-1 {
+      box-shadow: 0 4px 20px rgba(26, 35, 126, 0.05);
+    }
+  </style>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased overflow-x-hidden">
+  <div class="flex min-h-screen">
+    <aside class="hidden md:flex h-screen sticky left-0 top-0 w-64 flex-col bg-surface-container-low shadow-sm py-base gap-base z-30">
+      <div class="px-6 py-8">
+        <h1 class="text-headline-md font-headline-md font-bold text-primary">Sumohan Care</h1>
+        <p class="text-label-md font-label-md text-on-surface-variant mt-1">Patient Portal</p>
+      </div>
+
+      <div class="px-4 mb-8 flex items-center gap-4">
+        <div class="grid w-10 h-10 place-items-center rounded-full border-2 border-primary-fixed-dim bg-primary-fixed text-primary">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div>
+          <p class="text-label-md font-label-md text-on-surface font-bold" data-session-person-name>Patient</p>
+          <p class="text-body-sm font-body-sm text-on-surface-variant">Welcome back</p>
+        </div>
+      </div>
+
+      <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-3 py-3 px-6 text-on-surface-variant hover:bg-surface-container-high transition-all" href="/patient/dashboard.html">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="text-label-md font-label-md">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 py-3 px-6 text-on-surface-variant hover:bg-surface-container-high transition-all" href="/patient/appointments.html">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span class="text-label-md font-label-md">Appointments</span>
+        </a>
+        <a class="flex items-center gap-3 py-3 px-6 text-on-surface-variant hover:bg-surface-container-high transition-all" href="/patient/reports.html">
+          <span class="material-symbols-outlined">description</span>
+          <span class="text-label-md font-label-md">Medical Reports</span>
+        </a>
+        <a class="flex items-center gap-3 py-3 px-6 bg-secondary-container text-on-secondary-container border-l-4 border-primary font-bold transition-all" href="/patient/profile.html" aria-current="page">
+          <span class="material-symbols-outlined">person</span>
+          <span class="text-label-md font-label-md">Profile</span>
+        </a>
+      </nav>
+
+      <div class="px-4 mt-auto mb-6">
+        <a class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md hover:opacity-90 transition-all flex items-center justify-center gap-2" href="/patient/book-reason.html">
+          <span class="material-symbols-outlined text-[20px]">add</span>
+          Book New Visit
+        </a>
+      </div>
+    </aside>
+
+    <main class="flex-1">
+      <section class="px-container-padding-mobile md:px-container-padding-desktop py-12 max-w-[1200px] mx-auto">
+        <div class="flex flex-col md:flex-row items-center md:items-end justify-between gap-gutter mb-12">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="relative group">
+              <div class="grid w-32 h-32 md:w-40 md:h-40 place-items-center rounded-full overflow-hidden border-4 border-white bg-primary-fixed text-primary tonal-elevation-1">
+                <span class="material-symbols-outlined text-[72px] md:text-[92px]">person</span>
+              </div>
+              <button class="absolute bottom-1 right-1 bg-surface border border-outline-variant p-2 rounded-full tonal-elevation-1 hover:bg-primary-fixed transition-colors" type="button" aria-label="Default profile avatar">
+                <span class="material-symbols-outlined text-primary text-[20px]">photo_camera</span>
+              </button>
+            </div>
+
+            <div class="text-center md:text-left">
+              <h2 class="text-headline-xl font-headline-xl text-on-surface" id="patient-profile-name">Patient</h2>
+              <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-1">
+                <span class="bg-secondary-container text-on-secondary-container px-3 py-0.5 rounded-full text-label-sm uppercase tracking-wide">Premium Member</span>
+                <span class="text-body-sm font-body-sm text-on-surface-variant" id="patient-profile-member-since">Member profile</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="flex items-center gap-2 bg-primary text-on-primary px-8 py-3 rounded-lg font-label-md hover:opacity-90 transition-all shadow-md active:scale-95" id="edit-profile-button" type="button">
+            <span class="material-symbols-outlined">edit</span>
+            Edit Profile
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-start">
+          <div class="lg:col-span-2 space-y-gutter">
+            <article class="bg-surface-container-lowest p-8 rounded-xl tonal-elevation-1 border-t-4 border-primary">
+              <div class="flex items-center gap-3 mb-8 border-b border-outline-variant pb-4">
+                <span class="material-symbols-outlined text-primary">person</span>
+                <h3 class="text-headline-md font-headline-md">Personal Information</h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                <div>
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Full Name</p>
+                  <p class="text-body-lg font-body-lg text-on-surface" id="profile-full-name">-</p>
+                </div>
+                <div>
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Mobile Number</p>
+                  <p class="text-body-lg font-body-lg text-on-surface" id="profile-mobile">-</p>
+                </div>
+                <div>
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Email Address</p>
+                  <p class="text-body-lg font-body-lg text-on-surface break-words" id="profile-email">-</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Age</p>
+                    <p class="text-body-lg font-body-lg text-on-surface" id="profile-age">-</p>
+                  </div>
+                  <div>
+                    <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Gender</p>
+                    <p class="text-body-lg font-body-lg text-on-surface" id="profile-gender">-</p>
+                  </div>
+                </div>
+                <div class="md:col-span-2">
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Permanent Address</p>
+                  <p class="text-body-lg font-body-lg text-on-surface" id="profile-address">-</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-surface-container-lowest p-8 rounded-xl tonal-elevation-1 border-l-4 border-secondary">
+              <div class="flex items-center gap-3 mb-8 border-b border-outline-variant pb-4">
+                <span class="material-symbols-outlined text-secondary">medical_information</span>
+                <h3 class="text-headline-md font-headline-md">Medical Details</h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                <div>
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Blood Type</p>
+                  <div class="flex items-center gap-2">
+                    <span class="text-body-lg font-body-lg text-on-surface" id="profile-blood-group">-</span>
+                    <span class="bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] px-1.5 py-0.5 rounded font-bold">VERIFIED</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Known Allergies</p>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span>
+                    <p class="text-body-lg font-body-lg text-on-surface" id="profile-allergies">None Recorded</p>
+                  </div>
+                </div>
+                <div class="md:col-span-2 p-4 bg-surface-container-low rounded-lg border border-outline-variant">
+                  <p class="text-label-sm font-label-sm text-on-surface-variant mb-3 uppercase tracking-wider">Medical History</p>
+                  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                      <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">clinical_notes</span>
+                      </div>
+                      <div>
+                        <p class="text-body-md font-bold text-on-surface" id="profile-history">No history recorded</p>
+                        <p class="text-body-sm text-on-surface-variant" id="profile-conditions">No conditions recorded</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="space-y-gutter">
+            <article class="bg-surface-container-lowest p-6 rounded-xl tonal-elevation-1">
+              <h3 class="text-label-md font-label-md text-on-surface-variant mb-6 uppercase tracking-widest border-b border-outline-variant pb-2">Account Settings</h3>
+              <div class="space-y-6">
+                <div>
+                  <p class="text-body-sm font-bold text-on-surface mb-4">Notification Preferences</p>
+                  <div class="space-y-4">
+                    <label class="flex items-center justify-between cursor-pointer group">
+                      <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-on-surface-variant">chat</span>
+                        <span class="text-body-sm">WhatsApp Updates</span>
+                      </span>
+                      <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-surface-container-highest group-hover:bg-outline-variant transition-colors">
+                        <span class="h-4 w-4 rounded-full bg-white shadow-sm transform translate-x-1 transition-transform"></span>
+                      </span>
+                    </label>
+                    <label class="flex items-center justify-between cursor-pointer group" data-active="true">
+                      <span class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-on-surface-variant">mail</span>
+                        <span class="text-body-sm">Email Reports</span>
+                      </span>
+                      <span class="relative inline-flex h-6 w-11 items-center rounded-full bg-primary transition-colors">
+                        <span class="h-4 w-4 rounded-full bg-white shadow-sm transform translate-x-6 transition-transform"></span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <hr class="border-outline-variant"/>
+
+                <div>
+                  <p class="text-body-sm font-bold text-on-surface mb-4">Security</p>
+                  <button class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors" type="button">
+                    <span class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-on-surface-variant">lock</span>
+                      <span class="text-body-sm">Change Password</span>
+                    </span>
+                    <span class="material-symbols-outlined">chevron_right</span>
+                  </button>
+                  <button class="w-full flex items-center justify-between p-3 rounded-lg border border-outline-variant mt-3 hover:bg-surface-container-low transition-colors" type="button">
+                    <span class="flex items-center gap-3">
+                      <span class="material-symbols-outlined text-on-surface-variant">fingerprint</span>
+                      <span class="text-body-sm">Biometric Login</span>
+                    </span>
+                    <span class="material-symbols-outlined text-secondary">toggle_on</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="bg-primary-container text-on-primary-container p-6 rounded-xl tonal-elevation-1 relative overflow-hidden">
+              <h3 class="text-headline-md font-bold mb-2">Wellness Plan</h3>
+              <p class="text-body-sm mb-6 opacity-90">Your customized feminine care path is active and up to date.</p>
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  <span class="text-body-sm">Annual Screening Completed</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined">event</span>
+                  <span class="text-body-sm">Next Vitamin Refill: Oct 12</span>
+                </div>
+              </div>
+              <button class="w-full bg-white text-primary mt-8 py-2.5 rounded-lg font-label-md hover:bg-surface-container-low transition-all" type="button">
+                View Detailed Plan
+              </button>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface tonal-elevation-1 border-t border-outline-variant flex justify-around items-center h-16 z-50">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="/patient/dashboard.html">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="text-[10px] font-label-sm">Home</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="/patient/appointments.html">
+      <span class="material-symbols-outlined">calendar_today</span>
+      <span class="text-[10px] font-label-sm">Visits</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-primary" href="/patient/profile.html" aria-current="page">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+      <span class="text-[10px] font-label-sm">Profile</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+      <span class="material-symbols-outlined">settings</span>
+      <span class="text-[10px] font-label-sm">Settings</span>
+    </a>
+  </nav>
+
+  <footer class="bg-surface-container-highest grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-mobile md:px-container-padding-desktop py-section-gap w-full mb-20 md:mb-0">
+    <div>
+      <p class="text-headline-md font-headline-md font-bold text-on-surface">Sumohan Care</p>
+      <p class="mt-4 text-body-sm text-on-surface-variant leading-relaxed">Empowering women through clinical excellence, empathy, and holistic health innovation.</p>
+    </div>
+    <div>
+      <h4 class="text-label-sm font-bold text-primary uppercase mb-4 tracking-widest">Resources</h4>
+      <ul class="space-y-2">
+        <li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a></li>
+        <li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Medical Records Guide</a></li>
+        <li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Insurance Partners</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-label-sm font-bold text-primary uppercase mb-4 tracking-widest">Support</h4>
+      <ul class="space-y-2">
+        <li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a></li>
+        <li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+        <li><a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+    <div class="flex flex-col justify-between">
+      <div>
+        <h4 class="text-label-sm font-bold text-primary uppercase mb-4 tracking-widest">Connect</h4>
+        <div class="flex gap-4">
+          <span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all">public</span>
+          <span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all">forum</span>
+        </div>
+      </div>
+      <p class="text-label-sm font-label-sm text-on-surface-variant mt-8 md:mt-0">© 2024 Sumohan Care. Clinical Excellence &amp; Empathy.</p>
+    </div>
+  <p class="aura-developer-credit col-span-1 md:col-span-4 w-full text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
+</footer>
+
+  <script>
+    document.querySelectorAll('label[data-active]').forEach((label) => {
+      label.addEventListener('click', function () {
+        const isActive = this.getAttribute('data-active') === 'true';
+        this.setAttribute('data-active', String(!isActive));
+        const dot = this.querySelector('.h-4.w-4');
+        const bg = this.querySelector('.relative.inline-flex');
+
+        if (!isActive) {
+          dot.classList.remove('translate-x-1');
+          dot.classList.add('translate-x-6');
+          bg.classList.remove('bg-surface-container-highest');
+          bg.classList.add('bg-primary');
+        } else {
+          dot.classList.remove('translate-x-6');
+          dot.classList.add('translate-x-1');
+          bg.classList.remove('bg-primary');
+          bg.classList.add('bg-surface-container-highest');
+        }
+      });
+    });
+
+    document.querySelectorAll('.tonal-elevation-1').forEach((card) => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-2px)';
+        card.style.transition = 'transform 0.3s ease';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+  <script src="/assets/js/patient-profile.js?v=202609061"></script>
+  <script src="/assets/js/aura-sidebar.js?v=202609061"></script>
+</body>
+</html>

@@ -3,9 +3,10 @@
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Patient Login | Aura Health</title>
+<title>Patient Login | Sumohan Care</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/assets/css/aura-portal.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -113,7 +114,7 @@
 <body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
 <!-- Suppressed Nav: Only Brand Anchor for Transactional Flow -->
 <header class="w-full h-20 px-container-padding-desktop flex items-center justify-between max-w-[1200px] mx-auto">
-<div class="text-headline-md font-headline-md font-bold text-primary">Aura Health</div>
+<div class="text-headline-md font-headline-md font-bold text-primary">Sumohan Care</div>
 <div class="flex gap-gutter">
 <a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Help</a>
 <a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">About Us</a>
@@ -145,12 +146,16 @@
 <label class="text-label-md font-label-md text-outline">Mobile Number</label>
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">call</span>
-<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border border-outline-variant rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all outline-none font-body-md text-on-surface" placeholder="+1 (555) 000-0000" type="tel"/>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border border-outline-variant rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all outline-none font-body-md text-on-surface" inputmode="numeric" maxlength="10" minlength="10" pattern="[6-9][0-9]{9}" placeholder="9876543210" type="tel"/>
 </div>
 </div>
-<button class="w-full bg-primary text-white py-4 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:shadow-lg active:scale-[0.98] transition-all">
+<button class="w-full bg-primary text-white py-4 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:shadow-lg active:scale-[0.98] transition-all" data-send-otp type="submit">
                             Send OTP
                         </button>
+<p class="text-center text-label-md font-label-md text-on-surface-variant">
+                            New patient?
+                            <a class="text-primary font-bold hover:underline" href="/patient/register.html">Register as patient</a>
+                        </p>
 </div>
 <!-- OTP Verification Section (Visual Placeholder for Flow) -->
 <div class="hidden flex flex-col gap-gutter mt-section-gap pt-section-gap border-t border-outline-variant/30" id="otp-phase">
@@ -167,10 +172,10 @@
 <input class="w-12 h-14 text-center border-b-2 border-outline-variant bg-transparent text-headline-md font-headline-md focus:border-primary outline-none transition-colors" maxlength="1" type="text"/>
 </div>
 <div class="flex flex-col gap-4">
-<button class="w-full bg-secondary text-white py-4 rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all">
+<button class="w-full bg-secondary text-white py-4 rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all" data-verify-otp type="submit">
                                 Verify &amp; Continue
                             </button>
-<button class="text-center text-label-md font-label-md text-secondary hover:underline transition-all">
+<button class="text-center text-label-md font-label-md text-secondary hover:underline transition-all disabled:cursor-not-allowed disabled:opacity-60 disabled:no-underline" data-resend-otp type="button">
                                 Resend Code (01:00)
                             </button>
 </div>
@@ -182,7 +187,7 @@
 <span class="material-symbols-outlined text-outline text-[18px]">verified_user</span>
 </div>
 <p class="text-label-sm font-label-sm text-on-surface-variant leading-relaxed">
-                                By continuing, you agree to Aura Health's <a class="text-primary hover:underline" href="#">Privacy Policy</a> and <a class="text-primary hover:underline" href="#">Consent Terms</a> for gynecological care and medical data processing.
+                                By continuing, you agree to Sumohan Care's <a class="text-primary hover:underline" href="#">Privacy Policy</a> and <a class="text-primary hover:underline" href="#">Consent Terms</a> for gynecological care and medical data processing.
                             </p>
 </div>
 </div>
@@ -192,12 +197,13 @@
 </main>
 <footer class="w-full bg-surface-container-highest py-base px-container-padding-desktop">
 <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Sumohan Care. Clinical Excellence &amp; Empathy.</p>
 <div class="flex gap-gutter">
 <a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
 <a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
 <a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
 </div>
 </div>
+<p class="aura-developer-credit w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
-<script src="/assets/js/design-live.js"></script></body></html>
+<script src="/assets/js/patient-login.js?v=202607161"></script></body></html>

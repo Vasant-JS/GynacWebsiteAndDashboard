@@ -1,21 +1,26 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const express = require('express');
-const { pool } = require('./db');
+const { pool, isDbUnavailable } = require('./db');
 
 const router = express.Router();
-const devOtpChallenges = new Map();
 
-function isDbUnavailable(error) {
-  return error && ['ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT'].includes(error.code);
-}
 
 function normalizePhone(phone) {
-  return String(phone || '').replace(/[^\d+]/g, '').trim();
+  return String(phone || '').replace(/\D/g, '').trim();
+}
+
+function normalizeIndianMobile(phone) {
+  const digits = normalizePhone(phone);
+  return /^[6-9]\d{9}$/.test(digits) ? digits : '';
 }
 
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
+}
+
+function parseBoolean(value) {
+  return value === true || value === 'true' || value === 'on' || value === '1';
 }
 
 function publicUser(user) {
@@ -29,10 +34,36 @@ function publicUser(user) {
   };
 }
 
+function setRoleSession(req, user) {
+  if (!user?.role) return;
+  if (user.role === 'PATIENT') req.session.patientUser = user;
+  if (user.role === 'DOCTOR') {
+    req.session.doctorUser = user;
+    req.session.doctorLastSeen = Date.now();
+  }
+  if (user.role === 'ADMIN') req.session.adminUser = user;
+  req.session.user = user;
+}
+
+function getRoleSession(req, role) {
+  if (role === 'PATIENT') return req.session.patientUser || (req.session.user?.role === 'PATIENT' ? req.session.user : null);
+  if (role === 'DOCTOR') {
+    if (req.session.doctorUser && req.session.doctorLastSeen && Date.now() - req.session.doctorLastSeen > 15 * 60 * 1000) {
+      delete req.session.doctorUser;
+      delete req.session.doctorLastSeen;
+      if (req.session.user?.role === 'DOCTOR') delete req.session.user;
+      return null;
+    }
+    return req.session.doctorUser || (req.session.user?.role === 'DOCTOR' ? req.session.user : null);
+  }
+  if (role === 'ADMIN') return req.session.adminUser || (req.session.user?.role === 'ADMIN' ? req.session.user : null);
+  return req.session.user || null;
+}
+
 router.post('/patient/request-otp', async (req, res) => {
-  const phone = normalizePhone(req.body.phone);
-  const whatsappNumber = normalizePhone(req.body.whatsappNumber || req.body.phone);
-  if (!phone || phone.length < 8) return res.status(400).json({ message: 'Enter a valid mobile number.' });
+  const phone = normalizeIndianMobile(req.body.phone);
+  const whatsappNumber = normalizeIndianMobile(req.body.whatsappNumber || req.body.phone);
+  if (!phone) return res.status(400).json({ message: 'Enter a valid 10-digit mobile number without +91.' });
 
   const otp = String(crypto.randomInt(100000, 999999));
   const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
@@ -43,14 +74,27 @@ router.post('/patient/request-otp', async (req, res) => {
     await client.query('BEGIN');
     const userResult = await client.query(
       `
-        INSERT INTO users (role, phone, display_name, profile, metadata)
-        VALUES ('PATIENT', $1, 'Patient', $2, $3)
-        ON CONFLICT (phone) WHERE phone IS NOT NULL
-        DO UPDATE SET profile = users.profile || EXCLUDED.profile, updated_at = now()
-        RETURNING *
+        SELECT *
+        FROM users
+        WHERE role = 'PATIENT'
+          AND status = 'ACTIVE'
+          AND (
+            regexp_replace(coalesce(phone, ''), '\\D', '', 'g') = $1
+            OR regexp_replace(coalesce(phone, ''), '\\D', '', 'g') = $2
+          )
+          AND email IS NOT NULL
+        LIMIT 1
       `,
-      [phone, { onboardingStatus: 'OTP_REQUESTED', whatsappNumber }, { source: 'patient_otp_login' }],
+      [phone, `91${phone}`],
     );
+    if (!userResult.rowCount) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'This mobile number is not registered. Please register as a patient first.', redirectTo: '/patient/register.html' });
+    }
+    await client.query('UPDATE users SET profile = profile || $2::jsonb, updated_at = now() WHERE id = $1', [
+      userResult.rows[0].id,
+      JSON.stringify({ lastOtpRequestedAt: new Date().toISOString(), whatsappNumber: whatsappNumber || phone }),
+    ]);
     await client.query(
       `
         INSERT INTO otp_challenges (user_id, destination, channel, otp_code, expires_at, metadata)
@@ -63,19 +107,7 @@ router.post('/patient/request-otp', async (req, res) => {
   } catch (error) {
     if (client) await client.query('ROLLBACK');
     if (isDbUnavailable(error)) {
-      devOtpChallenges.set(phone, {
-        otp,
-        expiresAt,
-        user: {
-          id: `dev-patient-${phone}`,
-          role: 'PATIENT',
-          displayName: 'Patient',
-          email: null,
-          phone,
-          profile: { onboardingStatus: 'OTP_REQUESTED', whatsappNumber, storage: 'memory_fallback' },
-        },
-      });
-      return res.json({ message: 'OTP generated in development memory because PostgreSQL is not reachable.', otp, expiresAt, storage: 'memory' });
+      return res.status(503).json({ message: 'PostgreSQL is not connected. Registered patient login cannot be verified.' });
     }
     res.status(500).json({ message: 'Could not generate OTP.', detail: error.message || error.code || error.name });
   } finally {
@@ -83,19 +115,70 @@ router.post('/patient/request-otp', async (req, res) => {
   }
 });
 
-router.post('/patient/verify-otp', async (req, res) => {
-  const phone = normalizePhone(req.body.phone);
-  const otp = String(req.body.otp || '').trim();
+router.post('/patient/register', async (req, res) => {
+  const displayName = String(req.body.name || '').trim();
+  const age = Number(req.body.age);
+  const phone = normalizeIndianMobile(req.body.mobile || req.body.phone);
+  const email = normalizeEmail(req.body.email);
+  const history = String(req.body.history || '').trim();
+  const allergies = String(req.body.allergies || '').trim();
+  const diabetes = parseBoolean(req.body.diabetes);
+  const bloodPressure = parseBoolean(req.body.bloodPressure || req.body.bp);
+  const otherConditions = String(req.body.otherConditions || '').trim();
 
-  const devChallenge = devOtpChallenges.get(phone);
-  if (devChallenge) {
-    if (devChallenge.otp !== otp || new Date(devChallenge.expiresAt).getTime() < Date.now()) {
-      return res.status(401).json({ message: 'Invalid or expired OTP.' });
+  if (!/^[A-Za-z][A-Za-z\s.'-]{1,79}$/.test(displayName)) return res.status(400).json({ message: 'Enter a valid full name.' });
+  if (!Number.isInteger(age) || age < 1 || age > 120) return res.status(400).json({ message: 'Enter a valid age.' });
+  if (!phone) return res.status(400).json({ message: 'Enter a valid 10-digit mobile number without +91.' });
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
+
+  const profile = {
+    age,
+    medicalHistory: history || null,
+    allergies: allergies || null,
+    conditions: {
+      diabetes,
+      bloodPressure,
+      other: otherConditions || null,
+    },
+    onboardingStatus: 'REGISTERED',
+    registeredAt: new Date().toISOString(),
+  };
+
+  try {
+    const result = await pool.query(
+      `
+        INSERT INTO users (role, display_name, email, phone, profile, metadata)
+        VALUES ('PATIENT', $1, $2, $3, $4::jsonb, $5::jsonb)
+        ON CONFLICT (phone) WHERE phone IS NOT NULL
+        DO UPDATE SET
+          display_name = EXCLUDED.display_name,
+          email = EXCLUDED.email,
+          profile = users.profile || EXCLUDED.profile,
+          metadata = users.metadata || EXCLUDED.metadata,
+          status = 'ACTIVE',
+          updated_at = now()
+        RETURNING id, display_name, email, phone, profile
+      `,
+      [displayName, email, phone, JSON.stringify(profile), JSON.stringify({ source: 'patient_registration' })],
+    );
+    res.status(201).json({
+      message: 'Registration completed. Please login with your mobile number.',
+      redirectTo: '/patient/login.html?registered=1',
+      patient: publicUser(result.rows[0]),
+    });
+  } catch (error) {
+    if (error.code === '23505') {
+      return res.status(409).json({ message: 'This email or mobile number is already registered with another patient.' });
     }
-    devOtpChallenges.delete(phone);
-    req.session.user = devChallenge.user;
-    return res.json({ redirectTo: '/dashboard-app/?role=patient', user: req.session.user, storage: 'memory' });
+    if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected. Registration data could not be saved.' });
+    res.status(500).json({ message: 'Could not register patient.', detail: error.message || error.code || error.name });
   }
+});
+
+router.post('/patient/verify-otp', async (req, res) => {
+  const phone = normalizeIndianMobile(req.body.phone);
+  const otp = String(req.body.otp || '').trim();
+  if (!phone) return res.status(400).json({ message: 'Enter a valid 10-digit mobile number without +91.' });
 
   const result = await pool.query(
     `
@@ -119,7 +202,7 @@ router.post('/patient/verify-otp', async (req, res) => {
     challenge.user_id,
     JSON.stringify({ onboardingStatus: 'OTP_VERIFIED' }),
   ]);
-  req.session.user = publicUser({
+  const patientUser = publicUser({
     id: challenge.auth_user_id,
     role: challenge.role,
     display_name: challenge.display_name,
@@ -127,7 +210,8 @@ router.post('/patient/verify-otp', async (req, res) => {
     phone: challenge.phone,
     profile: challenge.profile,
   });
-  res.json({ redirectTo: '/dashboard-app/?role=patient', user: req.session.user });
+  setRoleSession(req, patientUser);
+  res.json({ redirectTo: '/patient/dashboard.html', user: patientUser });
 });
 
 router.post('/staff/login', async (req, res) => {
@@ -141,19 +225,7 @@ router.post('/staff/login', async (req, res) => {
     result = await pool.query('SELECT * FROM users WHERE lower(email) = $1 AND role = $2 AND status = $3 LIMIT 1', [email, role, 'ACTIVE']);
   } catch (error) {
     if (isDbUnavailable(error)) {
-      const seedLogin =
-        (role === 'DOCTOR' && email === 'doctor@aura.test' && password === 'doctor123') ||
-        (role === 'ADMIN' && email === 'admin@aura.test' && password === 'admin123');
-      if (!seedLogin) return res.status(401).json({ message: 'Invalid login details.' });
-      req.session.user = {
-        id: `dev-${role.toLowerCase()}`,
-        role,
-        displayName: role === 'ADMIN' ? 'Super Admin' : 'Dr. Elena Rossi',
-        email,
-        phone: null,
-        profile: { storage: 'memory_fallback' },
-      };
-      return res.json({ redirectTo: role === 'ADMIN' ? '/admin/dashboard.html' : '/dashboard-app/?role=doctor', user: req.session.user, storage: 'memory' });
+      return res.status(503).json({ message: 'PostgreSQL is not connected. Staff login cannot be verified.' });
     }
     throw error;
   }
@@ -162,16 +234,37 @@ router.post('/staff/login', async (req, res) => {
   const user = result.rows[0];
   const ok = await bcrypt.compare(password, user.password_hash || '');
   if (!ok) return res.status(401).json({ message: 'Invalid login details.' });
-  req.session.user = publicUser(user);
-  res.json({ redirectTo: role === 'ADMIN' ? '/admin/dashboard.html' : '/dashboard-app/?role=doctor', user: req.session.user });
+  const staffUser = publicUser(user);
+  setRoleSession(req, staffUser);
+  res.json({ redirectTo: role === 'ADMIN' ? '/admin/dashboard.html' : '/doctor/dashboard.html', user: staffUser });
 });
 
 router.post('/logout', (req, res) => {
+  const role = String(req.body.role || req.query.role || '').toUpperCase();
+  if (role === 'PATIENT') {
+    delete req.session.patientUser;
+    if (req.session.user?.role === 'PATIENT') delete req.session.user;
+    return res.json({ redirectTo: '/patient/login.html' });
+  }
+  if (role === 'DOCTOR') {
+    delete req.session.doctorUser;
+    delete req.session.doctorLastSeen;
+    if (req.session.user?.role === 'DOCTOR') delete req.session.user;
+    return res.json({ redirectTo: '/staff/login.html' });
+  }
+  if (role === 'ADMIN') {
+    delete req.session.adminUser;
+    if (req.session.user?.role === 'ADMIN') delete req.session.user;
+    return res.json({ redirectTo: '/staff/login.html' });
+  }
   req.session.destroy(() => res.json({ redirectTo: '/website/index.html' }));
 });
 
 router.get('/me', (req, res) => {
-  res.json({ user: req.session.user || null });
+  const role = String(req.query.role || '').toUpperCase();
+  const user = getRoleSession(req, role);
+  if (user?.role === 'DOCTOR') req.session.doctorLastSeen = Date.now();
+  res.json({ user });
 });
 
 module.exports = { authRouter: router };

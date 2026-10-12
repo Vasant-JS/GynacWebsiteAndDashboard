@@ -3,9 +3,10 @@
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Prescription Builder - Aura Health</title>
+<title>Prescription Builder - Sumohan Care</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="/assets/css/aura-portal.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -113,7 +114,7 @@
 <!-- SideNavBar - Surgeon/Physician Context -->
 <aside class="h-screen sticky top-0 w-72 flex flex-col bg-surface-container dark:bg-surface-dim shadow-sm py-8 space-y-4">
 <div class="px-8 mb-8">
-<span class="text-headline-md font-headline-md font-bold text-primary">Aura Health</span>
+<span class="text-headline-md font-headline-md font-bold text-primary">Sumohan Care</span>
 <div class="flex items-center mt-6 gap-3">
 <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container">
 <img alt="Dr. Elena Rossi" class="w-full h-full object-cover" data-alt="A professional headshot of a female doctor in her late 30s with a warm and confident expression. She is wearing a clean white lab coat over a soft lavender blouse. The background is a blurred, high-end medical clinic with soft lighting and calming teal accents, reflecting a modern boutique healthcare environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWN1IW1HPydl43DHdcbyjBwrLgkmThGEj_lH9aR7edtaETe2ptKw2OQmsIRprKRUXepPRGeK5dY2ZaHXtzlEoSM9ARZfbPYnnLMvlen92oN9NtIkCzS2ScKA8npRIj_tlGzAWkHLlSg12GVT65XaWnwfMIxXuwX5vlq-HVf8VmaNDtjWcQ8bYloQIyt7jatdw-TDpyQgsXiNtUjdHn6DFEGcGlra92OyhE9R6SsfiSCe2Z6YkLAn5_D9cboQkq6Rjgbp6ldaUMVTY"/>
@@ -125,19 +126,19 @@
 </div>
 </div>
 <nav class="flex-1">
-<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="/doctor/dashboard.html">
 <span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
 <span class="text-label-md font-label-md">Clinic Overview</span>
 </a>
-<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="/doctor/dashboard.html">
 <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
 <span class="text-label-md font-label-md">Daily Schedule</span>
 </a>
-<a class="flex items-center gap-4 text-primary font-bold bg-white dark:bg-inverse-surface rounded-l-full ml-4 pl-4 py-3" href="#">
+<a class="flex items-center gap-4 text-primary font-bold bg-white dark:bg-inverse-surface rounded-l-full ml-4 pl-4 py-3" href="/doctor/dashboard.html">
 <span class="material-symbols-outlined" data-icon="group">group</span>
 <span class="text-label-md font-label-md">Patient Registry</span>
 </a>
-<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="#">
+<a class="flex items-center gap-4 px-8 py-3 text-on-surface-variant dark:text-surface-variant hover:text-primary transition-all duration-300" href="/doctor/dashboard.html">
 <span class="material-symbols-outlined" data-icon="schedule">schedule</span>
 <span class="text-label-md font-label-md">Slot Management</span>
 </a>
@@ -320,22 +321,22 @@
 <!-- Footer - Fixed UI pattern -->
 <footer class="w-full bg-surface-container-highest dark:bg-surface-container-lowest py-section-gap px-container-padding-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter border-t border-outline-variant/20">
 <div class="col-span-1">
-<span class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Aura Health</span>
+<span class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Sumohan Care</span>
 <p class="mt-4 text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
                 Empowering gynecological care through clinical excellence and patient empathy.
             </p>
 </div>
 <div class="col-span-1 flex flex-col gap-3">
 <p class="text-label-sm font-label-sm text-on-surface uppercase tracking-wider">Quick Links</p>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Clinic Overview</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Registry</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Doctor Portal</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/doctor/dashboard.html">Clinic Overview</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/doctor/dashboard.html">Patient Registry</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/doctor/dashboard.html">Doctor Portal</a>
 </div>
 <div class="col-span-1 flex flex-col gap-3">
 <p class="text-label-sm font-label-sm text-on-surface uppercase tracking-wider">Legal</p>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/doctor/dashboard.html">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/doctor/dashboard.html">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/doctor/dashboard.html">Patient Rights</a>
 </div>
 <div class="col-span-1">
 <p class="text-label-sm font-label-sm text-on-surface uppercase tracking-wider mb-4">Newsletter</p>
@@ -347,7 +348,9 @@
 </div>
 </div>
 <div class="col-span-full border-t border-outline-variant pt-base mt-base text-center">
-<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">© 2024 Sumohan Care. Clinical Excellence &amp; Empathy.</p>
 </div>
+<p class="aura-developer-credit col-span-1 md:col-span-4 w-full text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
-<script src="/assets/js/design-live.js"></script></body></html>
+<script src="/assets/js/design-live.js"></script>  <script src="/assets/js/aura-sidebar.js?v=2026070816"></script>
+</body></html>

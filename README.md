@@ -1,4 +1,4 @@
-# Aura Health Gynecologist Consultation Website
+# Sumohan Care Gynecologist Consultation Website
 
 Recreated project structure:
 

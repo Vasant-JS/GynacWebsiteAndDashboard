@@ -1,15 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const { pool } = require('./db');
+const { pool, isDbUnavailable } = require('./db');
 
 const router = express.Router();
 
-function isDbUnavailable(error) {
-  return error && ['ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT'].includes(error.code);
-}
 
 async function currentAdmin(req) {
-  const email = req.session.user?.role === 'ADMIN' ? req.session.user.email : 'admin@aura.test';
+  const sessionAdmin = req.authUser?.role === 'ADMIN' ? req.authUser : req.session.adminUser;
+  const email = sessionAdmin?.email;
+  if (!email) return null;
   const result = await pool.query('SELECT id, display_name, email, profile FROM users WHERE role = $1 AND email = $2 LIMIT 1', ['ADMIN', email]);
   return result.rows[0] || null;
 }
@@ -18,50 +17,52 @@ router.get('/dashboard', async (req, res, next) => {
   try {
     const admin = await currentAdmin(req);
     if (!admin) return res.status(404).json({ message: 'Admin record not found in database.' });
-    const counts = await pool.query(
-      `
-        SELECT
-          count(*) FILTER (WHERE role = 'DOCTOR' AND status = 'ACTIVE') AS active_doctors,
-          count(*) FILTER (WHERE role = 'PATIENT') AS total_patients,
-          count(*) FILTER (WHERE role = 'PATIENT' AND created_at >= now() - interval '7 days') AS new_patients
-        FROM users
-      `,
-    );
-    const appointments = await pool.query(
-      `
-        SELECT count(*) FILTER (WHERE appointment_at::date = current_date) AS today_appointments,
-               count(*) FILTER (WHERE status = 'SCHEDULED') AS scheduled,
-               count(*) FILTER (WHERE status = 'COMPLETED') AS completed,
-               count(*) FILTER (WHERE status = 'CANCELLED') AS cancelled
-        FROM appointments
-      `,
-    );
-    const payments = await pool.query(
-      `
-        SELECT COALESCE(sum(amount) FILTER (WHERE created_at::date = current_date AND status = 'PAID'), 0) AS today_revenue,
-               COALESCE(sum(amount) FILTER (WHERE status = 'PENDING'), 0) AS pending_amount,
-               COALESCE(sum(amount) FILTER (WHERE status = 'REFUNDED'), 0) AS refunded_amount
-        FROM payments
-      `,
-    );
-    const activity = await pool.query(
-      `
-        SELECT 'Appointment' AS action, service_type AS entity, status, updated_at AS timestamp FROM appointments
-        UNION ALL
-        SELECT 'Payment' AS action, currency || ' ' || amount::text AS entity, status, created_at AS timestamp FROM payments
-        ORDER BY timestamp DESC LIMIT 8
-      `,
-    );
-    const trend = await pool.query(
-      `
-        SELECT to_char(day, 'Dy') AS label,
-               count(a.id) FILTER (WHERE a.status <> 'CANCELLED') AS confirmed,
-               count(a.id) FILTER (WHERE a.status = 'SCHEDULED') AS pending
-        FROM generate_series(current_date - interval '6 days', current_date, interval '1 day') AS day
-        LEFT JOIN appointments a ON a.appointment_at::date = day::date
-        GROUP BY day ORDER BY day
-      `,
-    );
+    const [counts, appointments, payments, activity, trend] = await Promise.all([
+      pool.query(
+        `
+          SELECT
+            count(*) FILTER (WHERE role = 'DOCTOR' AND status = 'ACTIVE') AS active_doctors,
+            count(*) FILTER (WHERE role = 'PATIENT') AS total_patients,
+            count(*) FILTER (WHERE role = 'PATIENT' AND created_at >= now() - interval '7 days') AS new_patients
+          FROM users
+        `,
+      ),
+      pool.query(
+        `
+          SELECT count(*) FILTER (WHERE appointment_at::date = current_date) AS today_appointments,
+                 count(*) FILTER (WHERE status = 'SCHEDULED') AS scheduled,
+                 count(*) FILTER (WHERE status = 'COMPLETED') AS completed,
+                 count(*) FILTER (WHERE status = 'CANCELLED') AS cancelled
+          FROM appointments
+        `,
+      ),
+      pool.query(
+        `
+          SELECT COALESCE(sum(amount) FILTER (WHERE created_at::date = current_date AND status = 'PAID'), 0) AS today_revenue,
+                 COALESCE(sum(amount) FILTER (WHERE status = 'PENDING'), 0) AS pending_amount,
+                 COALESCE(sum(amount) FILTER (WHERE status = 'REFUNDED'), 0) AS refunded_amount
+          FROM payments
+        `,
+      ),
+      pool.query(
+        `
+          SELECT 'Appointment' AS action, service_type AS entity, status, updated_at AS timestamp FROM appointments
+          UNION ALL
+          SELECT 'Payment' AS action, currency || ' ' || amount::text AS entity, status, created_at AS timestamp FROM payments
+          ORDER BY timestamp DESC LIMIT 8
+        `,
+      ),
+      pool.query(
+        `
+          SELECT to_char(day, 'Dy') AS label,
+                 count(a.id) FILTER (WHERE a.status <> 'CANCELLED') AS confirmed,
+                 count(a.id) FILTER (WHERE a.status = 'SCHEDULED') AS pending
+          FROM generate_series(current_date - interval '6 days', current_date, interval '1 day') AS day
+          LEFT JOIN appointments a ON a.appointment_at::date = day::date
+          GROUP BY day ORDER BY day
+        `,
+      ),
+    ]);
     res.json({
       admin: { id: admin.id, displayName: admin.display_name, email: admin.email, profile: admin.profile || {} },
       stats: {

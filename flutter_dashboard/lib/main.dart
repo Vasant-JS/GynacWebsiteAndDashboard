@@ -25,7 +25,7 @@ class AuraDashboardApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Aura Health Dashboard',
+      title: 'Sumohan Care Dashboard',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: _primary),
@@ -221,7 +221,7 @@ class DoctorBrand extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Aura\nHealth', style: TextStyle(color: _primary, fontSize: 29, height: 1.25, fontWeight: FontWeight.w900)),
+        Text('Sumohan\nCare', style: TextStyle(color: _primary, fontSize: 29, height: 1.25, fontWeight: FontWeight.w900)),
         SizedBox(height: 4),
         Text('Physician\nDashboard', style: TextStyle(color: _textMuted, fontWeight: FontWeight.w800, letterSpacing: 1.2)),
       ],
@@ -311,7 +311,7 @@ class SourceTopBar extends StatelessWidget {
       child: Row(
         children: [
           if (role == DashboardRole.patient)
-            const Text('Aura Health', style: TextStyle(color: _primary, fontSize: 40, fontWeight: FontWeight.w900))
+            const Text('Sumohan Care', style: TextStyle(color: _primary, fontSize: 40, fontWeight: FontWeight.w900))
           else
             Expanded(
               child: TextField(
@@ -561,7 +561,7 @@ class UpcomingAppointmentCard extends StatelessWidget {
               children: [
                 Icon(Icons.location_on_outlined, color: _teal),
                 SizedBox(width: 20),
-                Expanded(child: Text('Aura Boutique Clinic, Wing A, Room 402', style: TextStyle(color: _navy, fontSize: 18))),
+                Expanded(child: Text('Sumohan Care Clinic, Wing A, Room 402', style: TextStyle(color: _navy, fontSize: 18))),
               ],
             ),
           ),

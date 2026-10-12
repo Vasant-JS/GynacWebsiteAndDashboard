@@ -3,9 +3,10 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Manage Doctors | Aura Health Admin</title>
+<title>Manage Doctors | Sumohan Care Admin</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/assets/css/aura-portal.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -116,28 +117,28 @@
 <!-- SideNavBar - Admin Central -->
 <aside class="h-screen sticky left-0 w-64 border-r border-outline-variant flex flex-col bg-surface-container-lowest dark:bg-surface-dim py-gutter">
 <div class="px-8 mb-8">
-<h1 class="text-headline-md font-headline-md font-bold text-primary">Aura Health</h1>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Sumohan Care</h1>
 <p class="text-body-sm font-body-sm text-on-surface-variant">Admin Central</p>
 <p class="text-label-sm font-label-sm text-on-surface-variant opacity-70 mt-1 uppercase tracking-wider">Super Admin Access</p>
 </div>
 <nav class="flex-grow space-y-1">
-<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="/admin/dashboard.html">
 <span class="material-symbols-outlined mr-3" data-icon="insights">insights</span>
                     Global Analytics
                 </a>
-<a class="flex items-center text-on-primary-container bg-primary-container dark:bg-primary dark:text-on-primary rounded-lg mx-4 px-4 py-2 font-bold text-label-md font-label-md" href="#">
+<a class="flex items-center text-on-primary-container bg-primary-container dark:bg-primary dark:text-on-primary rounded-lg mx-4 px-4 py-2 font-bold text-label-md font-label-md" href="/admin/dashboard.html">
 <span class="material-symbols-outlined mr-3" data-icon="medical_services">medical_services</span>
                     Doctor Management
                 </a>
-<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="/admin/dashboard.html">
 <span class="material-symbols-outlined mr-3" data-icon="folder_shared">folder_shared</span>
                     Patient Records
                 </a>
-<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="/admin/dashboard.html">
 <span class="material-symbols-outlined mr-3" data-icon="payments">payments</span>
                     Revenue
                 </a>
-<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">
+<a class="flex items-center px-8 py-2 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="/admin/dashboard.html">
 <span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
                     System Settings
                 </a>
@@ -352,35 +353,37 @@
 <!-- Footer -->
 <footer class="bg-surface-container-highest dark:bg-surface-container-lowest grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full mt-section-gap">
 <div class="col-span-1 md:col-span-1">
-<h3 class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Aura Health</h3>
+<h3 class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Sumohan Care</h3>
 <p class="text-body-sm font-body-sm mt-4 text-on-surface-variant opacity-80">Providing clinical excellence and empathetic care to our patients worldwide.</p>
 </div>
 <div class="flex flex-col gap-2">
 <h5 class="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant">Management</h5>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Clinic Overview</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Daily Schedule</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Registry</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Clinic Overview</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Daily Schedule</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Patient Registry</a>
 </div>
 <div class="flex flex-col gap-2">
 <h5 class="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant">Admin Legal</h5>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Patient Rights</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Privacy Policy</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Terms of Service</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Patient Rights</a>
 </div>
 <div class="flex flex-col gap-2">
 <h5 class="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant">Support</h5>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
-<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">System Status</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">Contact Support</a>
+<a class="text-body-sm font-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/admin/dashboard.html">System Status</a>
 </div>
 <div class="col-span-1 md:col-span-4 mt-8 pt-8 border-t border-outline-variant/30 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-label-sm font-label-sm text-on-surface-variant opacity-70">© 2024 Aura Gynecological Care. Clinical Excellence &amp; Empathy.</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant opacity-70">© 2024 Sumohan Care. Clinical Excellence &amp; Empathy.</p>
 <div class="flex gap-4">
 <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer" data-icon="facebook">social_leaderboard</span>
 <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer" data-icon="language">language</span>
 </div>
 </div>
+<p class="aura-developer-credit col-span-1 md:col-span-4 w-full text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
 </main>
 </div>
-<script src="/assets/js/design-live.js"></script></body></html>
+<script src="/assets/js/design-live.js"></script>  <script src="/assets/js/aura-sidebar.js?v=2026070812"></script>
+</body></html>
 

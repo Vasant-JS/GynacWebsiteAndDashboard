@@ -1,20 +1,45 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Staff Login | Aura Health</title><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"><style>body{font-family:Manrope,sans-serif;background:#fbf8ff;color:#000767}</style></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff Login | Sumohan Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/assets/css/aura-portal.css" rel="stylesheet">
+</head>
 <body>
-  <main class="mx-auto grid min-h-screen max-w-6xl place-items-center px-6">
-    <section class="w-full max-w-xl rounded-2xl bg-white p-8 shadow-xl">
-      <h1 class="text-4xl font-extrabold text-[#b0004a]">Aura Health Staff Login</h1>
-      <p class="mt-2 text-[#5a4044]">Doctor is selected by default. Choose admin when needed.</p>
+  <main class="grid min-h-screen place-items-center px-6 py-10">
+    <section class="aura-card w-full max-w-xl p-8">
+      <div class="mb-8 flex items-center gap-4">
+        <div class="grid h-12 w-12 place-items-center rounded-full bg-[#ffd9de] text-[#b0004a]">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+        </div>
+        <div>
+          <p class="aura-eyebrow">Sumohan Care</p>
+          <h1 class="text-4xl font-extrabold text-[#000767]">Staff Login</h1>
+        </div>
+      </div>
+      <p class="aura-subtitle">Doctor is selected by default. Choose admin when needed.</p>
+
       <form class="mt-8 grid gap-4" id="staff-login-form">
-        <div class="grid grid-cols-2 gap-3 font-bold"><label class="rounded-lg border border-[#e3bdc3] p-4"><input checked name="role" type="radio" value="DOCTOR"> Doctor</label><label class="rounded-lg border border-[#e3bdc3] p-4"><input name="role" type="radio" value="ADMIN"> Admin</label></div>
-        <input class="rounded-lg border border-[#e3bdc3] px-4 py-4" id="staff-email" type="email">
-        <input class="rounded-lg border border-[#e3bdc3] px-4 py-4" id="staff-password" type="password">
-        <button class="rounded-lg bg-[#b0004a] px-5 py-4 font-extrabold text-white" type="submit">Login</button>
+        <div class="grid grid-cols-2 gap-3 font-bold">
+          <label class="rounded-lg border border-[#e3bdc3] p-4"><input checked name="role" type="radio" value="DOCTOR"> Doctor</label>
+          <label class="rounded-lg border border-[#e3bdc3] p-4"><input name="role" type="radio" value="ADMIN"> Admin</label>
+        </div>
+        <input class="aura-field rounded-lg px-4 py-4" id="staff-email" type="email" placeholder="Email">
+        <input class="aura-field rounded-lg px-4 py-4" id="staff-password" type="password" placeholder="Password">
+        <button class="aura-button w-full py-4 text-base" type="submit">Login</button>
       </form>
+
       <p class="mt-3 font-bold text-[#ba1a1a]" id="staff-login-message"></p>
       <a class="mt-6 inline-flex font-bold text-[#006a62]" href="/patient/login.html">Patient OTP Login</a>
     </section>
   </main>
-  <script src="/assets/js/staff-login.js"></script>
-</body></html>
+  <footer class="aura-generated-footer">
+    <p class="aura-developer-credit">Developed by <a href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
+  </footer>
+  <script src="/assets/js/staff-login.js?v=202607101"></script>
+</body>
+</html>
