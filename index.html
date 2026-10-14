@@ -1,902 +1,1103 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Sumohan Care | FemmeCare Gynecology</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-    .aura-developer-credit {
-        display: block;
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 48px 24px;
-        color: #5a4044;
-        font-size: 0.75rem;
-        font-weight: 800;
-        line-height: 1.25rem;
-        text-align: left;
-    }
-
-    .aura-developer-credit a {
-        color: #b0004a;
-        text-decoration: none;
-    }
-
-    .aura-developer-credit a:hover {
-        text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-        .aura-developer-credit {
-            padding-right: 16px;
-            padding-left: 16px;
-            text-align: center;
-        }
-    }
-</style>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "tertiary": "#6941ab",
-                        "error": "#ba1a1a",
-                        "surface-container": "#edecff",
-                        "on-tertiary": "#ffffff",
-                        "surface-container-high": "#e6e6ff",
-                        "on-secondary": "#ffffff",
-                        "outline-variant": "#e3bdc3",
-                        "on-tertiary-fixed": "#260058",
-                        "on-secondary-fixed-variant": "#005049",
-                        "secondary": "#006a62",
-                        "primary": "#b0004a",
-                        "on-surface": "#000767",
-                        "secondary-container": "#81f3e5",
-                        "inverse-primary": "#ffb2bf",
-                        "on-secondary-fixed": "#00201d",
-                        "primary-fixed": "#ffd9de",
-                        "on-primary-container": "#fff2f3",
-                        "surface-variant": "#e0e0ff",
-                        "primary-fixed-dim": "#ffb2bf",
-                        "on-error-container": "#93000a",
-                        "surface": "#fbf8ff",
-                        "on-surface-variant": "#5a4044",
-                        "outline": "#8e6f74",
-                        "on-primary": "#ffffff",
-                        "tertiary-fixed": "#ebdcff",
-                        "on-tertiary-container": "#fbf3ff",
-                        "secondary-fixed-dim": "#66d9cc",
-                        "on-secondary-container": "#006f66",
-                        "on-tertiary-fixed-variant": "#572e99",
-                        "error-container": "#ffdad6",
-                        "primary-container": "#d81b60",
-                        "surface-container-low": "#f4f2ff",
-                        "surface-bright": "#fbf8ff",
-                        "tertiary-fixed-dim": "#d4bbff",
-                        "surface-dim": "#d5d7ff",
-                        "on-primary-fixed": "#3f0016",
-                        "surface-container-lowest": "#ffffff",
-                        "inverse-surface": "#1b247f",
-                        "on-primary-fixed-variant": "#90003b",
-                        "secondary-fixed": "#84f5e8",
-                        "tertiary-container": "#825bc6",
-                        "on-background": "#000767",
-                        "on-error": "#ffffff",
-                        "inverse-on-surface": "#f1efff",
-                        "surface-tint": "#bc004f",
-                        "surface-container-highest": "#e0e0ff",
-                        "background": "#fbf8ff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "base": "8px",
-                        "container-padding-mobile": "16px",
-                        "gutter": "24px",
-                        "container-padding-desktop": "48px",
-                        "section-gap": "80px"
-                    },
-                    "fontFamily": {
-                        "body-lg": ["Manrope"],
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Manrope"],
-                        "label-sm": ["Manrope"],
-                        "body-sm": ["Manrope"],
-                        "headline-lg": ["Manrope"],
-                        "headline-xl": ["Manrope"],
-                        "label-md": ["Manrope"],
-                        "headline-lg-mobile": ["Manrope"],
-                        "serif": ["Playfair Display"]
-                    },
-                    "fontSize": {
-                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-lg": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
-                        "headline-xl": ["56px", {"lineHeight": "1.1", "letterSpacing": "-0.03em", "fontWeight": "800"}],
-                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
-                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
-                    }
-                },
-            },
-        }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        body {
-            font-family: 'Manrope', sans-serif;
-            background-color: #fbf8ff;
-            color: #000767;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        .section-anchor {
-            scroll-margin-top: 40px;
-        }
-        .tonal-elevation {
-            box-shadow: 0px 10px 40px rgba(26, 35, 126, 0.04);
-        }
-        .organic-mask {
-            clip-path: polygon(10% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 15%);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 40%;
-        }
-        .hero-blob {
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-        }
-        .transition-soft {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .botanical-pattern {
-            background-image: radial-gradient(#e0e0ff 1px, transparent 1px);
-            background-size: 32px 32px;
-        }
-        .header-glass {
-            backdrop-filter: blur(8px);
-            background-color: rgba(251, 248, 255, 0.8);
-        }
-        main {
-            overflow: hidden;
-        }
-        h1, h2, h3, h4, p, a, button, span {
-            letter-spacing: 0;
-        }
-        .organic-mask {
-            max-height: min(650px, 68vh);
-        }
-        .nav-toggle {
-            display: none;
-        }
-        @media (max-width: 1023px) {
-            .px-container-padding-desktop {
-                padding-left: 1.5rem !important;
-                padding-right: 1.5rem !important;
-            }
-            .py-section-gap {
-                padding-top: 4rem !important;
-                padding-bottom: 4rem !important;
-            }
-            nav {
-                min-height: 88px;
-                position: relative;
-            }
-            nav .justify-self-end {
-                gap: .5rem;
-            }
-            nav button {
-                padding: .65rem .9rem;
-                white-space: nowrap;
-            }
-            .doctor-login-action {
-                display: none !important;
-            }
-            .nav-toggle {
-                display: inline-flex !important;
-                align-items: center;
-                justify-content: center;
-                width: 42px;
-                height: 42px;
-                padding: 0 !important;
-                border: 1px solid #e3bdc3;
-                border-radius: 999px;
-                background: #ffffff;
-                color: #b0004a;
-                box-shadow: 0 10px 22px rgba(26, 35, 126, 0.07);
-            }
-            .nav-toggle[aria-expanded="true"] {
-                background: #fff2f3;
-            }
-            .book-appointment-action {
-                padding: .8rem 1.2rem !important;
-                font-size: 13px !important;
-                border-radius: .5rem !important;
-            }
-            .site-nav {
-                position: absolute;
-                top: calc(100% + .65rem);
-                left: 1.5rem;
-                right: 1.5rem;
-                display: none !important;
-                flex-direction: column;
-                align-items: stretch;
-                justify-content: flex-start;
-                gap: .35rem;
-                padding: .75rem;
-                border: 1px solid #e3bdc3;
-                border-radius: 1rem;
-                background: rgba(255, 255, 255, .98);
-                box-shadow: 0 22px 50px rgba(26, 35, 126, 0.14);
-                z-index: 60;
-            }
-            .site-nav.is-open {
-                display: flex !important;
-            }
-            .site-nav a {
-                display: flex;
-                align-items: center;
-                min-height: 42px;
-                border-radius: .75rem;
-                padding: .7rem .85rem;
-                background: #fbf8ff;
-            }
-            .site-nav a:hover {
-                background: #fff2f3;
-            }
-            .text-headline-xl {
-                font-size: 44px !important;
-                line-height: 1.08 !important;
-            }
-            .text-headline-lg {
-                font-size: 30px !important;
-                line-height: 1.18 !important;
-            }
-            .organic-mask {
-                height: 460px !important;
-                max-height: none !important;
-            }
-        }
-        @media (max-width: 767px) {
-            .px-container-padding-desktop {
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
-            }
-            .py-section-gap {
-                padding-top: 3.25rem !important;
-                padding-bottom: 3.25rem !important;
-            }
-            header {
-                position: sticky !important;
-            }
-            nav {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                min-height: 76px !important;
-                height: auto !important;
-                justify-content: space-between !important;
-                gap: .75rem !important;
-                padding: .75rem 1rem !important;
-            }
-            nav .justify-self-start {
-                font-size: 20px !important;
-                line-height: 1.2 !important;
-            }
-            nav .justify-self-end {
-                flex: 0 1 auto !important;
-            }
-            .book-appointment-action {
-                padding: .75rem .95rem !important;
-                font-size: 12px !important;
-                border-radius: .5rem !important;
-            }
-            .site-nav {
-                left: 1rem;
-                right: 1rem;
-                top: calc(100% + .5rem);
-            }
-            .text-headline-xl {
-                font-size: 36px !important;
-                line-height: 1.1 !important;
-            }
-            .text-headline-lg {
-                font-size: 27px !important;
-                line-height: 1.18 !important;
-            }
-            .text-headline-md {
-                font-size: 22px !important;
-                line-height: 1.25 !important;
-            }
-            .text-body-lg {
-                font-size: 16px !important;
-                line-height: 1.65 !important;
-            }
-            .min-h-\[90vh\] {
-                min-height: auto !important;
-            }
-            .pt-24 {
-                padding-top: 2rem !important;
-            }
-            .space-y-8 > :not([hidden]) ~ :not([hidden]) {
-                margin-top: 1.25rem;
-            }
-            .flex-wrap.gap-4 > button {
-                width: 100% !important;
-                justify-content: center;
-                padding: 1rem 1.25rem !important;
-            }
-            .organic-mask {
-                height: 360px !important;
-                clip-path: none !important;
-                border-radius: 1.5rem !important;
-                border-width: 8px !important;
-                transform: none !important;
-            }
-            .transform.translate-x-4 {
-                transform: none !important;
-            }
-            .grid {
-                gap: 1rem !important;
-            }
-            .p-8 {
-                padding: 1.25rem !important;
-            }
-            .p-10 {
-                padding: 1.5rem !important;
-            }
-            .mb-20 {
-                margin-bottom: 2.5rem !important;
-            }
-            .gap-20 {
-                gap: 2rem !important;
-            }
-            .rounded-\[40px\] {
-                border-radius: 1.5rem !important;
-            }
-            footer {
-                padding-top: 3.5rem !important;
-            }
-        }
-        @media (max-width: 420px) {
-            .text-headline-xl {
-                font-size: 31px !important;
-            }
-            nav .justify-self-start {
-                font-size: 18px !important;
-            }
-            .book-appointment-action {
-                padding-left: .75rem !important;
-                padding-right: .75rem !important;
-            }
-        }
-    </style>
-</head>
-<body class="bg-background text-on-background">
-<!-- TopNavBar -->
-<header class="fixed left-0 right-0 top-0 z-50 w-full transition-all duration-300 header-glass border-b border-surface-variant/30">
-<nav class="grid grid-cols-[auto_1fr_auto] items-center w-full h-24 px-6 md:px-10">
-<div class="justify-self-start text-headline-md font-bold text-primary tracking-tight whitespace-nowrap">Sumohan <span class="font-light italic text-on-surface">Care</span></div>
-<div class="site-nav hidden lg:flex items-center justify-center gap-10" id="site-nav">
-<a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#about">About us</a>
-<a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#doctors">Doctors</a>
-<a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#services">Services</a>
-<a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#testimonials">Testimonials</a>
-<a class="text-on-surface-variant font-semibold hover:text-primary transition-soft text-label-md" href="#contact">Contact</a>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Sumohan Care - Medico Surgical Centre and Maternity Home</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-surface-variant":"#594046","surface-container-highest":"#dae2fd","primary-container":"#be185d","surface-tint":"#b81059","primary-fixed":"#ffd9e0","surface-dim":"#d2d9f4","on-primary-fixed-variant":"#8f0042","on-secondary-fixed-variant":"#00504a","background":"#faf8ff","on-primary":"#ffffff","tertiary-container":"#00689e","tertiary-fixed":"#cce5ff","inverse-surface":"#283044","on-secondary":"#ffffff","surface-container":"#eaedff","secondary-fixed-dim":"#84d5cb","inverse-on-surface":"#eef0ff","secondary-container":"#9deee4","on-error-container":"#93000a","on-error":"#ffffff","outline":"#8d7075","on-tertiary":"#ffffff","inverse-primary":"#ffb1c3","secondary-fixed":"#a0f1e7","surface-container-low":"#f2f3ff","on-secondary-container":"#0c6f66","on-tertiary-fixed":"#001d31","surface":"#faf8ff","primary":"#970046","tertiary":"#004f7a","tertiary-fixed-dim":"#93ccff","error-container":"#ffdad6","secondary":"#016a62","outline-variant":"#e0bec4","on-tertiary-fixed-variant":"#004b73","error":"#ba1a1a","on-surface":"#131b2e","surface-container-lowest":"#ffffff","on-background":"#131b2e","on-primary-container":"#ffd5dd","surface-variant":"#dae2fd","on-secondary-fixed":"#00201d","surface-bright":"#faf8ff","primary-fixed-dim":"#ffb1c3","on-primary-fixed":"#3f0019","surface-container-high":"#e2e7ff","on-tertiary-container":"#c7e3ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin":"2rem","gutter":"1.5rem","space-md":"1rem","margin-mobile":"1rem","gutter-mobile":"1rem","space-xs":"0.25rem","space-sm":"0.5rem","space-xl":"2.5rem","space-lg":"1.5rem"},"fontFamily":{"label-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"display-lg-mobile":["Plus Jakarta Sans"],"title-md":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"display-lg":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"]},"fontSize":{"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"display-lg-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.015em","fontWeight":"700"}],"title-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-sm":["10px",{"lineHeight":"12px","letterSpacing":"0.03em","fontWeight":"600"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full px-margin-mobile lg:px-margin flex items-center justify-between h-20"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm group text-left" data-path="home" href="#"><div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm overflow-hidden"><img src="Logo/Sumohan%20Logo%20PNG.png" alt="Sumohan Care logo" class="w-full h-full object-contain p-0.5"/></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold leading-tight">Sumohan Care</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium tracking-wide">Est. 1984 • Shivamogga</span></div></a></div><nav class="hidden xl:flex items-center gap-space-lg" data-active-classes="text-primary font-bold"><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#about">About</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#doctors">Doctors</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#services">Service</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#consultation-planning">Planning</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#faqs">FAQs</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors" href="#contact">Contact</a></nav><div class="flex items-center gap-space-md"><a class="hidden md:flex items-center gap-space-xs font-label-md text-label-md text-primary hover:text-primary-container transition-colors py-space-xs px-space-sm rounded-lg hover:bg-surface-container-low" href="tel:+918618818012"><span class="material-symbols-outlined text-headline-sm text-primary">call</span><span>+91 86188 18012</span></a><a class="hidden sm:inline-flex items-center justify-center h-10 px-space-md bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md rounded-lg transition-colors shadow-sm" href="/patient/login.html?next=%2Fpatient%2Fbook-reason.html">Plan Consultation</a><a class="inline-flex items-center justify-center h-10 px-space-md bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary hover:text-on-secondary font-label-md text-label-md rounded-lg transition-colors" href="/doctor/login.html">Doctor Login</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Notification Pill Bar -->
+<section class="w-full bg-surface-container-high px-margin-mobile lg:px-margin py-2">
+<div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center justify-center w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-medium">Direct Telephone &amp; In-Person Consultations Available Daily in Shivamogga</span>
 </div>
-<div class="justify-self-end flex items-center gap-4">
-<button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-nav">
-<span class="material-symbols-outlined">menu</span>
-</button>
-<button class="doctor-login-action border border-outline-variant bg-white text-on-surface px-6 py-3 rounded-lg font-bold hover:bg-surface-container-low hover:text-primary transition-soft text-label-md active:scale-95" onclick="window.location.href='/doctor/login.html'">Doctor Login</button>
-<button class="book-appointment-action bg-primary text-on-primary px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:-translate-y-0.5 transition-soft text-label-md active:scale-95" onclick="window.location.href='/patient/login.html?next=/patient/book-reason.html'">Book Appointment</button>
+<div class="flex items-center gap-4">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+          OPD Timings: 9:30 AM – 7:30 PM (IST)
+        </span>
+<a class="text-primary font-bold hover:underline inline-flex items-center gap-1" href="tel:+918618818012">
+<span class="material-symbols-outlined text-[16px]">support_agent</span>
+          Direct Desk: +91 86188 18012
+        </a>
 </div>
-</nav>
-</header>
-<main>
-<!-- Hero Section -->
-<section class="relative min-h-[90vh] flex items-center pt-24 overflow-hidden bg-surface">
-<div class="absolute top-0 right-0 w-1/2 h-full bg-surface-container-low/50 -z-10 hero-blob opacity-50 scale-125 translate-x-1/4"></div>
-<div class="max-w-[1400px] mx-auto px-container-padding-desktop flex flex-col md:flex-row items-center gap-gutter relative">
-<div class="w-full md:w-3/5 space-y-8 z-10 py-12">
-<div class="inline-block px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-label-sm uppercase tracking-widest font-bold">FemmeCare Excellence</div>
-<h1 class="text-headline-xl text-on-surface leading-tight">
-                    Compassionate Care <br/>
-<span class="font-serif italic text-primary font-normal">for Every Stage</span> <br/>
-                    of Womanhood
-                </h1>
-<p class="text-body-lg text-on-surface-variant max-w-lg leading-relaxed">
-                    Experience world-class gynecological excellence in a serene, boutique environment designed specifically for your comfort and long-term health journey.
-                </p>
-<div class="flex flex-wrap gap-4 pt-4">
-<button class="bg-primary text-on-primary px-10 py-5 rounded-lg font-bold text-label-md hover:shadow-xl hover:-translate-y-1 transition-soft" onclick="window.location.href='/patient/login.html?next=/patient/book-reason.html'">Book Your Visit</button>
-<button class="bg-white border border-outline-variant text-on-surface px-10 py-5 rounded-lg font-bold text-label-md hover:bg-surface-container-low transition-soft" onclick="document.querySelector('#services').scrollIntoView({behavior: 'smooth'})">Explore Services</button>
 </div>
-<div class="flex items-center gap-6 pt-8">
-<div class="flex -space-x-3">
-<div class="w-12 h-12 rounded-full border-2 border-white bg-surface-container-high overflow-hidden"><img class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB2Cw_mgj7BIMzaUq650NlNsMyPksM838YmEARRpYf0lkWTnZMC7tZm-DLQ_HJPV4VPRpnxtMoaHBVx_RYf_ZX0gEkBBLD2vg4jBeObKZEFgKOSlWcK__gj-jdrbQ5Z1EaWwjUCAfaVUMIKqa8wRmTe-30pm2zg7UAFo9CC3cZrfhxuMz1qMH-3tOFqbf_0dvlgQ2UBUAQGmajPEBbTj_I5SsG6o7GBHwyOEwET6wxB6sgkiPj7dXfWiZcT-NG5a54xOvlp0JQyiM"/></div>
-<div class="w-12 h-12 rounded-full border-2 border-white bg-surface-container-high overflow-hidden"><img class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV5mjHpC8KDhv2CZSubIcJwA1VWza2o3DISaAiKW7wTjYP4uKsgn-MhmK5tloU-jYPX71ObZDpVMuhwqaCY1ddosE-BcqQOMFkxwT-8jFi6BdqzWsM-98rXeMjgWvv7fnP30EITYjUZ7FXhIe9YpgdRac940M4tK00H5LBznlS1-ys1mcOkMaljz4fXO5iPo6LNpYmgz2N7NZnlPAyHKbLvcOrbiSQ-Fkrn19USOetw_lLTzkrI7uwYS9Q-LwMYHl8IGqSb6wmcf4"/></div>
-<div class="w-12 h-12 rounded-full border-2 border-white bg-primary flex items-center justify-center text-on-primary text-label-sm font-bold">+10</div>
+</section>
+<!-- Hero Section (Dignified Minimalist Clinical Warmth) -->
+<section class="relative w-full bg-surface-container-lowest px-margin-mobile lg:px-margin pt-12 pb-16 overflow-hidden">
+<!-- Subtle Ambient Gradient -->
+<div class="absolute -right-32 -top-32 w-96 h-96 rounded-full bg-primary-fixed/30 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-32 bottom-0 w-96 h-96 rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none"></div>
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+<div class="lg:col-span-7 flex flex-col gap-5">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container text-primary w-fit shadow-sm">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">40+ Years of Medical Trust • Established 1984</span>
 </div>
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight leading-tight">
+          Compassionate Care Across Every Stage of <span class="text-primary underline decoration-primary-fixed decoration-4">Reproductive Health</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+          Sumohan Medico Surgical Centre and Maternity Home has guided generations of Malnad families with advanced obstetrics, high-precision gynecological surgery, and compassionate newborn care under specialized clinical stewardship.
+        </p>
+<!-- CTAs & Direct Helpline -->
+<div class="flex flex-wrap items-center gap-4 pt-2">
+<a class="inline-flex items-center justify-center gap-2 h-11 px-6 bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg rounded-lg shadow-sm transition-all duration-200" href="#consultation-planning">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+<span>Plan Consultation</span>
+</a>
+<a class="inline-flex items-center justify-center gap-2 h-11 px-6 bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg rounded-lg transition-all duration-200" href="#doctors">
+<span class="material-symbols-outlined text-[20px]">stethoscope</span>
+<span>Explore Doctors</span>
+</a>
+<div class="flex items-center gap-3 pl-2 sm:pl-4">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[20px]">emergency</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase tracking-wide text-on-surface-variant font-bold">24/7 Maternity Emergency</span>
+<a class="font-label-lg text-label-lg text-secondary font-bold hover:underline" href="tel:+918618818012">+91 86188 18012</a>
+</div>
+</div>
+</div>
+<!-- Facility Badges Grid -->
+<div class="pt-6">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold block mb-3">Key In-House Hospital Facilities</span>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low shadow-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">bed</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">22 Inpatient Beds</span>
+</div>
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low shadow-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">medical_services</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">OT &amp; Labour Theatres</span>
+</div>
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low shadow-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">child_care</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">NICU &amp; Neonatal Care</span>
+</div>
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low shadow-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">hotel</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">IPD &amp; OPD Care</span>
+</div>
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low shadow-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">chips</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">In-House Pathology Lab</span>
+</div>
+<div class="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low shadow-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">prescriptions</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">24/7 Hospital Pharmacy</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Hero Visual Display Mosaic -->
+<div class="lg:col-span-5 flex flex-col gap-4">
+<div class="relative rounded-xl overflow-hidden shadow-md bg-surface-container">
+<img class="w-full h-80 object-cover" data-alt="Warm, serene modern Indian maternity hospital ward with clean architectural aesthetic, soft natural daylight, state-of-the-art neonatal incubator, welcoming nursing desk, peaceful teal and ivory interior decor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYcAkHCO8Y2hcO9ijDNtZi61LZRje0v85daa-flNm0WasSxm8BNvhlbQAZzKrbPA69EoDYCBRHwkvDEiFVJgkAzFcFgiZXPmhLSDFYLnaBwCEv3J-cWTofk5HwMezCR622MurcYkewXRMMLtBSn3S_JadKnNsDKQPZPQrd254FnaR4oAznMhgPMaYxASraQHE8h-_TMpQLvR0TRfUYOnqF4a8AUVaChVN55K6k5Afb5xGn_TPqgc7C"/>
+<div class="absolute bottom-3 left-3 right-3 bg-surface-container-lowest/95 backdrop-blur-md p-3.5 rounded-lg shadow-sm flex items-center justify-between">
 <div>
-<div class="text-on-surface font-bold">Trusted by 5,000+ Women</div>
-<div class="text-body-sm text-on-surface-variant">Rated 4.9/5 from patient reviews</div>
+<p class="font-label-md text-label-md text-primary font-bold">Sumohan Medico Surgical Centre</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ANK Road, Achyutha Rao Layout, Shivamogga</p>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-primary-fixed text-on-primary-fixed font-semibold rounded-md">Reg. 1984</span>
 </div>
 </div>
+<!-- Metric Cards Grid -->
+<div class="grid grid-cols-2 gap-3">
+<div class="p-4 rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-1">
+<span class="font-headline-lg text-headline-lg text-primary font-bold">40+</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Years of Dedicated Care</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Continuously serving families across Shivamogga &amp; Malnad.</span>
 </div>
-<div class="w-full md:w-2/5 relative">
-<div class="relative z-10 transform translate-x-4">
-<img class="w-full h-[650px] object-cover organic-mask tonal-elevation border-[12px] border-white/40" data-alt="A serene and professionally lit photography of a female gynecologist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZSw-Xiu3l_zYEfa7Sch2igx4EU-6jVMpyTBmJMfmPq1iXexLfnKnvQDthhbx-aY-OyUdwDyI7HVhZ3jiQlm3KNekJbAlIiTMgK9mwiLir9QSdTkgAsOHtG2kk14gPa91_TKgXbVVt6PccbRhsVAlM9cvNRVXapk96O7Kg1v_JUANptewWCeHsWQN1DYlENhB4jzkkXLuHWJIChEDqpFq0q2-yXyd9OLSDcGqIZVZdVZVXlBTYZeV40FUUWeOgjqE_rgCe1ED08IA"/>
+<div class="p-4 rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-1">
+<span class="font-headline-lg text-headline-lg text-secondary font-bold">10,000+</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Safe Deliveries &amp; Procedures</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Grounded in surgical ethics and clinical thoroughness.</span>
+</div>
 </div>
 </div>
 </div>
 </section>
-<!-- About Us -->
-<section id="about" class="section-anchor bg-surface-container-low py-section-gap relative overflow-hidden">
-<div class="absolute inset-0 botanical-pattern opacity-10"></div>
-<div class="max-w-[1400px] mx-auto px-container-padding-desktop relative">
-<div class="max-w-2xl mx-auto text-center mb-16">
-<span class="text-primary font-bold text-label-sm uppercase tracking-[0.2em]">About us</span>
-<h2 class="text-headline-lg text-on-surface mt-4">A Calm, Complete Gynecology Care Experience</h2>
-<p class="text-on-surface-variant mt-4">Sumohan Care brings specialist-led consultations, clear follow-ups, and thoughtful digital support into one patient-first care journey.</p>
+<!-- About Section -->
+<section class="w-full bg-surface px-margin-mobile lg:px-margin py-16" id="about">
+<div class="max-w-7xl mx-auto flex flex-col gap-12">
+<div class="flex flex-col gap-3 text-center max-w-3xl mx-auto">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">Four Decades of Clinical Heritage</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">About Sumohan Medico Surgical Centre</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+          Pioneered in 1984 in Shivamogga, Sumohan Care was created to bring institutional maternity infrastructure and skilled gynecological surgery to families with transparent, respectful care.
+        </p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+<!-- Vision / Mission / Care Approach Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">visibility</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Our Vision</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Familiar, compassionate, and unwavering healing where every mother, infant, and patient experiences clinical safety alongside human dignity, regardless of clinical complexity.
+          </p>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3">
+<div class="w-12 h-12 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">task_alt</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Our Mission</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Delivering responsible, evidence-based specialist medical standards. We maintain strict ethical treatment protocols, modern surgical equipment, and continual patient-centered communication.
+          </p>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-3">
+<div class="w-12 h-12 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">volunteer_activism</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Care Approach</h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Bridging structured digital planning with in-person or direct telephone physician assessments, supported by 22 inpatient beds, round-the-clock labor suites, and on-site diagnostic labs.
+          </p>
+</div>
+</div>
+<!-- Hospital Core Disciplines vs Online Consultation Scope -->
+<div class="p-8 rounded-xl bg-surface-container-low shadow-sm">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<div class="lg:col-span-5 flex flex-col gap-3">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider font-bold">Comprehensive Inpatient &amp; Surgical Scope</span>
+<h4 class="font-headline-md text-headline-md text-on-surface font-bold">Hospital Clinical Disciplines</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              While our public booking portal organizes your initial triage across 12 specific outpatient categories, Sumohan Medico Surgical Centre operates full-time clinical teams across 5 fundamental medical hospital disciplines.
+            </p>
+</div>
+<div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+<div class="p-3.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[24px]">pregnant_woman</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Obstetrics &amp; Gynecology</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">High-risk pregnancy &amp; laparoscopic surgery.</p>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[24px]">child_friendly</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Pediatrics &amp; Neonatology</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">NICU, newborn immunization &amp; monitoring.</p>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[24px]">healing</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">General Surgery</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Elective &amp; emergency abdominal procedures.</p>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[24px]">stethoscope</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">General Medicine</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Comprehensive diagnostic workups &amp; IP care.</p>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-lowest shadow-sm flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[24px]">monitor_heart</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Anesthesiology &amp; Critical Care</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Continuous operative pain management &amp; ICU safety.</p>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-primary-container text-on-primary shadow-sm flex flex-col justify-center">
+<p class="font-label-md text-label-md font-bold">Need Immediate Admission?</p>
+<a class="font-body-sm text-body-sm text-on-primary-container hover:underline mt-1 inline-flex items-center gap-1" href="tel:+918618818012">
+<span>Call Hospital Triage</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5-Step Consultation Process -->
+<section class="w-full bg-surface-container-lowest px-margin-mobile lg:px-margin py-16">
+<div class="max-w-7xl mx-auto flex flex-col gap-10">
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">How Sumohan Care Works</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">5 Clear Steps to Doctor Consultation</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+          We ensure your records are accurately cataloged before the medical consultation takes place, respecting both your time and clinical thoroughness.
+        </p>
+</div>
+<!-- 5 Step Bento Layout -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
 <!-- Step 1 -->
-<div class="group relative flex flex-col items-center text-center p-8 bg-white/40 backdrop-blur rounded-2xl hover:bg-white transition-soft border border-white/50 hover:shadow-xl hover:-translate-y-2">
-<div class="absolute -top-4 -right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">01</div>
-<div class="w-16 h-16 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-soft">
-<span class="material-symbols-outlined text-[32px]">how_to_reg</span>
+<div class="p-5 rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-full bg-secondary-fixed text-secondary font-bold flex items-center justify-center font-headline-sm mb-4">
+              1
+            </div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Register</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Create your quick confidential profile with basic personal details, previous patient ID (if applicable), and contact information.
+            </p>
 </div>
-<h3 class="font-bold text-on-surface text-body-md mb-2">Register</h3>
-<p class="text-body-sm text-on-surface-variant">Create your secure patient profile.</p>
+<span class="font-label-sm text-label-sm text-secondary font-semibold mt-4">Simple patient intake</span>
 </div>
 <!-- Step 2 -->
-<div class="group relative flex flex-col items-center text-center p-8 bg-white/40 backdrop-blur rounded-2xl hover:bg-white transition-soft border border-white/50 hover:shadow-xl hover:-translate-y-2">
-<div class="absolute -top-4 -right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">02</div>
-<div class="w-16 h-16 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-soft">
-<span class="material-symbols-outlined text-[32px]">person_search</span>
+<div class="p-5 rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-full bg-secondary-fixed text-secondary font-bold flex items-center justify-center font-headline-sm mb-4">
+              2
+            </div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Choose Doctor</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Review verified specialist credentials across Obstetrics &amp; Laparoscopic Surgery, or opt for an automatic earliest opening.
+            </p>
 </div>
-<h3 class="font-bold text-on-surface text-body-md mb-2">Choose Doctor</h3>
-<p class="text-body-sm text-on-surface-variant">Select from our expert specialists.</p>
+<span class="font-label-sm text-label-sm text-secondary font-semibold mt-4">3 verified specialists</span>
 </div>
 <!-- Step 3 -->
-<div class="group relative flex flex-col items-center text-center p-8 bg-white/40 backdrop-blur rounded-2xl hover:bg-white transition-soft border border-white/50 hover:shadow-xl hover:-translate-y-2">
-<div class="absolute -top-4 -right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">03</div>
-<div class="w-16 h-16 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-soft">
-<span class="material-symbols-outlined text-[32px]">event_available</span>
+<div class="p-5 rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-full bg-secondary-fixed text-secondary font-bold flex items-center justify-center font-headline-sm mb-4">
+              3
+            </div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Select Slot</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Choose a convenient consultation window in Indian Standard Time (IST) that harmonizes with your schedule.
+            </p>
 </div>
-<h3 class="font-bold text-on-surface text-body-md mb-2">Select Slot</h3>
-<p class="text-body-sm text-on-surface-variant">Pick a time that fits your schedule.</p>
+<span class="font-label-sm text-label-sm text-secondary font-semibold mt-4">IST morning &amp; evening slots</span>
 </div>
 <!-- Step 4 -->
-<div class="group relative flex flex-col items-center text-center p-8 bg-white/40 backdrop-blur rounded-2xl hover:bg-white transition-soft border border-white/50 hover:shadow-xl hover:-translate-y-2">
-<div class="absolute -top-4 -right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">04</div>
-<div class="w-16 h-16 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-soft">
-<span class="material-symbols-outlined text-[32px]">check_circle</span>
+<div class="p-5 rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-full bg-secondary-fixed text-secondary font-bold flex items-center justify-center font-headline-sm mb-4">
+              4
+            </div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Confirm Booking</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Attach medical declarations or upload past lab scans (PDF/JPG/PNG up to 10MB) for the doctor's prior review.
+            </p>
 </div>
-<h3 class="font-bold text-on-surface text-body-md mb-2">Confirmation</h3>
-<p class="text-body-sm text-on-surface-variant">Instant booking notification.</p>
+<span class="font-label-sm text-label-sm text-secondary font-semibold mt-4">Secure &amp; encrypted</span>
 </div>
 <!-- Step 5 -->
-<div class="group relative flex flex-col items-center text-center p-8 bg-white/40 backdrop-blur rounded-2xl hover:bg-white transition-soft border border-white/50 hover:shadow-xl hover:-translate-y-2">
-<div class="absolute -top-4 -right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">05</div>
-<div class="w-16 h-16 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-soft">
-<span class="material-symbols-outlined text-[32px]">call</span>
+<div class="p-5 rounded-xl bg-primary-fixed/40 shadow-sm flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center font-headline-sm mb-4">
+              5
+            </div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Consultation</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Conducted manually via direct mobile telephone call with the doctor at your selected slot, ensuring immediate clarity.
+            </p>
 </div>
-<h3 class="font-bold text-on-surface text-body-md mb-2">Consultation</h3>
-<p class="text-body-sm text-on-surface-variant">Connect with your doctor easily.</p>
-</div>
-</div>
-</div>
-</section>
-<!-- Doctors Preview -->
-<section id="doctors" class="section-anchor py-section-gap bg-surface-container/30 overflow-hidden">
-<div class="max-w-[1400px] mx-auto px-container-padding-desktop">
-<div class="text-center mb-20">
-<span class="text-primary font-bold text-label-sm uppercase tracking-widest">Medical Team</span>
-<h2 class="text-headline-lg text-on-surface mt-4">Leading Global Specialists</h2>
-<p class="text-body-lg text-on-surface-variant mt-4 max-w-2xl mx-auto">A team of globally recognized experts committed to women's healthcare excellence and empathetic patient support.</p>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-<!-- Dr 1 -->
-<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group hover:-translate-y-4 transition-soft">
-<div class="h-80 overflow-hidden relative">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Senior female gynecologist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB2Cw_mgj7BIMzaUq650NlNsMyPksM838YmEARRpYf0lkWTnZMC7tZm-DLQ_HJPV4VPRpnxtMoaHBVx_RYf_ZX0gEkBBLD2vg4jBeObKZEFgKOSlWcK__gj-jdrbQ5Z1EaWwjUCAfaVUMIKqa8wRmTe-30pm2zg7UAFo9CC3cZrfhxuMz1qMH-3tOFqbf_0dvlgQ2UBUAQGmajPEBbTj_I5SsG6o7GBHwyOEwET6wxB6sgkiPj7dXfWiZcT-NG5a54xOvlp0JQyiM"/>
-<div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-6">
-<p class="text-white text-label-sm uppercase font-bold">New York, USA</p>
-</div>
-</div>
-<div class="p-8">
-<h4 class="font-bold text-on-surface text-body-lg">Dr. Elena Rossi</h4>
-<p class="text-primary font-bold text-label-sm uppercase mt-1">Senior Consultant</p>
-<div class="mt-6 pt-6 border-t border-surface-container flex items-center justify-between">
-<span class="text-body-sm text-on-surface-variant font-medium">15+ Yrs Exp</span>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-secondary text-[18px]">star_rate</span>
-<span class="text-body-sm font-bold">4.9</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Dr 2 -->
-<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group hover:-translate-y-4 transition-soft">
-<div class="h-80 overflow-hidden relative">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Female obstetrician" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV5mjHpC8KDhv2CZSubIcJwA1VWza2o3DISaAiKW7wTjYP4uKsgn-MhmK5tloU-jYPX71ObZDpVMuhwqaCY1ddosE-BcqQOMFkxwT-8jFi6BdqzWsM-98rXeMjgWvv7fnP30EITYjUZ7FXhIe9YpgdRac940M4tK00H5LBznlS1-ys1mcOkMaljz4fXO5iPo6LNpYmgz2N7NZnlPAyHKbLvcOrbiSQ-Fkrn19USOetw_lLTzkrI7uwYS9Q-LwMYHl8IGqSb6wmcf4"/>
-<div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-6">
-<p class="text-white text-label-sm uppercase font-bold">London, UK</p>
-</div>
-</div>
-<div class="p-8">
-<h4 class="font-bold text-on-surface text-body-lg">Dr. Sarah Jenkins</h4>
-<p class="text-primary font-bold text-label-sm uppercase mt-1">Fertility Specialist</p>
-<div class="mt-6 pt-6 border-t border-surface-container flex items-center justify-between">
-<span class="text-body-sm text-on-surface-variant font-medium">12+ Yrs Exp</span>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-secondary text-[18px]">star_rate</span>
-<span class="text-body-sm font-bold">4.8</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Dr 3 -->
-<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group hover:-translate-y-4 transition-soft">
-<div class="h-80 overflow-hidden relative">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Female gynecologist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3JIRlvPVszPJPA7vBjdAcV-ABNoOVxnrHWlhQ0wSwsEx9tnAsj4H4PjfaQlH7Z8lBsT0cjb7uapyMZIdRe1vnI4fyjU3Aw3eDfuz7U-hGHtCgZ8g4RysZhterDOD5uhiZWHNpSgNldqXJNa0AfneTr3srfqXMsS5QuTICjnFccHz1UHyS9GGLueWZ11U9zZ-hApQ7Yb1cyZWuTpcXFyV1n_gwWKWO4qxGiaUjUvB1JwmzcSNKJQYNjytO93oX6sNxdAuGlHf9ALM"/>
-<div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-6">
-<p class="text-white text-label-sm uppercase font-bold">Mumbai, IN</p>
-</div>
-</div>
-<div class="p-8">
-<h4 class="font-bold text-on-surface text-body-lg">Dr. Maya Patel</h4>
-<p class="text-primary font-bold text-label-sm uppercase mt-1">Adolescent Health</p>
-<div class="mt-6 pt-6 border-t border-surface-container flex items-center justify-between">
-<span class="text-body-sm text-on-surface-variant font-medium">8+ Yrs Exp</span>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-secondary text-[18px]">star_rate</span>
-<span class="text-body-sm font-bold">5.0</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Dr 4 -->
-<div class="bg-white rounded-2xl overflow-hidden tonal-elevation group hover:-translate-y-4 transition-soft">
-<div class="h-80 overflow-hidden relative">
-<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Female specialist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuNLRLO985-Cjl-EhaGUC2GBYgvW5S0FoUZRp1cHi6N7D886olWBBNap6N8JKanRjRhnUwBKDt-kLZcLSBWosNdzUZmR1x53x6zOUac32uH2iMuMAbyCv2KK16R3KAfbWVKpuAki8ht5qdPcDjCjyIqXZ_p6qnMphIaqa14cuMRYZtuSnopcMxcFrKLzBNmgG_hQUkh1UuxeO43xzd-Th6gWAi-BP4Lrt8_zojO7iojGIgVPtp9ntCMIuaUZMkUrr4DAbI5uFWcjI"/>
-<div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-6">
-<p class="text-white text-label-sm uppercase font-bold">Toronto, CA</p>
-</div>
-</div>
-<div class="p-8">
-<h4 class="font-bold text-on-surface text-body-lg">Dr. Chloe Chen</h4>
-<p class="text-primary font-bold text-label-sm uppercase mt-1">Maternity Lead</p>
-<div class="mt-6 pt-6 border-t border-surface-container flex items-center justify-between">
-<span class="text-body-sm text-on-surface-variant font-medium">20+ Yrs Exp</span>
-<div class="flex items-center gap-1">
-<span class="material-symbols-outlined text-secondary text-[18px]">star_rate</span>
-<span class="text-body-sm font-bold">4.9</span>
-</div>
-</div>
-</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4">Direct personal call</span>
 </div>
 </div>
 </div>
 </section>
-<!-- Services Grid -->
-<section id="services" class="section-anchor py-section-gap bg-surface relative">
-<div class="max-w-[1400px] mx-auto px-container-padding-desktop">
-<div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-gutter">
-<div class="max-w-2xl">
-<span class="text-secondary font-bold text-label-sm uppercase tracking-widest">Our Expertise</span>
-<h2 class="text-headline-lg text-on-surface mt-4">Specialized Care for Every Woman</h2>
+<!-- Doctors Roster Section -->
+<section class="w-full bg-surface px-margin-mobile lg:px-margin py-16" id="doctors">
+<div class="max-w-7xl mx-auto flex flex-col gap-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex flex-col gap-2 max-w-2xl">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Resident Clinical Faculty</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Sumohan Medical Specialists</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Meet our practicing gynecologists and surgeons. Sumohan maintains strict clinical authenticity: consult fees are coordinated transparently with the hospital reception.
+          </p>
 </div>
-<button class="group text-primary font-bold text-label-md flex items-center gap-2 px-6 py-3 rounded-lg border border-primary/10 hover:bg-primary/5 transition-soft">
-                    View All Services <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
+<!-- Search & Filter Controls -->
+<div class="flex flex-wrap items-center gap-3">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full h-10 pl-9 pr-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="doctor-search" onkeyup="filterDoctors()" placeholder="Search by name, spec..." type="text"/>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<!-- Pregnancy -->
-<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[120px] text-secondary">pregnant_woman</span>
-</div>
-<div class="relative z-10 flex items-center gap-4 mb-5">
-<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[28px]">pregnant_woman</span>
-</div>
-<h3 class="text-headline-md text-on-surface">Pregnancy</h3>
-</div>
-<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Expert prenatal, natal, and postpartum care to ensure a healthy journey for you and your baby.</p>
-<!-- Original link: # -->
-<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
-</div>
-<!-- PCOD/PCOS -->
-<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[120px] text-secondary">clinical_notes</span>
-</div>
-<div class="relative z-10 flex items-center gap-4 mb-5">
-<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[28px]">clinical_notes</span>
-</div>
-<h3 class="text-headline-md text-on-surface">PCOD/PCOS</h3>
-</div>
-<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Personalized management plans for hormonal balance and metabolic health restoration.</p>
-<!-- Original link: # -->
-<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
-</div>
-<!-- Menstrual issues -->
-<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[120px] text-secondary">cycle</span>
-</div>
-<div class="relative z-10 flex items-center gap-4 mb-5">
-<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[28px]">cycle</span>
-</div>
-<h3 class="text-headline-md text-on-surface">Menstrual Issues</h3>
-</div>
-<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Treatment for irregular cycles, heavy bleeding, and painful periods with compassionate care.</p>
-<!-- Original link: # -->
-<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
-</div>
-<!-- Fertility -->
-<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[120px] text-secondary">eco</span>
-</div>
-<div class="relative z-10 flex items-center gap-4 mb-5">
-<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[28px]">eco</span>
-</div>
-<h3 class="text-headline-md text-on-surface">Fertility</h3>
-</div>
-<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Advanced reproductive support and fertility counseling for couples aspiring to parenthood.</p>
-<!-- Original link: # -->
-<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
-</div>
-<!-- General Gyn -->
-<div class="group bg-white p-7 rounded-xl tonal-elevation border border-transparent hover:border-secondary/20 hover:-translate-y-2 transition-soft relative overflow-hidden">
-<div class="absolute -right-3 -bottom-3 opacity-[0.03] group-hover:scale-125 transition-transform">
-<span class="material-symbols-outlined text-[120px] text-secondary">female</span>
-</div>
-<div class="relative z-10 flex items-center gap-4 mb-5">
-<div class="w-14 h-14 shrink-0 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
-<span class="material-symbols-outlined text-[28px]">female</span>
-</div>
-<h3 class="text-headline-md text-on-surface">General Gynecology</h3>
-</div>
-<p class="relative z-10 text-body-md text-on-surface-variant mb-5 leading-relaxed">Routine checkups, cancer screenings, and preventive health for women of all ages.</p>
-<!-- Original link: # -->
-<a class="relative z-10 inline-flex items-center text-secondary font-bold text-label-md group/link" href="404.html">Learn More <span class="material-symbols-outlined ml-1 text-[18px] group-hover/link:translate-x-1 transition-transform">chevron_right</span></a>
-</div>
-<!-- Special Case CTA -->
-<div class="bg-primary-container p-7 rounded-xl flex flex-col justify-center items-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-primary hover:scale-110 transition-transform duration-700 opacity-90"></div>
-<div class="relative z-10">
-<h3 class="text-headline-md text-on-primary mb-6">Need a specialized consultation?</h3>
-<p class="text-on-primary/80 mb-8 text-body-sm">Our team is available 24/7 for urgent inquiries and guidance.</p>
-<button class="bg-white text-primary px-10 py-4 rounded-lg font-bold text-label-md shadow-lg hover:shadow-xl transition-soft hover:-translate-y-1">Chat with Us</button>
+<select class="h-10 px-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="doctor-language" onchange="filterDoctors()">
+<option value="all">All Languages</option>
+<option value="kannada">Kannada</option>
+<option value="english">English</option>
+<option value="hindi">Hindi</option>
+</select>
 </div>
 </div>
-</div>
-</div>
-</section>
-<!-- Testimonials -->
-<section id="testimonials" class="section-anchor py-section-gap bg-surface relative overflow-hidden">
-<div class="max-w-[1400px] mx-auto px-container-padding-desktop">
-<div class="relative flex flex-col md:flex-row items-center gap-20 bg-surface-container-high/20 rounded-[40px] p-12 md:p-24 border border-surface-variant/20">
-<div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
-<button aria-label="Previous testimonial" class="testimonial-prev absolute left-6 top-1/2 z-30 hidden h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-outline-variant bg-white text-primary shadow-lg transition-soft hover:bg-primary hover:text-on-primary md:flex" type="button">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button aria-label="Next testimonial" class="testimonial-next absolute right-6 top-1/2 z-30 hidden h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-outline-variant bg-white text-primary shadow-lg transition-soft hover:bg-primary hover:text-on-primary md:flex" type="button">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-<div class="w-full md:w-1/3 relative">
-<div class="relative z-10 w-full aspect-square rounded-[2rem] overflow-hidden tonal-elevation border-[8px] border-white group">
-<img id="testimonial-image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Patient portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVpSmvmU1i5XqJP1uDhcP80K5aWWqklImwfbuMCyEWZDV1HTrUJ5HvkGmi_tv1vfpbrmW-oH89k07x-z5WzLkFhg8ii1B3e5msNesV8GG1JmRYeBSWjlSiLLIeLRN4oQXT_yvd0H1yE12ZaPPDWgnHIhVPMNhVd8X3Ui8cQvZdMQWevalIUw6NLDykv5z4V1nC72EzKcK5puIdWQ9rDPv1QMsrZ2F-NQiIFMis-GWuCXBfeipTE0FoXb5Dj-ryMGMQoizQ8XJU66o"/>
-</div>
-<div class="absolute -bottom-6 -right-6 w-24 h-24 bg-secondary rounded-2xl flex items-center justify-center text-on-secondary shadow-xl z-20">
-<span class="material-symbols-outlined text-[48px]">format_quote</span>
-</div>
-</div>
-<div class="w-full md:w-2/3 space-y-8">
-<div class="flex gap-1 text-secondary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-</div>
-<h3 id="testimonial-quote" class="text-headline-lg font-serif italic text-on-surface leading-tight">
-                        "The level of care I received at Sumohan Care was truly exceptional. From my first prenatal checkup to the delivery of my daughter, I've never felt so heard in a medical setting."
-                    </h3>
+<!-- Doctor Cards Grid (Exact 3 Doctors) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="doctors-container">
+<!-- Dr. Abhay M Patel -->
+<div class="doctor-card p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1" data-languages="kannada english hindi" data-name="abhay m patel" data-spec="obstetrics and gynecology">
+<div class="flex flex-col gap-4">
 <div class="flex items-center gap-4">
-<div class="h-px w-12 bg-outline-variant"></div>
+<img src="/assets/images/doctors/abhay-m-patel.jpeg" alt="Dr. Abhay M Patel" class="w-[35%] aspect-square rounded-full object-cover object-top shrink-0 shadow-sm" loading="lazy"/>
 <div>
-<p id="testimonial-name" class="font-bold text-on-surface text-body-lg">Jessica Thompson</p>
-<p id="testimonial-meta" class="text-on-surface-variant text-body-sm uppercase tracking-widest font-semibold">Patient for 4 Years</p>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Dr. Abhay M Patel</h3>
+<p class="font-label-md text-label-md text-primary font-semibold">MBBS, MS (OBG)</p>
+<span class="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Obstetrics and Gynecology</span>
 </div>
 </div>
-<div class="flex items-center gap-4 md:hidden">
-<button aria-label="Previous testimonial" class="testimonial-prev h-12 w-12 rounded-full border border-outline-variant bg-white text-primary shadow-md transition-soft hover:bg-primary hover:text-on-primary" type="button">
-<span class="material-symbols-outlined">chevron_left</span>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Consultation Fee</span>
+<span class="text-on-surface font-semibold">Contact hospital for details</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Languages</span>
+<span class="text-on-surface font-medium">Kannada, English, Hindi</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Availability Mode</span>
+<span class="text-primary font-semibold">In-Person &amp; Phone (IST)</span>
+</div>
+</div>
+</div>
+<div class="pt-5 mt-4 flex items-center gap-3">
+<button class="w-full h-10 px-4 bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5" onclick="openDoctorModal('Dr. Abhay M Patel', 'MBBS, MS (OBG)', 'Obstetrics and Gynecology')">
+<span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+<span>View Details &amp; Slots</span>
 </button>
-<button aria-label="Next testimonial" class="testimonial-next h-12 w-12 rounded-full border border-outline-variant bg-white text-primary shadow-md transition-soft hover:bg-primary hover:text-on-primary" type="button">
-<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+<!-- Dr. Hemamohan -->
+<div class="doctor-card p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1" data-languages="kannada english hindi" data-name="hemamohan" data-spec="obstetrics and gynecology laparoscopic surgeon mba">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<img src="/assets/images/doctors/hemamohan.jpeg" alt="Dr. Hemamohan" class="w-[35%] aspect-square rounded-full object-cover object-top shrink-0 shadow-sm" loading="lazy"/>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Dr. Hemamohan</h3>
+<p class="font-label-md text-label-md text-primary font-semibold">MBBS, MD (OBG), Laparoscopic Surgeon, MBA</p>
+<span class="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-primary-fixed/40 text-on-primary-fixed font-label-sm text-label-sm">Senior Laparoscopic Surgeon</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Consultation Fee</span>
+<span class="text-on-surface font-semibold">Contact hospital for details</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Languages</span>
+<span class="text-on-surface font-medium">Kannada, English, Hindi</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Availability Mode</span>
+<span class="text-primary font-semibold">In-Person &amp; Phone (IST)</span>
+</div>
+</div>
+</div>
+<div class="pt-5 mt-4 flex items-center gap-3">
+<button class="w-full h-10 px-4 bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5" onclick="openDoctorModal('Dr. Hemamohan', 'MBBS, MD (OBG), Laparoscopic Surgeon, MBA (Hospital Admin)', 'Obstetrics and Gynecology &amp; Advanced Laparoscopy')">
+<span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+<span>View Details &amp; Slots</span>
+</button>
+</div>
+</div>
+<!-- Dr. Sahana Hegde -->
+<div class="doctor-card p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between transition-transform duration-200 hover:-translate-y-1" data-languages="kannada english" data-name="sahana hegde" data-spec="obstetrics and gynecology">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<img src="/assets/images/doctors/sahana-hegde.jpeg" alt="Dr. Sahana Hegde" class="w-[35%] aspect-square rounded-full object-cover object-top shrink-0 shadow-sm" loading="lazy"/>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Dr. Sahana Hegde</h3>
+<p class="font-label-md text-label-md text-primary font-semibold">MBBS, MD (OBG)</p>
+<span class="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Obstetrics and Gynecology</span>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Consultation Fee</span>
+<span class="text-on-surface font-semibold">Contact hospital for details</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Languages</span>
+<span class="text-on-surface font-medium">Kannada, English</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Availability Mode</span>
+<span class="text-primary font-semibold">In-Person &amp; Phone (IST)</span>
+</div>
+</div>
+</div>
+<div class="pt-5 mt-4 flex items-center gap-3">
+<button class="w-full h-10 px-4 bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5" onclick="openDoctorModal('Dr. Sahana Hegde', 'MBBS, MD (OBG)', 'Obstetrics and Gynecology')">
+<span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+<span>View Details &amp; Slots</span>
 </button>
 </div>
 </div>
 </div>
 </div>
 </section>
-</main>
-<!-- Footer -->
-<footer id="contact" class="section-anchor bg-surface-container-highest/50 pt-24 border-t border-surface-variant/30">
-<div class="max-w-[1400px] mx-auto px-container-padding-desktop">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 pb-20">
-<div class="space-y-8">
-<div class="text-headline-md font-bold text-primary">Sumohan <span class="font-light italic text-on-surface">Care</span></div>
-<p class="text-body-md text-on-surface-variant leading-relaxed">
-                    Leading the way in gynecological excellence and empathetic patient care for women worldwide. Your health, our priority.
-                </p>
-<div class="flex gap-4">
-<a class="w-10 h-10 rounded-full bg-surface-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-on-primary transition-soft" href="#"><span class="material-symbols-outlined">public</span></a>
-<a class="w-10 h-10 rounded-full bg-surface-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-on-primary transition-soft" href="#"><span class="material-symbols-outlined">mail</span></a>
-<a class="w-10 h-10 rounded-full bg-surface-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-primary hover:text-on-primary transition-soft" href="#"><span class="material-symbols-outlined">call</span></a>
-</div>
+<!-- Interactive Doctor Availability Modal (Preview / Scheduler) -->
+<div class="fixed inset-0 z-50 bg-inverse-surface/60 backdrop-blur-sm hidden items-center justify-center p-4" id="doctor-modal">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+<div class="p-6 bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">event_available</span>
 </div>
 <div>
-<h5 class="text-label-md font-bold text-on-surface mb-8 uppercase tracking-widest">Contact</h5>
-<ul class="space-y-4">
-<li class="text-on-surface-variant text-body-sm flex gap-3"><span class="material-symbols-outlined text-primary text-[20px]">location_on</span><span>Sumohan Care, Main Clinic</span></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm flex gap-3" href="tel:+919876543210"><span class="material-symbols-outlined text-primary text-[20px]">call</span><span>+91 98765 43210</span></a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm flex gap-3" href="mailto:care@aurahealth.example"><span class="material-symbols-outlined text-primary text-[20px]">mail</span><span>care@aurahealth.example</span></a></li>
-<li class="text-on-surface-variant text-body-sm flex gap-3"><span class="material-symbols-outlined text-primary text-[20px]">schedule</span><span>Mon-Sat, 9:00 AM - 7:30 PM</span></li>
-</ul>
+<h4 class="font-title-md text-title-md text-on-surface font-bold" id="modal-doctor-name">Doctor Availability</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant" id="modal-doctor-qual">Specialist Profile</p>
 </div>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container-high flex items-center justify-center" onclick="closeDoctorModal()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="p-6 flex flex-col gap-4">
 <div>
-<h5 class="text-label-md font-bold text-on-surface mb-8 uppercase tracking-widest">Quick Links</h5>
-<ul class="space-y-4">
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="#about">About us</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="#doctors">Doctors</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="#services">Services</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="#testimonials">Testimonials</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="#contact">Contact</a></li>
-</ul>
+<label class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold block mb-1">Upcoming IST Slot Schedule</label>
+<div class="grid grid-cols-2 gap-2 mt-2">
+<button class="slot-pill p-2 rounded-lg bg-surface-container-low hover:bg-primary-fixed text-left transition-colors" onclick="selectSlot(this)" type="button">
+<span class="block font-label-md text-label-md font-bold text-on-surface">Tomorrow (Morning)</span>
+<span class="block font-body-sm text-body-sm text-primary">10:30 AM – 11:30 AM IST</span>
+</button>
+<button class="slot-pill p-2 rounded-lg bg-surface-container-low hover:bg-primary-fixed text-left transition-colors" onclick="selectSlot(this)" type="button">
+<span class="block font-label-md text-label-md font-bold text-on-surface">Tomorrow (Afternoon)</span>
+<span class="block font-body-sm text-body-sm text-primary">02:00 PM – 03:00 PM IST</span>
+</button>
+<button class="slot-pill p-2 rounded-lg bg-surface-container-low hover:bg-primary-fixed text-left transition-colors" onclick="selectSlot(this)" type="button">
+<span class="block font-label-md text-label-md font-bold text-on-surface">Day After (Evening)</span>
+<span class="block font-body-sm text-body-sm text-primary">05:30 PM – 06:30 PM IST</span>
+</button>
+<button class="slot-pill p-2 rounded-lg bg-surface-container-low hover:bg-primary-fixed text-left transition-colors" onclick="selectSlot(this)" type="button">
+<span class="block font-label-md text-label-md font-bold text-on-surface">Hospital OPD Walk-in</span>
+<span class="block font-body-sm text-body-sm text-primary font-semibold">Token on arrival</span>
+</button>
 </div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">call</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Phone consultations are confirmed via mobile call by the hospital medical desk. Payments and specific timing confirmations are handled through direct hospital coordination.
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-3 pt-2">
+<button class="w-1/3 h-10 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md" onclick="closeDoctorModal()" type="button">Close</button>
+<button class="w-2/3 h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold shadow-sm transition-colors" id="modal-confirm-btn" onclick="applyDoctorAndProceed()" type="button">
+            Book Consultation with Doctor
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- All Twelve (12) Consultation Services Section -->
+<section class="w-full bg-surface-container-lowest px-margin-mobile lg:px-margin py-16" id="services">
+<div class="max-w-7xl mx-auto flex flex-col gap-10">
+<div class="flex flex-col gap-2 max-w-3xl">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">12 Comprehensive Consultation Streams</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Specialized Care Consultation Categories</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Click any clinical pathway below to instantly pre-select the category in your consultation booking plan.
+        </p>
+</div>
+<!-- 4-Column Grid for All 12 Services -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- 1. Obstetrics -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Obstetrics (pregnancy)')" type="button">
 <div>
-<h5 class="text-label-md font-bold text-on-surface mb-8 uppercase tracking-widest">Legal &amp; Account</h5>
-<ul class="space-y-4">
-<!-- Original link: # -->
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="404.html">Privacy Policy</a></li>
-<!-- Original link: # -->
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="404.html">Terms of Service</a></li>
-<!-- Original link: # -->
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="404.html">Consent Terms</a></li>
-<!-- Original link: # -->
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="404.html">Patient Rights</a></li>
-<!-- Original link: # -->
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="404.html">Contact Support</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="/patient/login.html">Patient Login</a></li>
-<li><a class="text-on-surface-variant hover:text-primary transition-soft text-body-sm" href="/doctor/login.html">Doctor Login</a></li>
-</ul>
+<div class="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">pregnant_woman</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Obstetrics (Pregnancy)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Pregnancy care, antenatal visits, and questions during pregnancy.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 2. Gynecology -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Gynecology')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">female</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Gynecology</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Gynecological concerns and ongoing reproductive health.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 3. Male Infertility Consultation -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Male infertility consultation')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">male</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Male Infertility</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Male fertility concerns, previous investigations, and next steps.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 4. Female Infertility Consultation -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Female infertility consultation')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">vital_signs</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Female Infertility</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Female fertility concerns, relevant reports, and further evaluation.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 5. General Check-up -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('General check-up')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest text-primary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">health_and_safety</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">General Check-up</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Routine health consultation and a review of current concerns.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 6. Postnatal Consultation -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Postnatal consultation')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">child_care</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Postnatal Consultation</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Recovery and health concerns after childbirth.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 7. Family Planning / Contraception -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Family planning / Contraception')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">diversity_1</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Family Planning</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Family planning and contraception guidance and options.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 8. Menopause -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Menopause')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest text-tertiary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">thermostat</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Menopause</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Menopause symptoms and related midlife health concerns.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 9. Menstrual Problems -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Menstrual problems')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">calendar_today</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Menstrual Problems</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Cycle changes, painful periods, heavy bleeding, or missed periods.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 10. Discharge PV -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Discharge PV')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed text-secondary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">water_drop</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Discharge PV</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Vaginal discharge and associated clinical symptoms.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 11. PMOS/PCOS -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('PMOS/PCOS')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed text-tertiary flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">donut_small</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">PMOS/PCOS</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              PMOS/PCOS concerns, cycle history, and relevant investigations.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
+<!-- 12. Other Concerns -->
+<button class="text-left p-5 rounded-xl bg-surface-container-low hover:bg-surface-container shadow-sm transition-all duration-200 group flex flex-col justify-between" onclick="selectServiceCard('Other Concerns')" type="button">
+<div>
+<div class="w-10 h-10 rounded-lg bg-surface-container text-on-surface-variant flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[22px]">contact_support</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-1.5">Other Concerns</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Other concerns requiring appropriate triage and clinical consultation.
+            </p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold mt-4 inline-flex items-center gap-1">
+<span>Pre-select Category</span>
+<span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+</span>
+</button>
 </div>
 </div>
-<div class="py-10 border-t border-surface-variant/30 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-label-sm text-on-surface-variant">© 2026 Ekathva Innvoations Pvt Ltd. All Rights Reserved.</p>
-<p class="text-label-sm text-on-surface-variant flex items-center gap-2">Designed with <span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">favorite</span> for Womanhood</p>
+</section>
+<!-- Consultation Planning Interactive Section -->
+<section class="w-full bg-surface px-margin-mobile lg:px-margin py-16 scroll-mt-20" id="consultation-planning">
+<div class="max-w-5xl mx-auto flex flex-col gap-8">
+<div class="p-8 md:p-10 rounded-2xl bg-surface-container-lowest shadow-md">
+<div class="flex flex-col gap-2 mb-8">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span class="uppercase tracking-wider font-bold">Step-by-Step Triage Tool</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Consultation Planning Form</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Configure your intake parameters here. Your choices will be directly preserved when you advance to the final patient booking portal.
+          </p>
+</div>
+<form class="flex flex-col gap-6" id="planning-form" onsubmit="handlePlanningSubmit(event)">
+<!-- Consultation Type Selector (New vs Follow-Up) -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface font-bold">Select Consultation Type</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<label class="flex items-center gap-3 p-3.5 rounded-lg bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
+<input checked="" class="accent-primary w-4 h-4" name="consultation-type" onchange="toggleFollowUpField()" type="radio" value="New Consultation"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">New Consultation</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">First-time consultation or new clinical presentation</span>
+</div>
+</label>
+<label class="flex items-center gap-3 p-3.5 rounded-lg bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
+<input class="accent-primary w-4 h-4" name="consultation-type" onchange="toggleFollowUpField()" type="radio" value="Follow-Up Consultation"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Follow-Up Consultation</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Ongoing care under existing Sumohan case record</span>
+</div>
+</label>
 </div>
 </div>
-<p class="aura-developer-credit w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
-</footer>
+<!-- Conditional Follow-Up Case Reference Input -->
+<div class="hidden flex flex-col gap-1.5 p-4 rounded-lg bg-surface-container" id="follow-up-container">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="case-reference">Previous Hospital Case ID / OPD Slip Number</label>
+<input class="h-10 px-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="case-reference" placeholder="e.g., SMC-1984-XXXX or Mobile number linked to file" type="text"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">This allows the attending physician to retrieve your past operative and sonography records.</span>
+</div>
+<!-- Category and Preferred Doctor Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="plan-category">Consultation Category (12 Services)</label>
+<select class="h-11 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="plan-category">
+<option value="Obstetrics (pregnancy)">Obstetrics (pregnancy)</option>
+<option value="Gynecology">Gynecology</option>
+<option value="Male infertility consultation">Male infertility consultation</option>
+<option value="Female infertility consultation">Female infertility consultation</option>
+<option value="General check-up">General check-up</option>
+<option value="Postnatal consultation">Postnatal consultation</option>
+<option value="Family planning / Contraception">Family planning / Contraception</option>
+<option value="Menopause">Menopause</option>
+<option value="Menstrual problems">Menstrual problems</option>
+<option value="Discharge PV">Discharge PV</option>
+<option value="PMOS/PCOS">PMOS/PCOS</option>
+<option value="Other Concerns">Other Concerns</option>
+</select>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="plan-doctor">Preferred Specialist</label>
+<select class="h-11 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="plan-doctor">
+<option value="Any Available Specialist">Any Available Specialist (Earliest Slot)</option>
+<option value="Dr. Abhay M Patel">Dr. Abhay M Patel | MBBS, MS (OBG)</option>
+<option value="Dr. Hemamohan">Dr. Hemamohan | MBBS, MD (OBG), Laparoscopic Surgeon</option>
+<option value="Dr. Sahana Hegde">Dr. Sahana Hegde | MBBS, MD (OBG)</option>
+</select>
+</div>
+</div>
+<!-- Medical Record Upload Field Note -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]">upload_file</span>
+<span>Laboratory Reports &amp; Imaging</span>
+</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              You can upload digital scans of your ultrasounds, blood work, or discharge summaries (PDF, JPG, PNG up to 10MB) during final booking confirmation on the next screen.
+            </p>
+</div>
+<!-- Action Submission -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">lock</span>
+<span>Selection carried seamlessly into Patient Portal</span>
+</div>
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-8 bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg rounded-lg shadow-sm transition-colors" type="submit">
+<span>Continue to Patient Portal</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Simulated Portal Transition Feedback -->
+<div class="hidden mt-6 p-4 rounded-xl bg-primary-fixed/40 text-on-primary-fixed flex items-center gap-3" id="plan-success-box">
+<span class="material-symbols-outlined text-primary text-[24px]">task_alt</span>
+<div>
+<p class="font-label-md text-label-md font-bold text-on-primary-fixed" id="plan-summary-text">Choices locked in.</p>
+<p class="font-body-sm text-body-sm text-on-primary-fixed">Redirecting you to complete slot verification and phone consultation link...</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Frequently Asked Questions (Accordion) -->
+<section class="w-full bg-surface-container-lowest px-margin-mobile lg:px-margin py-16" id="faqs">
+<div class="max-w-4xl mx-auto flex flex-col gap-8">
+<div class="flex flex-col gap-2 text-center">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Clear Clinical Guidance</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Frequently Asked Questions</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Answers to questions regarding patient registration, follow-up linkage, phone consultations, and hospital visit coordination.
+        </p>
+</div>
+<div class="flex flex-col gap-3">
+<!-- FAQ 1 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+<button class="w-full p-5 text-left flex items-center justify-between font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors" onclick="toggleFaq(this)" type="button">
+<span>How do I register and book my consultation?</span>
+<span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
+</button>
+<div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            You can plan your consultation using the interactive tool above by picking your category and doctor. After clicking "Continue to Patient Portal," verify your phone number, review doctor availability, and confirm your preferred slot.
+          </div>
+</div>
+<!-- FAQ 2 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+<button class="w-full p-5 text-left flex items-center justify-between font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors" onclick="toggleFaq(this)" type="button">
+<span>How do I link a follow-up consultation with previous hospital records?</span>
+<span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
+</button>
+<div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Select "Follow-Up Consultation" on the planning tool and provide your previously assigned Sumohan Case ID or the registered phone number. The hospital medical desk cross-references your physical and digital patient chart prior to the call.
+          </div>
+</div>
+<!-- FAQ 3 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+<button class="w-full p-5 text-left flex items-center justify-between font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors" onclick="toggleFaq(this)" type="button">
+<span>What report formats can I upload, and how is patient privacy preserved?</span>
+<span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
+</button>
+<div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            We support PDF documents and high-resolution JPG/PNG images up to 10MB each. All uploaded investigations and health declarations are stored on encrypted medical servers accessible strictly by the attending medical practitioner and hospital staff.
+          </div>
+</div>
+<!-- FAQ 4 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+<button class="w-full p-5 text-left flex items-center justify-between font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors" onclick="toggleFaq(this)" type="button">
+<span>How does the phone consultation work?</span>
+<span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
+</button>
+<div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Phone consultations are conducted manually via mobile phone with the physician. At your scheduled slot, the hospital desk or attending doctor contacts your registered phone number directly, eliminating complex application downloads.
+          </div>
+</div>
+<!-- FAQ 5 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+<button class="w-full p-5 text-left flex items-center justify-between font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors" onclick="toggleFaq(this)" type="button">
+<span>How are doctor consultation fees coordinated?</span>
+<span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
+</button>
+<div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            During the current platform booking phase, all consultation fees and billing are handled directly with the hospital reception. There are no hidden digital convenience markups; payment options are provided when confirming your appointment.
+          </div>
+</div>
+<!-- FAQ 6 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden shadow-sm">
+<button class="w-full p-5 text-left flex items-center justify-between font-title-md text-title-md text-on-surface font-bold hover:text-primary transition-colors" onclick="toggleFaq(this)" type="button">
+<span>What is the appointment rescheduling and cancellation policy?</span>
+<span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
+</button>
+<div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            If you need to reschedule or cancel your consultation, please call the hospital reception at +91 86188 18012 or +91 94816 05619 at least 2 hours in advance so our doctors can accommodate waiting emergency maternity cases.
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact & Hospital Enquiry Section -->
+<section class="w-full bg-surface px-margin-mobile lg:px-margin py-16" id="contact">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Contact Details & Map Area -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Hospital Location &amp; Direct Desks</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold">Visit or Call Sumohan Care</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+            Centrally situated in Shivamogga, Karnataka with dedicated parking, emergency ambulance entry, and inpatient facilities.
+          </p>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] mt-1">pin_drop</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Hospital Address</p>
+<address class="font-body-md text-body-md text-on-surface-variant not-italic mt-0.5 leading-relaxed">
+                Achyutha Rao Layout, 3rd Cross,<br/>
+                ANK Road, Shivamogga - 577201,<br/>
+                Karnataka, India
+              </address>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] mt-1">call</span>
+<div class="flex flex-col gap-1">
+<p class="font-label-md text-label-md text-on-surface font-bold">Direct Phone Helplines</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+<a class="font-body-sm text-body-sm text-primary font-semibold hover:underline" href="tel:+918618818012">+91 86188 18012</a>
+<a class="font-body-sm text-body-sm text-primary font-semibold hover:underline" href="tel:+919481605619">+91 94816 05619</a>
+<a class="font-body-sm text-body-sm text-primary font-semibold hover:underline" href="tel:+919886022725">+91 98860 22725</a>
+<a class="font-body-sm text-body-sm text-primary font-semibold hover:underline" href="tel:+916361990860">+91 63619 90860</a>
+</div>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] mt-1">mail</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Email Inquiries</p>
+<a class="font-body-sm text-body-sm text-primary hover:underline" href="mailto:sumohanhospital@gmail.com">sumohanhospital@gmail.com</a>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] mt-1">language</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">Official Hospital Portal</p>
+<a class="font-body-sm text-body-sm text-tertiary hover:underline inline-flex items-center gap-1" href="https://sumohanhospital.com" rel="noopener noreferrer" target="_blank">
+<span>sumohanhospital.com</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Google Static Maps View -->
+<div class="w-full h-48 bg-cover bg-center rounded-xl shadow-sm relative overflow-hidden" data-location="ANK Road Achyutha Rao Layout Shivamogga Karnataka" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuComekK5f8qCD4-jTnue1mXMlNIyJs8Pa6LtFl48Dr3yQqpk53_SGaW2RMcsiHYJbkxOU-wiePNS9Pi25omwa9OaPdR2H7XN0hPybBCg_9dkF2Bf-JATt9OfG7u5qHefPd9cYplhBEGpgzasSLKN3y1Ga-XNAN2BsyenwsJeh7DisKQycNlEXB035ptlp6xk0bqI9FAeUtGc_fmq1y8I4yKn30CsnaObqRwmjSrn4D8Oe67eVjwn34x')">
+<div class="absolute inset-0 bg-primary/10"></div>
+<div class="absolute bottom-2 left-2 bg-surface-container-lowest/90 px-3 py-1.5 rounded-lg text-label-sm font-label-sm text-on-surface shadow-sm flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">location_on</span>
+<span>Achyutha Rao Layout, Shivamogga</span>
+</div>
+</div>
+</div>
+<!-- Working Hospital Enquiry Form -->
+<div class="lg:col-span-7 flex flex-col justify-between p-8 md:p-10 rounded-2xl bg-surface-container-lowest shadow-md">
+<div>
+<div class="flex flex-col gap-2 mb-6">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-bold">Hospital Administration Desk</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Send an Official Enquiry</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Have questions about bed availability, planned surgical dates, or medical certificates? Submissions are routed to the administrative office.
+            </p>
+</div>
+<form class="flex flex-col gap-4" id="enquiry-form" onsubmit="handleEnquirySubmit(event)">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="enquiry-name">Full Name *</label>
+<input class="h-10 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="enquiry-name" placeholder="Your full name" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="enquiry-email">Email Address *</label>
+<input class="h-10 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="enquiry-email" placeholder="you@domain.com" required="" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="enquiry-subject">Subject *</label>
+<input class="h-10 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="enquiry-subject" placeholder="e.g., Inpatient Admission Query / Surgical Estimate" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-bold" for="enquiry-message">Message *</label>
+<textarea class="p-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="enquiry-message" placeholder="Provide clinical context or questions for our administrative triage..." required="" rows="4"></textarea>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-high/60 flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Enquiries are reviewed between 9:00 AM and 8:00 PM (IST). For immediate medical urgency or labor emergencies, please call <a class="text-primary font-bold hover:underline" href="tel:+918618818012">+91 86188 18012</a> immediately.
+              </p>
+</div>
+<button class="h-11 px-6 bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2 mt-2" type="submit">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>Transmit Enquiry to Administrative Desk</span>
+</button>
+</form>
+<div class="hidden mt-4 p-4 rounded-xl bg-primary-fixed/50 text-on-primary-fixed flex items-center gap-3" id="enquiry-success-box">
+<span class="material-symbols-outlined text-primary text-[24px]">mark_email_read</span>
+<p class="font-body-sm text-body-sm font-semibold">
+              Thank you. Your message has been routed to the hospital administrative desk in Shivamogga. A staff member will respond within clinical working hours.
+            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Client-side Script -->
 <script>
-    const testimonials = [
-        {
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCVpSmvmU1i5XqJP1uDhcP80K5aWWqklImwfbuMCyEWZDV1HTrUJ5HvkGmi_tv1vfpbrmW-oH89k07x-z5WzLkFhg8ii1B3e5msNesV8GG1JmRYeBSWjlSiLLIeLRN4oQXT_yvd0H1yE12ZaPPDWgnHIhVPMNhVd8X3Ui8cQvZdMQWevalIUw6NLDykv5z4V1nC72EzKcK5puIdWQ9rDPv1QMsrZ2F-NQiIFMis-GWuCXBfeipTE0FoXb5Dj-ryMGMQoizQ8XJU66o',
-            quote: '"The level of care I received at Sumohan Care was truly exceptional. From my first prenatal checkup to the delivery of my daughter, I have never felt so heard in a medical setting."',
-            name: 'Jessica Thompson',
-            meta: 'Patient for 4 Years'
-        },
-        {
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDB2Cw_mgj7BIMzaUq650NlNsMyPksM838YmEARRpYf0lkWTnZMC7tZm-DLQ_HJPV4VPRpnxtMoaHBVx_RYf_ZX0gEkBBLD2vg4jBeObKZEFgKOSlWcK__gj-jdrbQ5Z1EaWwjUCAfaVUMIKqa8wRmTe-30pm2zg7UAFo9CC3cZrfhxuMz1qMH-3tOFqbf_0dvlgQ2UBUAQGmajPEBbTj_I5SsG6o7GBHwyOEwET6wxB6sgkiPj7dXfWiZcT-NG5a54xOvlp0JQyiM',
-            quote: '"The doctor explained every option with patience and clarity. The booking process was simple, the follow-up was thoughtful, and I felt supported throughout my treatment."',
-            name: 'Nisha Rao',
-            meta: 'PCOS Care Patient'
-        },
-        {
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCV5mjHpC8KDhv2CZSubIcJwA1VWza2o3DISaAiKW7wTjYP4uKsgn-MhmK5tloU-jYPX71ObZDpVMuhwqaCY1ddosE-BcqQOMFkxwT-8jFi6BdqzWsM-98rXeMjgWvv7fnP30EITYjUZ7FXhIe9YpgdRac940M4tK00H5LBznlS1-ys1mcOkMaljz4fXO5iPo6LNpYmgz2N7NZnlPAyHKbLvcOrbiSQ-Fkrn19USOetw_lLTzkrI7uwYS9Q-LwMYHl8IGqSb6wmcf4',
-            quote: '"I came in anxious about fertility planning, but the team made the entire journey feel organized and humane. Every report, prescription, and appointment was easy to track."',
-            name: 'Aditi Mehra',
-            meta: 'Fertility Consultation'
-        },
-        {
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3JIRlvPVszPJPA7vBjdAcV-ABNoOVxnrHWlhQ0wSwsEx9tnAsj4H4PjfaQlH7Z8lBsT0cjb7uapyMZIdRe1vnI4fyjU3Aw3eDfuz7U-hGHtCgZ8g4RysZhterDOD5uhiZWHNpSgNldqXJNa0AfneTr3srfqXMsS5QuTICjnFccHz1UHyS9GGLueWZ11U9zZ-hApQ7Yb1cyZWuTpcXFyV1n_gwWKWO4qxGiaUjUvB1JwmzcSNKJQYNjytO93oX6sNxdAuGlHf9ALM',
-            quote: '"Sumohan Care gave me confidence during my pregnancy. The consultations were warm, punctual, and detailed, and the care team always knew exactly what was happening next."',
-            name: 'Maria Fernandes',
-            meta: 'Prenatal Care Patient'
+    function toggleFollowUpField() {
+      const type = document.querySelector('input[name="consultation-type"]:checked').value;
+      const followUpBox = document.getElementById('follow-up-container');
+      if (type === 'Follow-Up Consultation') {
+        followUpBox.classList.remove('hidden');
+      } else {
+        followUpBox.classList.add('hidden');
+      }
+    }
+
+    function selectServiceCard(categoryName) {
+      const select = document.getElementById('plan-category');
+      if (select) {
+        select.value = categoryName;
+      }
+      const planningSec = document.getElementById('consultation-planning');
+      if (planningSec) {
+        planningSec.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    let selectedDoctorInModal = '';
+    function openDoctorModal(docName, qual, spec) {
+      selectedDoctorInModal = docName;
+      document.getElementById('modal-doctor-name').innerText = docName;
+      document.getElementById('modal-doctor-qual').innerText = qual + ' • ' + spec;
+      document.getElementById('doctor-modal').classList.remove('hidden');
+      document.getElementById('doctor-modal').classList.add('flex');
+    }
+
+    function closeDoctorModal() {
+      document.getElementById('doctor-modal').classList.add('hidden');
+      document.getElementById('doctor-modal').classList.remove('flex');
+    }
+
+    function selectSlot(el) {
+      document.querySelectorAll('.slot-pill').forEach(btn => {
+        btn.classList.remove('bg-primary-fixed', 'border-primary');
+        btn.classList.add('bg-surface-container-low');
+      });
+      el.classList.remove('bg-surface-container-low');
+      el.classList.add('bg-primary-fixed');
+    }
+
+    function applyDoctorAndProceed() {
+      const doctorDropdown = document.getElementById('plan-doctor');
+      if (doctorDropdown && selectedDoctorInModal) {
+        for (let i = 0; i < doctorDropdown.options.length; i++) {
+          if (doctorDropdown.options[i].text.includes(selectedDoctorInModal)) {
+            doctorDropdown.selectedIndex = i;
+            break;
+          }
         }
-    ];
-
-    let activeTestimonial = 0;
-
-    function showTestimonial(index) {
-        activeTestimonial = (index + testimonials.length) % testimonials.length;
-        const item = testimonials[activeTestimonial];
-        const image = document.getElementById('testimonial-image');
-        const quote = document.getElementById('testimonial-quote');
-        const name = document.getElementById('testimonial-name');
-        const meta = document.getElementById('testimonial-meta');
-        if (image) image.src = item.image;
-        if (quote) quote.textContent = item.quote;
-        if (name) name.textContent = item.name;
-        if (meta) meta.textContent = item.meta;
+      }
+      closeDoctorModal();
+      const planningSec = document.getElementById('consultation-planning');
+      if (planningSec) {
+        planningSec.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
-    document.querySelectorAll('.testimonial-prev').forEach((button) => {
-        button.addEventListener('click', () => showTestimonial(activeTestimonial - 1));
-    });
+    function filterDoctors() {
+      const query = document.getElementById('doctor-search').value.toLowerCase().trim();
+      const lang = document.getElementById('doctor-language').value;
+      const cards = document.querySelectorAll('.doctor-card');
 
-    document.querySelectorAll('.testimonial-next').forEach((button) => {
-        button.addEventListener('click', () => showTestimonial(activeTestimonial + 1));
-    });
+      cards.forEach(card => {
+        const name = card.getAttribute('data-name');
+        const spec = card.getAttribute('data-spec');
+        const languages = card.getAttribute('data-languages');
 
-    const navToggle = document.querySelector('.nav-toggle');
-    const siteNav = document.getElementById('site-nav');
+        const matchesQuery = !query || name.includes(query) || spec.includes(query);
+        const matchesLang = (lang === 'all') || languages.includes(lang);
 
-    function closeNavMenu() {
-        if (!navToggle || !siteNav) return;
-        navToggle.setAttribute('aria-expanded', 'false');
-        siteNav.classList.remove('is-open');
-    }
-
-    if (navToggle && siteNav) {
-        navToggle.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
-            navToggle.setAttribute('aria-expanded', String(!isOpen));
-            siteNav.classList.toggle('is-open', !isOpen);
-        });
-
-        siteNav.querySelectorAll('a').forEach((link) => {
-            link.addEventListener('click', closeNavMenu);
-        });
-
-        document.addEventListener('click', (event) => {
-            if (!siteNav.contains(event.target) && !navToggle.contains(event.target)) {
-                closeNavMenu();
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) closeNavMenu();
-        });
-    }
-
-    window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
-        if (window.scrollY > 50) {
-            header.classList.add('shadow-lg');
+        if (matchesQuery && matchesLang) {
+          card.classList.remove('hidden');
         } else {
-            header.classList.remove('shadow-lg');
+          card.classList.add('hidden');
         }
-    });
-</script>
-<script src="/assets/js/design-live.js"></script></body></html>
+      });
+    }
+
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('.material-symbols-outlined');
+      const isHidden = content.classList.contains('hidden');
+
+      // Close other opened FAQs
+      document.querySelectorAll('.faq-content').forEach(box => box.classList.add('hidden'));
+      document.querySelectorAll('#faqs .material-symbols-outlined').forEach(i => i.style.transform = 'rotate(0deg)');
+
+      if (isHidden) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function handlePlanningSubmit(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="consultation-type"]:checked').value;
+      const cat = document.getElementById('plan-category').value;
+      const doc = document.getElementById('plan-doctor').value;
+
+      const summaryText = document.getElementById('plan-summary-text');
+      const successBox = document.getElementById('plan-success-box');
+      
+      summaryText.innerText = `Selected: ${type} for "${cat}" with ${doc}.`;
+      successBox.classList.remove('hidden');
+      
+      setTimeout(() => {
+        window.location.hash = 'patient-login';
+      }, 1400);
+    }
+
+    function handleEnquirySubmit(e) {
+      e.preventDefault();
+      const successBox = document.getElementById('enquiry-success-box');
+      successBox.classList.remove('hidden');
+      document.getElementById('enquiry-form').reset();
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-low text-on-surface-variant shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full px-margin-mobile lg:px-margin py-space-xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-gutter"><div class="lg:col-span-5 flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center"><span class="material-symbols-outlined text-title-md">local_hospital</span></div><span class="font-headline-sm text-headline-sm text-primary font-bold">Sumohan Care</span></div><p class="font-title-md text-title-md text-on-surface font-semibold mt-space-xs">Sumohan Medico Surgical Centre and Maternity Home</p><p class="font-body-md text-body-md text-on-surface-variant leading-relaxed max-w-md">Providing compassionate maternity care, advanced surgical precision, and dedicated patient-first healing to Malnad families since 1984.</p><div class="flex items-center gap-space-sm mt-space-xs"><span class="font-label-sm text-label-sm bg-surface-container text-primary font-semibold px-space-sm py-space-xs rounded-full">Licensed Care Centre</span><span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed font-semibold px-space-sm py-space-xs rounded-full">Maternity &amp; Surgical Wing</span></div></div><div class="lg:col-span-3 flex flex-col gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider font-bold">Hospital Address</span><address class="font-body-md text-body-md text-on-surface-variant not-italic leading-relaxed">Achyutha Rao Layout, 3rd Cross,<br/>ANK Road, Shivamogga - 577201,<br/>Karnataka, India</address><div class="mt-space-xs flex flex-col gap-space-xs"><span class="font-label-sm text-label-sm text-on-surface font-semibold">Email Support</span><a class="font-body-md text-body-md text-primary hover:underline" href="mailto:sumohanhospital@gmail.com">sumohanhospital@gmail.com</a></div></div><div class="lg:col-span-4 flex flex-col gap-space-sm"><span class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider font-bold">Clinical Helpline &amp; Desks</span><p class="font-body-sm text-body-sm text-on-surface-variant">24/7 Maternity Emergency &amp; OPD Enquiry lines:</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-space-xs mt-space-xs"><a class="font-body-md text-body-md text-primary hover:text-primary-container font-semibold" href="tel:+918618818012">+91 86188 18012</a><a class="font-body-md text-body-md text-primary hover:text-primary-container font-semibold" href="tel:+919481605619">+91 94816 05619</a><a class="font-body-md text-body-md text-primary hover:text-primary-container font-semibold" href="tel:+919886022725">+91 98860 22725</a><a class="font-body-md text-body-md text-primary hover:text-primary-container font-semibold" href="tel:+916361990860">+91 63619 90860</a></div><div class="mt-space-sm flex flex-col gap-space-xs"><span class="font-label-sm text-label-sm text-on-surface font-semibold">Hospital Web Resource</span><a class="font-body-md text-body-md text-tertiary hover:underline inline-flex items-center gap-space-xs" href="https://sumohanhospital.com" rel="noopener noreferrer" target="_blank"><span>sumohanhospital.com</span><span class="material-symbols-outlined text-[16px]">open_in_new</span></a></div></div></div><div class="mt-space-xl pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md bg-surface-container/50 px-space-md py-space-sm rounded-lg"><div class="flex flex-wrap items-center gap-space-md"><span class="font-body-sm text-body-sm text-on-surface-variant">© 1984 - 2025 Sumohan Medico Surgical Centre and Maternity Home. All rights reserved.</span><a class="font-body-sm text-body-sm text-primary hover:underline" data-path="patient-privacy-and-consent" href="#">Patient Privacy &amp; Consent</a></div><div class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-space-xs"><span>Developed by</span><a class="text-primary hover:text-primary-container font-semibold hover:underline" href="https://ekathvainnovations.com" rel="noopener noreferrer" target="_blank">Ekathva Innovations</a></div></div></div></footer></body></html>
