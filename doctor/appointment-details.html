@@ -7,7 +7,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <link href="/assets/css/aura-portal.css" rel="stylesheet">
+  <link href="/assets/css/aura-portal.css?v=20261024" rel="stylesheet">
+<link href="/assets/css/brand.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
+<link rel="stylesheet" href="/assets/css/case-history.css">
 </head>
 <body>
   <div class="aura-shell">
@@ -75,10 +78,15 @@
         <div class="mt-6 grid gap-6 lg:grid-cols-[1.35fr_0.75fr]">
           <div class="grid gap-6">
             <section class="grid gap-6" data-detail-panel="case">
+<article class="case-history aura-card aura-card--padded">
+<div class="case-heading"><div><h2>Clinical Case Sheet</h2><p id="case-patient-id">Patient Case ID</p></div><div class="case-actions"><button id="case-reload" type="button" class="case-secondary">Reload saved</button><button id="case-print" type="button" class="case-secondary">Print</button></div></div>
+<form id="case-history-form"><div id="case-fields"></div><button id="case-history-save" class="aura-button" type="submit" disabled>Save Case Sheet</button><p id="case-history-message" role="status" aria-live="polite">Loading case sheet...</p></form>
+</article>
+<article class="aura-card aura-card--padded"><h2 class="text-2xl font-extrabold">Consultation Timeline</h2><div id="case-timeline"></div><details class="mt-6"><summary class="font-bold">Saved revision history</summary><div id="case-revisions"></div></details></article>
               <article class="rounded-xl border-l-4 border-[#006a62] bg-white p-6 shadow-sm">
                 <div class="mb-3 flex flex-wrap justify-between gap-3">
                   <div>
-                    <p class="text-xs font-extrabold uppercase tracking-wide text-[#006a62]">Previous Consultation</p>
+                    <p class="text-xs font-extrabold uppercase tracking-wide text-[#006a62]">Current Consultation</p>
                     <h2 class="text-xl font-extrabold" id="case-title">Consultation Summary</h2>
                   </div>
                   <span class="text-sm italic text-[#5a4044]" id="case-date">-</span>
@@ -231,6 +239,10 @@
                 <p class="flex items-center gap-3"><span class="material-symbols-outlined text-[#b0004a]">calendar_today</span><span id="appointment-session-date">-</span></p>
                 <p class="flex items-center gap-3"><span class="material-symbols-outlined text-[#b0004a]">schedule</span><span id="appointment-session-time">-</span></p>
                 <p class="flex items-center gap-3"><span class="material-symbols-outlined text-[#b0004a]">medical_services</span><span id="appointment-service-type">-</span></p>
+                <a id="appointment-meet-link" class="aura-button mt-2 hidden justify-center bg-[#006a62]" href="#" target="_blank" rel="noopener noreferrer">
+                  <span class="material-symbols-outlined">videocam</span>Join Google Meet
+                </a>
+                <p id="appointment-meet-status" class="hidden text-sm text-[#5a4044]" role="status"></p>
               </div>
               <hr class="my-5 border-[#e3bdc3]">
               <h3 class="text-xs font-extrabold uppercase tracking-wide text-[#5a4044]">Recommended Actions</h3>
@@ -255,7 +267,8 @@
   </div>
 
   <nav class="aura-mobile-nav"></nav>
-  <script src="/assets/js/doctor-appointment-details.js?v=202609062"></script>
-  <script src="/assets/js/aura-sidebar.js?v=2026070816"></script>
+  <script src="/assets/js/clinical-schema.js"></script><script src="/assets/js/case-history.js"></script>
+<script src="/assets/js/doctor-appointment-details.js?v=20261106-calendar"></script>
+  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
 </body>
 </html>

@@ -7,7 +7,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  <link href="/assets/css/aura-portal.css" rel="stylesheet">
+  <link href="/assets/css/aura-portal.css?v=20261024" rel="stylesheet">
+<link href="/assets/css/brand.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
 </head>
 <body>
   <div class="aura-shell">
@@ -16,12 +18,13 @@
     <main class="aura-main">
       <section class="aura-page">
         <p class="aura-eyebrow" id="patient-registry-status">Loading patients...</p>
-        <h1 class="aura-title">Patient Registry</h1>
-        <p class="aura-subtitle">Search patients by name or mobile number and open the relevant clinical context quickly.</p>
+        <h1 class="aura-title" id="doctor-patients-title">Patient Registry</h1>
+        <p class="aura-subtitle" id="doctor-patients-description">Search patients by name or mobile number and open the relevant clinical context quickly.</p>
 
         <div class="mt-8 flex flex-wrap gap-3" role="tablist" aria-label="Patient registry views">
           <button class="aura-tab" type="button" data-patient-tab="current" aria-selected="true">Current Patients</button>
           <button class="aura-tab" type="button" data-patient-tab="future" aria-selected="false">Future Patients</button>
+          <button class="aura-tab" type="button" data-patient-tab="past" aria-selected="false">Past Consultations</button>
         </div>
 
         <section class="mt-5 grid gap-4" id="patient-tab-results"></section>
@@ -37,6 +40,6 @@
   <script src="/assets/js/aura-core.js?v=2026070816"></script>
   <script src="/assets/js/doctor-portal.js?v=202607162"></script>
   <script src="/assets/js/doctor-patients.js?v=2026070816"></script>
-  <script src="/assets/js/aura-sidebar.js?v=2026070816"></script>
+  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
 </body>
 </html>

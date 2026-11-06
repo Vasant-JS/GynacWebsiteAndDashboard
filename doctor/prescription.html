@@ -6,7 +6,7 @@
 <title>Prescription Builder - Sumohan Care</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="/assets/css/aura-portal.css" rel="stylesheet">
+<link href="/assets/css/aura-portal.css?v=20261024" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -108,19 +108,21 @@
         }
         body { font-family: 'Manrope', sans-serif; }
     </style>
+<link href="/assets/css/brand.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
 </head>
 <body class="bg-background text-on-surface">
 <div class="flex min-h-screen">
 <!-- SideNavBar - Surgeon/Physician Context -->
 <aside class="h-screen sticky top-0 w-72 flex flex-col bg-surface-container dark:bg-surface-dim shadow-sm py-8 space-y-4">
 <div class="px-8 mb-8">
-<span class="text-headline-md font-headline-md font-bold text-primary">Sumohan Care</span>
+<span class="sumohan-brand text-headline-md font-headline-md font-bold text-primary"><img class="sumohan-brand__icon" src="/assets/images/sumohan-care-logo.png" alt="" width="44" height="44"><span class="sumohan-brand__name">Sumohan Care</span></span>
 <div class="flex items-center mt-6 gap-3">
 <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container">
-<img alt="Dr. Elena Rossi" class="w-full h-full object-cover" data-alt="A professional headshot of a female doctor in her late 30s with a warm and confident expression. She is wearing a clean white lab coat over a soft lavender blouse. The background is a blurred, high-end medical clinic with soft lighting and calming teal accents, reflecting a modern boutique healthcare environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWN1IW1HPydl43DHdcbyjBwrLgkmThGEj_lH9aR7edtaETe2ptKw2OQmsIRprKRUXepPRGeK5dY2ZaHXtzlEoSM9ARZfbPYnnLMvlen92oN9NtIkCzS2ScKA8npRIj_tlGzAWkHLlSg12GVT65XaWnwfMIxXuwX5vlq-HVf8VmaNDtjWcQ8bYloQIyt7jatdw-TDpyQgsXiNtUjdHn6DFEGcGlra92OyhE9R6SsfiSCe2Z6YkLAn5_D9cboQkq6Rjgbp6ldaUMVTY"/>
+<img alt="" class="w-full h-full object-contain" src="/assets/images/sumohan-care-logo.png"/>
 </div>
 <div>
-<p class="text-label-md font-label-md text-on-surface">Dr. Elena Rossi</p>
+<p class="text-label-md font-label-md text-on-surface">Doctor</p>
 <p class="text-body-sm font-body-sm text-on-surface-variant">Physician</p>
 </div>
 </div>
@@ -321,7 +323,7 @@
 <!-- Footer - Fixed UI pattern -->
 <footer class="w-full bg-surface-container-highest dark:bg-surface-container-lowest py-section-gap px-container-padding-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter border-t border-outline-variant/20">
 <div class="col-span-1">
-<span class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant">Sumohan Care</span>
+<span class="sumohan-brand text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant"><img class="sumohan-brand__icon" src="/assets/images/sumohan-care-logo.png" alt="" width="44" height="44"><span class="sumohan-brand__name">Sumohan Care</span></span>
 <p class="mt-4 text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
                 Empowering gynecological care through clinical excellence and patient empathy.
             </p>
@@ -352,5 +354,5 @@
 </div>
 <p class="aura-developer-credit col-span-1 md:col-span-4 w-full text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
-<script src="/assets/js/design-live.js"></script>  <script src="/assets/js/aura-sidebar.js?v=2026070816"></script>
+<script src="/assets/js/design-live.js"></script>  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
 </body></html>

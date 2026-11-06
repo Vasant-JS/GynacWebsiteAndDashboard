@@ -64,8 +64,8 @@
 
   function emptyAppointmentsLabel(activeTab) {
     if (activeTab === 'today') return 'No appointments today.';
-    if (activeTab === 'future') return 'No future appointments for this month.';
-    return 'No past appointments for this month.';
+    if (activeTab === 'future') return 'No upcoming appointments.';
+    return 'No past appointments.';
   }
 
   function updateAppointmentStatus(id, status) {
@@ -114,6 +114,7 @@
         <h2 class="text-2xl font-extrabold">${escapeHtml(patient.name)}</h2>
         <p class="mt-1 text-[#5a4044]">${[patient.phone, patient.email].filter(Boolean).map(escapeHtml).join(' - ') || '-'}</p>
         <p class="mt-3 font-bold text-[#006a62]">${escapeHtml(patient.concern || 'Not recorded')}</p>
+        ${patient.appointmentId ? `<a class="aura-button mt-4" href="/doctor/appointment-details.html?appointmentId=${encodeURIComponent(patient.appointmentId)}">Open Case History</a>` : ''}
       </article>
     `;
   }
@@ -127,6 +128,7 @@
     searchPatientCard,
     api: {
       dashboard: () => fetchJson('/api/doctor/dashboard'),
+      dashboardRoster: (period) => fetchJson(`/api/doctor/dashboard/appointments?period=${encodeURIComponent(period)}`),
       schedule: (date, month) => fetchJson(`/api/doctor/schedule?date=${encodeURIComponent(date)}&month=${encodeURIComponent(month)}`),
       patientLists: () => fetchJson('/api/doctor/patients/lists'),
       patientSearch: (query) => fetchJson(`/api/doctor/patients/search?q=${encodeURIComponent(query)}`),

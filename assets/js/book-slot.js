@@ -13,6 +13,62 @@
   const detailsForm = document.getElementById('details-form');
   const documentUploadForm = document.getElementById('booking-document-upload-form');
   const documentUploadMessage = document.getElementById('booking-document-upload-message');
+  let uploadingDocument = false;
+  const recoveryKey = 'sumohanPendingRazorpay';
+  let paymentConfig = {provider:'demo',ready:false};
+  function pendingPayment() { try{return JSON.parse(sessionStorage.getItem(recoveryKey) || 'null');}catch(_){return null;} }
+  async function paymentRequest(path,body) {
+    const response=await fetch('/api/patient/razorpay/'+path,{...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});
+    const data=await response.json();if(!response.ok)throw new Error(data.message || 'Unable to confirm payment.');return data;
+  }
+  async function finishGatewayResult(result) {
+    if(result.outcome==='REFUNDED') {
+      sessionStorage.removeItem(recoveryKey);setMessage('Payment was refunded. No appointment was created for this payment. Contact the hospital with reference '+result.paymentId);confirmButton.disabled=false;return;
+    }
+    if(result.outcome==='REQUIRES_REVIEW') {
+      setMessage(`Payment received, but the booking needs hospital review. Contact +91 86188 18012 with reference ${result.paymentId}. Please do not pay again.`,'error');
+      confirmButton.disabled=true;return;
+    }
+    if(result.outcome==='BOOKED') {
+      sessionStorage.removeItem(recoveryKey);
+      if(window.PatientShell?.navigate)await window.PatientShell.navigate('/patient/appointments.html');else location.href='/patient/appointments.html';
+      return;
+    }
+    throw new Error('Payment confirmation is pending. Use Check payment status before trying another payment.');
+  }
+  async function checkPendingPayment() {
+    const pending=pendingPayment();if(!pending)throw new Error('No pending checkout found.');
+    const result=pending.proof?await paymentRequest(pending.paymentId+'/verify',pending.proof):await paymentRequest(pending.paymentId+'/status');
+    await finishGatewayResult(result);
+  }
+  function loadCheckout() {
+    if(window.Razorpay)return Promise.resolve();
+    if(!window.sumohanRazorpayLoader)window.sumohanRazorpayLoader=new Promise((resolve,reject)=>{
+      const script=document.createElement('script');script.src='https://checkout.razorpay.com/v1/checkout.js';
+      script.onload=()=>window.Razorpay?resolve():reject(new Error('Checkout did not load. Please try again.'));
+      script.onerror=()=>{window.sumohanRazorpayLoader=null;reject(new Error('Unable to load secure checkout. Check your connection.'));};document.head.appendChild(script);
+    });
+    return window.sumohanRazorpayLoader;
+  }
+  async function payWithRazorpay(body) {
+    if(!paymentConfig.ready)throw new Error('Online payment is not configured yet. Please contact the hospital.');
+    if(pendingPayment()) {await checkPendingPayment();return;}
+    await loadCheckout();
+    const order=await paymentRequest('order',body);
+    sessionStorage.setItem(recoveryKey,JSON.stringify({paymentId:order.paymentId}));
+    recovery.hidden=false;
+    await new Promise((resolve,reject)=>{
+      let submitted=false;
+      const checkout=new window.Razorpay({key:order.keyId,order_id:order.orderId,amount:order.amount,currency:order.currency,name:'Sumohan Care',description:'Consultation booking',
+        handler:async proof=>{submitted=true;sessionStorage.setItem(recoveryKey,JSON.stringify({paymentId:order.paymentId,proof}));
+          try {setMessage('Verifying payment and confirming your appointment…');await finishGatewayResult(await paymentRequest(order.paymentId+'/verify',proof));resolve();}
+          catch(error){reject(error);}},
+        modal:{ondismiss:()=>{if(!submitted){sessionStorage.removeItem(recoveryKey);reject(new Error('Checkout closed. Your appointment has not been confirmed. If money was debited, check Visits or contact the hospital before paying again.'));}}},
+      });
+      checkout.on('payment.failed',()=>setMessage('Payment attempt failed. You can retry in Checkout or close it.','error'));
+      checkout.open();
+    });
+  }
   let selectedDate = null;
   let selectedSlot = null;
   let selectedDoctorId = null;
@@ -20,8 +76,8 @@
   let doctors = [];
   let availabilityRows = [];
   let bookedRows = [];
-  let pendingPayment = null;
-  let currentMonth = new Date();
+  let defaultSlots = [];
+  let currentMonth = new Date(todayYmd() + 'T12:00:00');
   currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
 
   function ymd(date) {
@@ -29,7 +85,7 @@
   }
 
   function todayYmd() {
-    return ymd(new Date());
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   }
 
   function slotMinutes(slot) {
@@ -44,8 +100,8 @@
   }
 
   function nowMinutes() {
-    const now = new Date();
-    return now.getHours() * 60 + now.getMinutes();
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    return Number(parts.find(part => part.type === 'hour').value) * 60 + Number(parts.find(part => part.type === 'minute').value);
   }
 
   function isPastDate(date) {
@@ -75,9 +131,8 @@
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency }).format(Number(value || 0));
   }
 
-  function resetPayment() {
-    pendingPayment = null;
-    if (confirmButton) confirmButton.textContent = 'Proceed to Payment';
+  function resetBookingButton() {
+    if (confirmButton) confirmButton.textContent = 'Finish & Confirm Booking';
   }
 
   function availabilityFor(date) {
@@ -92,7 +147,7 @@
     if (!date || isPastDate(date)) return [];
     const rule = availabilityFor(date);
     if (rule && !rule.is_available) return [];
-    const base = rule?.slots?.length ? rule.slots : ['09:00 AM', '09:30 AM', '10:30 AM', '01:00 PM', '02:30 PM', '04:00 PM', '06:30 PM', '07:00 PM', '07:30 PM'];
+    const base = rule ? rule.slots : defaultSlots;
     const booked = bookedSlotsFor(date);
     return base.filter((slot) => !booked.includes(slot) && !isPastOrCurrentSlot(date, slot));
   }
@@ -113,7 +168,7 @@
     dateGrid.querySelectorAll('[data-date]').forEach((button) => button.addEventListener('click', () => {
       selectedDate = button.dataset.date;
       selectedSlot = null;
-      resetPayment();
+      resetBookingButton();
       renderCalendar();
       renderSlots();
       syncSummary();
@@ -125,7 +180,7 @@
     slotsContainer.innerHTML = slots.length ? slots.map((slot) => `<button class="rounded-lg border border-[#e3bdc3] px-5 py-3 text-lg font-bold ${selectedSlot === slot ? 'border-[#b0004a] bg-[#81f3e5]' : 'bg-white'}" data-slot="${slot}" type="button">${slot}</button>`).join('') : '<p class="text-[#5a4044]">No future slots available for this date. Please choose a later date.</p>';
     slotsContainer.querySelectorAll('[data-slot]').forEach((button) => button.addEventListener('click', async () => {
       selectedSlot = button.dataset.slot;
-      resetPayment();
+      resetBookingButton();
       await fetch('/api/patient/booking/slot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: selectedDate, time: selectedSlot }) });
       renderSlots();
       syncSummary();
@@ -133,6 +188,9 @@
   }
 
   function syncSummary() {
+    const selectedDoctor = doctors.find(doctor => doctor.id === selectedDoctorId);
+    const photo = document.getElementById('booking-doctor-photo');
+    if (photo) { photo.src = selectedDoctor?.profile?.photoUrl || '/assets/images/sumohan-care-logo.png'; photo.alt = selectedDoctor?.name || 'Selected doctor'; }
     const doctor = doctors.find((item) => item.id === selectedDoctorId) || doctors[0];
     summaryDoctor.textContent = doctor ? `${doctor.name} • ${doctor.title}` : '-';
     summaryService.textContent = booking.service || '-';
@@ -142,7 +200,7 @@
     if (confirmButton) confirmButton.disabled = !validSelection;
     confirmButton?.classList.toggle('opacity-50', !validSelection);
     confirmButton?.classList.toggle('cursor-not-allowed', !validSelection);
-    if (confirmButton && !pendingPayment) confirmButton.textContent = 'Proceed to Payment';
+    if (confirmButton) confirmButton.textContent = 'Finish & Confirm Booking';
   }
 
   async function loadAvailability() {
@@ -153,6 +211,7 @@
       if (!response.ok) throw new Error(data.message || 'Unable to load availability.');
       availabilityRows = data.availability || [];
       bookedRows = data.booked || [];
+      defaultSlots = data.defaultSlots || [];
     } else {
       availabilityRows = [];
       bookedRows = [];
@@ -162,26 +221,31 @@
   }
 
   async function init() {
+    paymentConfig=await paymentRequest('config');
     const [bookingRes, doctorRes] = await Promise.all([fetch('/api/patient/booking'), fetch('/api/patient/booking/doctors')]);
     const bookingData = await bookingRes.json();
     const doctorData = await doctorRes.json();
     booking = bookingData.booking || {};
     doctors = doctorData.doctors || [];
     if (!doctors.length) {
-      doctors = [{ id: '', name: 'Dr. Elena Rossi', title: 'Senior Gynecologist', consultationFee: 800 }];
+      throw new Error(doctorData.message || 'No doctors are available for booking. Please contact Sumohan Care.');
     }
-    selectedDoctorId = booking.doctorId || doctors[0]?.id;
+    selectedDoctorId = doctors.some(doctor => doctor.id === booking.doctorId) ? booking.doctorId : doctors[0]?.id;
+    const selectionResponse = await fetch('/api/patient/booking/details', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ doctorId: selectedDoctorId }) });
+    if (!selectionResponse.ok) throw new Error('Could not select this doctor. Please try again.');
     summaryDoctorSelect.innerHTML = doctors.map((doctor) => `<option value="${doctor.id}">${doctor.name}</option>`).join('');
     if (selectedDoctorId) summaryDoctorSelect.value = selectedDoctorId;
     selectedDate = booking.date && !isPastDate(booking.date) ? booking.date : null;
     selectedSlot = selectedDate && booking.time && !isPastOrCurrentSlot(selectedDate, booking.time) ? booking.time : null;
+    const profileResponse = await fetch('/api/patient/profile');
+    if (profileResponse.ok) { const profile = await profileResponse.json(); document.getElementById('booking-declaration-name').value = profile.patient?.display_name || ''; }
     syncSummary();
     await loadAvailability();
   }
 
   summaryDoctorSelect?.addEventListener('change', async () => {
     selectedDoctorId = summaryDoctorSelect.value;
-    resetPayment();
+    resetBookingButton();
     await fetch('/api/patient/booking/details', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ doctorId: selectedDoctorId }) });
     await loadAvailability();
     syncSummary();
@@ -215,37 +279,36 @@
     syncSummary();
   });
   confirmButton?.addEventListener('click', async () => {
-    if (!isValidFutureSelection(selectedDate, selectedSlot)) {
-      setMessage('Please choose a date and slot later than the current time.', 'error');
-      return;
-    }
-    if (!pendingPayment) {
-      setMessage('Preparing payment...');
-      try {
-        const response = await fetch('/api/patient/booking/payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: selectedDate, time: selectedSlot }) });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Could not create payment.');
-        pendingPayment = data.payment;
-        confirmButton.textContent = `Pay ${money(data.amount, data.currency)} & Book Slot`;
-        setMessage(`${data.message} Amount: ${money(data.amount, data.currency)}.`);
-      } catch (error) {
-        setMessage(error.message, 'error');
-      }
-      return;
-    }
-
-    setMessage('Processing payment and booking appointment...');
+    if (uploadingDocument) { setMessage('Please wait for your report upload to finish before confirming.','error'); return; }
+    if (!isValidFutureSelection(selectedDate, selectedSlot)) { setMessage('Please choose a future date and slot.', 'error'); return; }
+    const medicalConsent = document.getElementById('booking-medical-consent').checked;
+    const accuracyConsent = document.getElementById('booking-accuracy-consent').checked;
+    const declarationName = document.getElementById('booking-declaration-name').value.trim();
+    if (!medicalConsent || !accuracyConsent || !declarationName) { setMessage('Acknowledge both declarations and enter the patient name.', 'error'); document.getElementById('booking-declaration-name').scrollIntoView({block:'center',behavior:'smooth'}); return; }
+    confirmButton.disabled = true;
+    setMessage(paymentConfig.provider==='demo'?'Preparing demo payment…':'Preparing secure checkout…');
     try {
-      const response = await fetch(`/api/patient/booking/payment/${pendingPayment.id}/pay-and-book`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: selectedDate, time: selectedSlot }) });
+      if(paymentConfig.provider!=='demo') {
+        await payWithRazorpay({date:selectedDate,time:selectedSlot,medicalConsent,accuracyConsent,declarationName});return;
+      }
+      const headers = { 'Content-Type': 'application/json' };
+      const bookingResponse = await fetch('/api/patient/booking/payment', { method: 'POST', headers, body: JSON.stringify({ date: selectedDate, time: selectedSlot }) });
+      const paymentData = await bookingResponse.json();
+      if (!bookingResponse.ok) throw new Error(paymentData.message || 'Could not prepare payment.');
+      setMessage('Completing demo payment and creating your Meet link...');
+      const response = await fetch(`/api/patient/booking/payment/${encodeURIComponent(paymentData.payment.id)}/pay-and-book`, { method: 'PATCH', headers, body: JSON.stringify({ date: selectedDate, time: selectedSlot, medicalConsent, accuracyConsent, declarationName }) });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Could not complete payment and book slot.');
-      window.location.href = data.redirectTo;
-    } catch (error) {
-      setMessage(error.message, 'error');
-    }
+      if (!response.ok) throw new Error(data.message || 'Could not complete the demo payment and booking.');
+      if (window.PatientShell?.navigate) await window.PatientShell.navigate(data.redirectTo);
+      else location.href = data.redirectTo;
+    } catch(error) { setMessage(error.message,'error'); confirmButton.disabled = false; }
   });
   documentUploadForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (uploadingDocument) return;
+    uploadingDocument = true;
+    const uploadButton = documentUploadForm.querySelector('button[type="submit"]');
+    uploadButton.disabled = true;
     documentUploadMessage.innerHTML = '<span class="aura-loading"><span class="aura-spinner" aria-hidden="true"></span><span>Uploading...</span></span>';
     try {
       const formData = new FormData(documentUploadForm);
@@ -257,8 +320,14 @@
       documentUploadForm.reset();
     } catch (error) {
       documentUploadMessage.textContent = error.message;
+    } finally {
+      uploadingDocument = false;
+      uploadButton.disabled = false;
     }
   });
 
-  init().catch((error) => setMessage(error.message, 'error'));
+  const recovery=document.createElement('button');recovery.type='button';recovery.className='patient-secondary-button';recovery.textContent='Check payment status';recovery.hidden=!pendingPayment();
+  message?.after(recovery);
+  recovery.addEventListener('click',async()=>{recovery.disabled=true;try{await checkPendingPayment();}catch(error){setMessage(error.message,'error');}finally{recovery.disabled=false;}});
+  init().catch((error) => {confirmButton.disabled=true;setMessage(error.message, 'error');});
 })();

@@ -26,6 +26,8 @@
   const phoneLink = document.getElementById('appointment-phone-link');
   const sessionDate = document.getElementById('appointment-session-date');
   const sessionTime = document.getElementById('appointment-session-time');
+  const sessionMeetLink = document.getElementById('appointment-meet-link');
+  const sessionMeetStatus = document.getElementById('appointment-meet-status');
   const serviceType = document.getElementById('appointment-service-type');
   const actionsList = document.getElementById('appointment-actions-list');
   const caseTitle = document.getElementById('case-title');
@@ -237,6 +239,30 @@
     setText(sessionDate, formatDate(appointment.appointmentAt, { dateStyle: 'long' }));
     setText(sessionTime, formatDate(appointment.appointmentAt, { timeStyle: 'short' }));
     setText(serviceType, appointment.serviceType || 'Consultation');
+    const meeting = appointment.virtualMeeting || appointment.metadata?.virtualMeeting || null;
+    const meetLink = meeting?.meetLink || meeting?.calendarEventId ? `/api/consultations/${encodeURIComponent(appointment.id)}/join?role=DOCTOR` : null;
+    const meetingClosed = isCompleted || String(appointment.status || '').toUpperCase() === 'CANCELLED';
+    if (sessionMeetLink) {
+      if (meetLink && !meetingClosed) sessionMeetLink.href = meetLink;
+      else sessionMeetLink.removeAttribute('href');
+      sessionMeetLink.style.display = meetLink ? 'inline-flex' : 'none';
+      sessionMeetLink.setAttribute('aria-disabled', String(meetingClosed));
+      sessionMeetLink.tabIndex = meetingClosed ? -1 : 0;
+      sessionMeetLink.classList.toggle('pointer-events-none', meetingClosed);
+      sessionMeetLink.classList.toggle('opacity-50', meetingClosed);
+      sessionMeetLink.title = meetingClosed ? 'Google Meet is unavailable for completed or cancelled appointments' : '';
+    }
+    if (sessionMeetStatus) {
+      const meetingMessage = meetingClosed ? 'Google Meet is unavailable for completed or cancelled appointments.' : meetLink ? '' : meeting?.mode === 'not_configured'
+        ? 'Google Meet was not configured when this appointment was booked.'
+        : meeting?.mode === 'failed'
+          ? 'A Google Meet link could not be created for this appointment.'
+          : meeting?.mode === 'conference_pending'
+            ? 'Google is still preparing the Meet link. Reload this page shortly.'
+            : 'No Google Meet link is saved for this appointment.';
+      sessionMeetStatus.textContent = meetingMessage;
+      sessionMeetStatus.classList.toggle('hidden', !meetingMessage);
+    }
     setText(caseTitle, appointment.serviceType || 'Consultation Summary');
     setText(caseDate, formatDate(appointment.appointmentAt, { dateStyle: 'medium' }));
     setText(caseSummary, notes.observations || 'No previous consultation notes recorded in the database.');
@@ -267,6 +293,7 @@
     if (!response.ok) throw new Error(data.message || 'Unable to load appointment.');
     context = data;
     renderContext();
+    window.dispatchEvent(new CustomEvent('appointment-context-ready', { detail: data }));
   }
 
   async function saveConsultation(statusValue) {

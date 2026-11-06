@@ -10,7 +10,8 @@
     "db:setup": "node scripts/setup-db.js",
     "db:clear-seed": "node scripts/clear-seed-data.js",
     "dashboard:analyze": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter analyze",
-    "dashboard:build": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter build web --base-href /dashboard-app/"
+    "dashboard:build": "cd flutter_dashboard && ..\\.tools\\flutter\\bin\\flutter build web --base-href /dashboard-app/",
+    "test:clinical": "node --test scripts/test-clinical.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

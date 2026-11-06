@@ -5,6 +5,10 @@
   const nameInput = form?.elements.name;
   const ageInput = form?.elements.age;
   const emailInput = form?.elements.email;
+  const nextPath = new URLSearchParams(window.location.search).get('next');
+  const bookingDestination = nextPath === '/patient/book-reason.html' ? nextPath : null;
+  const loginUrl = '/patient/login.html' + (bookingDestination ? '?next=' + encodeURIComponent(bookingDestination) : '');
+  document.querySelectorAll('a[href="/patient/login.html"]').forEach(link => { link.href = loginUrl; });
 
   function showMessage(text, tone = 'info') {
     if (!message) return;
@@ -45,6 +49,7 @@
     const formData = new FormData(form);
     const body = {
       name: formData.get('name'),
+      gender: formData.get('gender'), whatsappNumber: formData.get('whatsappNumber'), city: formData.get('city'), country: formData.get('country'),
       age: Number(formData.get('age')),
       mobile: mobileValue(),
       email: formData.get('email'),
@@ -65,7 +70,9 @@
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Could not register patient.');
       showMessage(data.message || 'Registration completed.');
-      window.location.href = data.redirectTo || '/patient/login.html?registered=1';
+      message.textContent = 'Registration completed. Your Case ID: SC-' + data.patient.id;
+      const loginLink = document.createElement('a'); loginLink.href = bookingDestination ? loginUrl : (data.redirectTo || '/patient/login.html?registered=1'); loginLink.className = 'block mt-4 font-bold underline'; loginLink.textContent = 'Continue to Login'; message.after(loginLink);
+      form.querySelector('button[type="submit"]').disabled = true;
     } catch (error) {
       showMessage(error.message, 'error');
     }

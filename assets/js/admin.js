@@ -2,6 +2,7 @@
   const page = document.body.dataset.adminPage;
   const main = document.querySelector('main');
   if (!page || !main) return;
+  const escapePayment = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
   function money(value, currency = 'INR') {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency }).format(Number(value || 0));
@@ -23,6 +24,7 @@
     ['doctors', 'Doctors', '/admin/doctors.html', 'stethoscope'],
     ['patients', 'Patient Records', '/admin/patients.html', 'groups'],
     ['revenue', 'Revenue', '/admin/revenue.html', 'payments'],
+    ['enquiries', 'Contact Enquiries', '/admin/enquiries.html', 'mail'],
     ['settings', 'Settings', '/admin/settings.html', 'settings'],
   ];
 
@@ -37,7 +39,7 @@
     return `
       <aside class="aura-sidebar">
         <div class="aura-sidebar__brand">
-          <h1>Sumohan Care</h1>
+          <h1 class="sumohan-brand"><img class="sumohan-brand__icon" src="/assets/images/sumohan-care-logo.png" alt="" width="44" height="44"><span class="sumohan-brand__name">Sumohan Care</span></h1>
           <p>Admin Central</p>
         </div>
         <div class="aura-sidebar__person">
@@ -194,13 +196,13 @@
       'Revenue',
       'Payment summaries sourced from the payments table.',
       `<section class="mt-8 grid gap-4 md:grid-cols-3">
-        ${statCard('Today', money(data.summary.today))}
+        ${statCard('Net paid today', money(data.summary.today))}
         ${statCard('Pending', money(data.summary.pending))}
         ${statCard('Refunds', money(data.summary.refunded))}
       </section>
       <section class="aura-card aura-card--padded mt-8 overflow-x-auto">
         <table class="w-full text-left">
-          <tbody>${data.payments.map((payment) => `<tr class="border-t border-[#e3bdc3]"><td class="py-4 font-bold">${payment.patient_name || '-'}</td><td>${payment.service_type || '-'}</td><td>${money(payment.amount, payment.currency)}</td><td>${payment.status}</td><td>${date(payment.created_at)}</td><td>${payment.status === 'PENDING' ? `<button class="rounded-lg bg-[#006a62] px-3 py-2 font-bold text-white" data-pay-admin="${payment.id}">Mark Paid</button>` : '-'}</td></tr>`).join('')}</tbody>
+          <tbody>${data.payments.map((payment) => `<tr class="border-t border-[#e3bdc3]"><td class="py-4 font-bold">${escapePayment(payment.patient_name || '-')}<p class="text-xs">${payment.id}</p></td><td>${escapePayment(payment.service_type || payment.metadata?.booking?.service || '-')}<p class="text-sm">${escapePayment(payment.doctor_name || payment.metadata?.booking?.doctorName || '')}</p></td><td>${money(payment.amount, payment.currency)}</td><td>${payment.status}${payment.metadata?.gateway === 'razorpay' && payment.metadata?.mode === 'test' ? ' · TEST' : ''}${payment.metadata?.requiresReview ? '<p class="text-sm font-bold text-[#ba1a1a]">Booking needs review</p>' : ''}</td><td>${date(payment.created_at)}</td><td>${payment.status === 'PENDING' && payment.metadata?.gateway !== 'razorpay' ? `<button class="rounded-lg bg-[#006a62] px-3 py-2 font-bold text-white" data-pay-admin="${payment.id}">Mark Paid</button>` : '-'}</td></tr>`).join('')}</tbody>
         </table>
       </section>`,
     );

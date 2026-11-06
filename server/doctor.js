@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const { pool, isDbUnavailable } = require('./db');
+const { changeAppointment } = require('./appointment-changes');
 
 const router = express.Router();
 const DEFAULT_SLOTS = generateSlots([
@@ -100,8 +101,8 @@ function selectedAvailabilitySlots(slots, validStarts) {
 
 async function currentDoctor(req) {
   const sessionDoctor = req.authUser?.role === 'DOCTOR' ? req.authUser : req.session.doctorUser;
-  const doctorEmail = sessionDoctor?.email || 'doctor@aura.test';
-  const doctorResult = await pool.query('SELECT id, display_name, email, profile FROM users WHERE role = $1 AND email = $2 LIMIT 1', ['DOCTOR', doctorEmail]);
+  if (!sessionDoctor?.id) return null;
+  const doctorResult = await pool.query('SELECT id, display_name, email, profile FROM users WHERE role = $1 AND id = $2 AND status = $3 LIMIT 1', ['DOCTOR', sessionDoctor.id, 'ACTIVE']);
   return doctorResult.rows[0] || null;
 }
 
@@ -118,6 +119,71 @@ function monthBounds(monthValue) {
   };
 }
 
+router.get('/profile', async (req,res,next) => {
+  try {
+    const doctor = await currentDoctor(req);
+    if (!doctor) return res.status(404).json({message:'Doctor not found.'});
+    res.json({user:{id:doctor.id,role:'DOCTOR',displayName:doctor.display_name,email:doctor.email,profile:doctor.profile || {}}});
+  } catch(error) {next(error);}
+});
+
+router.patch('/profile', async (req,res,next) => {
+  try {
+    const doctor = await currentDoctor(req);
+    if (!doctor) return res.status(404).json({message:'Doctor not found.'});
+    const experienceYears = req.body.experienceYears === '' || req.body.experienceYears == null ? null : Number(req.body.experienceYears);
+    if (experienceYears !== null && (!['string','number'].includes(typeof req.body.experienceYears) || !Number.isFinite(experienceYears) || experienceYears < 0 || experienceYears > 80)) return res.status(400).json({message:'Experience must be between 0 and 80 years.'});
+    if (!Array.isArray(req.body.languages) || req.body.languages.length > 12 || req.body.languages.some(value=>typeof value!=='string' || !value.trim() || value.trim().length>50)) return res.status(400).json({message:'Enter up to 12 languages, each no longer than 50 characters.'});
+    const languages = [...new Map(req.body.languages.map(value=>[value.trim().toLowerCase(),value.trim()])).values()];
+    const saved = await pool.query("UPDATE users SET profile=profile || $1::jsonb,updated_at=now() WHERE id=$2 AND role='DOCTOR' RETURNING id,display_name,email,profile",[JSON.stringify({experienceYears,languages}),doctor.id]);
+    const user={id:doctor.id,role:'DOCTOR',displayName:saved.rows[0].display_name,email:saved.rows[0].email,profile:saved.rows[0].profile};
+    req.session.doctorUser=user;
+    if(req.session.user?.role==='DOCTOR')req.session.user=user;
+    res.json({user,message:'Experience and languages saved.'});
+  } catch(error) {next(error);}
+});
+
+router.get('/payments', async (req, res, next) => {
+  try {
+    const doctor = await currentDoctor(req);
+    if (!doctor) return res.status(404).json({ message: 'Doctor record not found.' });
+    const Clinical = require('../assets/js/clinical-schema');
+    const start = String(req.query.start || ''), end = String(req.query.end || '');
+    const status = String(req.query.status || '').toUpperCase();
+    const page = Number(req.query.page || 1);
+    if ((start && !Clinical.dateValue(start)) || (end && !Clinical.dateValue(end)) || (start && end && start > end)) return res.status(400).json({ message: 'Choose a valid appointment date range.' });
+    if (status && !['PAID', 'PENDING', 'FAILED', 'REFUNDED', 'NOT_COLLECTED'].includes(status)) return res.status(400).json({ message: 'Choose a valid payment status.' });
+    if (!Number.isSafeInteger(page) || page < 1 || page > 100000) return res.status(400).json({ message: 'Invalid page number.' });
+    // Ownership comes from the authenticated doctor and the booking, never a requested doctor ID.
+    const from = `FROM appointments a LEFT JOIN payments p ON p.appointment_id = a.id
+      LEFT JOIN users u ON u.id = a.patient_id
+      WHERE a.doctor_id = $1
+        AND ($2::date IS NULL OR a.appointment_at >= ($2::date::timestamp AT TIME ZONE 'Asia/Kolkata'))
+        AND ($3::date IS NULL OR a.appointment_at < (($3::date + 1)::timestamp AT TIME ZONE 'Asia/Kolkata'))
+        AND ($4 = '' OR COALESCE(p.status, 'NOT_COLLECTED') = $4)`;
+    const params = [doctor.id, start || null, end || null, status];
+    const [summary, totals, records] = await Promise.all([
+      pool.query(`SELECT p.currency, COALESCE(sum(p.amount - COALESCE((p.metadata->>'refundedAmount')::numeric,0)) FILTER (WHERE p.status = 'PAID'), 0) AS paid,
+        COALESCE(sum(p.amount) FILTER (WHERE p.status = 'PENDING'), 0) AS pending,
+        COALESCE(sum(COALESCE((p.metadata->>'refundedAmount')::numeric,CASE WHEN p.status='REFUNDED' THEN p.amount ELSE 0 END)), 0) AS refunded,
+        count(*) FILTER (WHERE p.status = 'FAILED')::int AS failed_count
+        ${from} AND p.id IS NOT NULL GROUP BY p.currency ORDER BY p.currency`, params),
+      pool.query(`SELECT count(*)::int AS total, count(*) FILTER (WHERE p.id IS NULL)::int AS uncollected ${from}`, params),
+      pool.query(`SELECT p.id AS payment_id, a.id AS appointment_id, a.appointment_at, a.service_type,
+        a.status AS appointment_status, u.display_name AS patient_name, p.amount, p.currency,
+        COALESCE(p.status, 'NOT_COLLECTED') AS payment_status, p.created_at AS payment_created_at,
+        p.metadata->>'reference' AS reference, p.metadata->>'refundedAmount' AS refunded_amount,
+        (COALESCE(p.metadata->>'mode', '') LIKE '%demo%' OR COALESCE(p.metadata->>'gateway', '') IN ('manual_demo', 'manual_placeholder') OR (p.metadata->>'gateway'='razorpay' AND p.metadata->>'mode'='test')) AS is_demo
+        ${from} ORDER BY a.appointment_at DESC, a.id, p.created_at DESC, p.id LIMIT 25 OFFSET $5`, [...params, (page - 1) * 25]),
+    ]);
+    res.json({ doctor: { name: doctor.display_name }, summary: summary.rows, uncollected: totals.rows[0].uncollected,
+      total: totals.rows[0].total, page, pageSize: 25, records: records.rows });
+  } catch (error) {
+    if (isDbUnavailable(error)) return res.status(503).json({ message: 'Payments are temporarily unavailable.' });
+    next(error);
+  }
+});
+
 router.get('/dashboard', async (req, res, next) => {
   try {
     const doctor = await currentDoctor(req);
@@ -129,13 +195,13 @@ router.get('/dashboard', async (req, res, next) => {
           count(*) FILTER (WHERE appointment_at > now() AND status NOT IN ('CANCELLED', 'COMPLETED')) AS pending_appointments,
           count(*) FILTER (WHERE appointment_at < now() AND status NOT IN ('CANCELLED', 'COMPLETED')) AS missed_appointments,
           count(*) FILTER (WHERE appointment_at::date = current_date) AS todays_appointments,
-          count(*) FILTER (WHERE appointment_at::date = current_date AND status = 'COMPLETED') AS consultations_done
+          count(*) FILTER (WHERE appointment_at::date = current_date AND status = 'COMPLETED') AS consultations_done,
+          count(*) FILTER (WHERE status = 'COMPLETED') AS completed_appointments
         FROM appointments
         WHERE doctor_id = $1
       `,
       [doctor.id],
     );
-    const prescriptionResult = await pool.query("SELECT count(*) AS pending_prescriptions FROM prescriptions WHERE doctor_id = $1 AND status IN ('DRAFT', 'PENDING_REVIEW')", [doctor.id]);
     const scheduleResult = await pool.query(
       `
         SELECT a.id, to_char(a.appointment_at, 'HH12:MI') AS time, to_char(a.appointment_at, 'AM') AS meridiem,
@@ -159,7 +225,7 @@ router.get('/dashboard', async (req, res, next) => {
         pendingAppointments: Number(stats.pending_appointments || 0),
         missedAppointments: Number(stats.missed_appointments || 0),
         todaysAppointments,
-        pendingPrescriptions: Number(prescriptionResult.rows[0].pending_prescriptions || 0),
+        completedAppointments: Number(stats.completed_appointments || 0),
         consultationsDone,
         capacityText: todaysAppointments ? `${Math.min(100, Math.round((todaysAppointments / 14) * 100))}% capacity filled` : 'No appointments today',
         completionText: todaysAppointments ? `${Math.round((consultationsDone / todaysAppointments) * 100)}% of daily goal` : 'Ready for first consultation',
@@ -178,6 +244,41 @@ router.get('/dashboard', async (req, res, next) => {
       notifications: notifications.rows,
       storage: 'postgres',
     });
+  } catch (error) {
+    if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
+    next(error);
+  }
+});
+
+router.get('/dashboard/appointments', async (req, res, next) => {
+  try {
+    const doctor = await currentDoctor(req);
+    if (!doctor) return res.status(404).json({ message: 'Doctor record not found in database.' });
+    const period = String(req.query.period || 'today');
+    if (!['past', 'today', 'future'].includes(period)) return res.status(400).json({ message: 'Invalid appointment period.' });
+    const appointmentDate = "(a.appointment_at AT TIME ZONE 'Asia/Kolkata')::date";
+    const comparison = period === 'past' ? '<' : period === 'future' ? '>' : '=';
+    const direction = period === 'past' ? 'DESC' : 'ASC';
+    const result = await pool.query(
+      `SELECT a.id,
+              to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD') AS date,
+              to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM') AS time,
+              a.service_type, a.status, u.display_name AS patient_name
+       FROM appointments a
+       LEFT JOIN users u ON u.id = a.patient_id
+       WHERE a.doctor_id = $1 AND ${appointmentDate} ${comparison} (now() AT TIME ZONE 'Asia/Kolkata')::date
+       ORDER BY a.appointment_at ${direction}
+       LIMIT 100`,
+      [doctor.id],
+    );
+    res.json({ appointments: result.rows.map((item) => ({
+      id: item.id,
+      date: item.date,
+      time: item.time,
+      patientName: item.patient_name || 'Patient',
+      serviceType: item.service_type,
+      status: item.status,
+    })) });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
     next(error);
@@ -271,9 +372,8 @@ router.patch('/appointments/:id/status', async (req, res, next) => {
     if (!doctor) return res.status(404).json({ message: 'Doctor record not found in database.' });
     const status = String(req.body.status || '').trim().toUpperCase();
     if (!['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].includes(status)) return res.status(400).json({ message: 'Unsupported appointment status.' });
-    const result = await pool.query('UPDATE appointments SET status = $1, updated_at = now() WHERE id = $2 AND doctor_id = $3 RETURNING id, status', [status, req.params.id, doctor.id]);
-    if (!result.rowCount) return res.status(404).json({ message: 'Appointment not found.' });
-    res.json({ appointment: result.rows[0] });
+    const appointment = await changeAppointment(req.params.id,'DOCTOR',doctor.id,{status});
+    res.json({ appointment });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
     next(error);
@@ -552,7 +652,7 @@ router.get('/patients/lists', async (req, res, next) => {
                p.id AS patient_id, p.display_name AS patient_name, p.phone, p.email, p.profile
         FROM appointments a
         JOIN users p ON p.id = a.patient_id
-        WHERE a.doctor_id = $1 AND a.status <> 'CANCELLED' AND a.appointment_at >= current_date
+        WHERE a.doctor_id = $1 AND a.status <> 'CANCELLED'
         ORDER BY a.appointment_at ASC
       `,
       [doctor.id],
@@ -576,6 +676,7 @@ router.get('/patients/lists', async (req, res, next) => {
     res.json({
       current: list.filter((item) => item.date === today),
       future: list.filter((item) => item.date > today),
+      past: list.filter((item) => item.date < today),
     });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
@@ -585,19 +686,22 @@ router.get('/patients/lists', async (req, res, next) => {
 
 router.get('/patients/search', async (req, res, next) => {
   try {
+    const doctor = await currentDoctor(req);
+    if (!doctor) return res.status(404).json({ message: 'Doctor not found.' });
     const q = String(req.query.q || '').trim();
     if (!q) return res.json({ patients: [] });
     const result = await pool.query(
       `
-        SELECT id, display_name, phone, email, profile
-        FROM users
-        WHERE role = 'PATIENT' AND (display_name ILIKE $1 OR phone ILIKE $1 OR email ILIKE $1)
-        ORDER BY display_name ASC
+        SELECT u.id, u.display_name, u.phone, u.email, u.profile, a.id AS appointment_id
+        FROM users u
+        JOIN LATERAL (SELECT id FROM appointments WHERE patient_id = u.id AND doctor_id = $2 AND status <> 'CANCELLED' ORDER BY appointment_at DESC LIMIT 1) a ON true
+        WHERE u.role = 'PATIENT' AND (u.display_name ILIKE $1 OR u.phone ILIKE $1 OR u.email ILIKE $1)
+        ORDER BY u.display_name ASC
         LIMIT 10
       `,
-      [`%${q}%`],
+      [`%${q}%`, doctor.id],
     );
-    res.json({ patients: result.rows.map((patient) => ({ id: patient.id, name: patient.display_name, phone: patient.phone, email: patient.email, concern: patient.profile?.currentConcern || 'Not recorded', profile: patient.profile || {} })) });
+    res.json({ patients: result.rows.map((patient) => ({ id: patient.id, appointmentId: patient.appointment_id, name: patient.display_name, phone: patient.phone, email: patient.email, concern: patient.profile?.currentConcern || 'Not recorded', profile: patient.profile || {} })) });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
     next(error);

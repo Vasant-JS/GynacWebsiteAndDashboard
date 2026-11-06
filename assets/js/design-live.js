@@ -179,7 +179,7 @@
     try {
       const data = await jsonFetch('/api/patient/dashboard');
       const h1 = textIncludes('h1,h2', 'Sumohan Care');
-      if (h1) h1.textContent = 'Sumohan Care';
+      if (h1) (h1.querySelector('.sumohan-brand__name') || h1).textContent = 'Sumohan Care';
       const subtitle = Array.from(document.querySelectorAll('p')).find((p) => p.textContent.includes('busy health week'));
       if (subtitle) subtitle.textContent = `Welcome back, ${data.patient.name}. Connected to PostgreSQL.`;
       const upcomingTitle = textIncludes('h2,h3', 'PostgreSQL required') || textIncludes('h2,h3', 'Prenatal');
@@ -276,11 +276,10 @@
     const serviceLabel = document.getElementById('summary-service-label');
     const reasonLabel = document.getElementById('summary-reason-label');
     const doctors = {
-      'Dr. Elena Rossi': 'Senior Gynecologist',
-      'Dr. Sarah Jenkins': 'Fertility Specialist',
-      'Dr. Maya Patel': 'Adolescent Health',
-      'Dr. Chloe Chen': 'Maternity Lead',
-    };
+  "Dr Abhay M Patel": "MBBS MS(OBG)",
+  "Dr Hemamohan": "MBBS MD(OBG). Laparoscopic Surgeon. MBA(Hospital Admin)",
+  "Dr Sahana Hegde": "MBBS MD(OBG)"
+};
     if (reasonLabel) reasonLabel.textContent = sessionStorage.getItem('bookingReason') || reasonLabel.textContent;
     doctorSelect?.addEventListener('change', () => {
       if (doctorName) doctorName.textContent = doctorSelect.value;
@@ -333,12 +332,6 @@
     const doctorInfo = document.getElementById('summary-doctor-info');
     const serviceLabel = document.getElementById('summary-service-label');
     const reasonLabel = document.getElementById('summary-reason-label');
-    const fallbackDoctors = [
-      { id: 'demo-elena', name: 'Dr. Elena Rossi', title: 'Senior Gynecologist', slots: generateSlots([['09:00', '12:00'], ['13:00', '16:00'], ['18:00', '19:30']]) },
-      { id: 'demo-sarah', name: 'Dr. Sarah Jenkins', title: 'Fertility Specialist', slots: generateSlots([['10:00', '13:00'], ['15:00', '18:00']]) },
-      { id: 'demo-maya', name: 'Dr. Maya Patel', title: 'Adolescent Health Specialist', slots: generateSlots([['09:30', '11:30'], ['14:00', '17:00']]) },
-      { id: 'demo-chloe', name: 'Dr. Chloe Chen', title: 'Maternity Lead', slots: generateSlots([['08:30', '11:30'], ['13:30', '15:30'], ['18:00', '20:00']]) },
-    ];
 
     function generateSlots(ranges) {
       return ranges.flatMap(([start, end]) => {
@@ -448,26 +441,16 @@
     }
 
     async function loadAvailability() {
-      const fallbackDoctor = fallbackDoctors.find((doctor) => doctor.id === selectedDoctorId) || fallbackDoctors[0];
-      availabilityState = { doctorId: fallbackDoctor.id, defaultSlots: fallbackDoctor.slots, availability: [], booked: [] };
-      try {
-        availabilityState = await jsonFetch(`/api/patient/booking/availability?doctorId=${encodeURIComponent(selectedDoctorId)}&month=${monthForAvailability()}`);
-      } catch (_error) {
-        // Keep demo slots when PostgreSQL is not running.
-      }
+      availabilityState = await jsonFetch(`/api/patient/booking/availability?doctorId=${encodeURIComponent(selectedDoctorId)}&month=${monthForAvailability()}`);
       if (selectedSlot && !availableSlotsForDate().includes(selectedSlot)) selectedSlot = '';
       updateSelectedTimeLabel();
       renderSlots();
     }
 
     async function loadDoctors() {
-      let doctors = fallbackDoctors;
-      try {
-        const data = await jsonFetch('/api/patient/booking/doctors');
-        if (data.doctors?.length) doctors = data.doctors;
-      } catch (_error) {
-        // Keep demo doctors when PostgreSQL is not running.
-      }
+      const data = await jsonFetch('/api/patient/booking/doctors');
+      const doctors = data.doctors || [];
+      if (!doctors.length) throw new Error('No doctors are available for booking.');
       if (doctorSelect) {
         doctorSelect.innerHTML = '';
         doctors.forEach((doctor) => {
@@ -602,7 +585,7 @@
       const data = await jsonFetch('/api/admin/doctors');
       const tbody = document.querySelector('tbody');
       if (!tbody) return;
-      tbody.innerHTML = data.doctors.map((doctor) => `<tr class="hover:bg-surface-container transition-colors group"><td class="px-6 py-4"><div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80"></div></td><td class="px-6 py-4"><p class="text-body-md font-bold text-on-surface">${doctor.display_name}</p><p class="text-body-sm text-on-surface-variant">${doctor.email || ''}</p></td><td class="px-6 py-4">${doctor.specialization}</td><td class="px-6 py-4"><p class="font-bold">${money(doctor.consultationFee)}</p></td><td class="px-6 py-4"><span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm">${doctor.status}</span></td><td class="px-6 py-4 text-right">${doctor.todaySlots} slots today</td></tr>`).join('');
+      tbody.innerHTML = data.doctors.map((doctor) => `<tr class="hover:bg-surface-container transition-colors group"><td class="px-6 py-4"><div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-fixed"><img class="w-full h-full object-cover" alt="${doctor.display_name}" src="${doctor.profile?.photoUrl || '/assets/images/sumohan-care-logo.png'}"></div></td><td class="px-6 py-4"><p class="text-body-md font-bold text-on-surface">${doctor.display_name}</p><p class="text-body-sm text-on-surface-variant">${doctor.email || ''}</p></td><td class="px-6 py-4">${doctor.profile?.qualifications || doctor.specialization}</td><td class="px-6 py-4"><p class="font-bold">${money(doctor.consultationFee)}</p></td><td class="px-6 py-4"><span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm">${doctor.status}</span></td><td class="px-6 py-4 text-right">${doctor.todaySlots} slots today</td></tr>`).join('');
     } catch (error) {
       console.warn(error);
     }

@@ -29,10 +29,12 @@
       },
     };
   </script>
+<link href="/assets/css/brand.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
 </head>
 <body class="bg-surface text-on-surface font-manrope overflow-x-hidden">
   <header class="w-full h-20 px-6 md:px-12 flex items-center justify-between max-w-[1200px] mx-auto">
-    <a class="text-2xl font-extrabold text-primary" href="/patient/login.html">Sumohan Care</a>
+    <a class="sumohan-brand text-2xl font-extrabold text-primary" href="/patient/login.html"><img class="sumohan-brand__icon" src="/assets/images/sumohan-care-logo.png" alt="" width="44" height="44"><span class="sumohan-brand__name">Sumohan Care</span></a>
     <a class="text-sm font-bold text-on-surface-variant hover:text-primary" href="/patient/login.html">Back to Login</a>
   </header>
 
@@ -60,7 +62,7 @@
             <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" maxlength="80" minlength="2" name="name" pattern="[A-Za-z][A-Za-z\s.'-]{1,79}" required>
           </label>
           <label class="grid gap-2">
-            <span class="text-sm font-bold text-on-surface-variant">Age</span>
+            <span class="text-sm font-bold text-on-surface-variant">Age (as per Aadhaar)</span>
             <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" min="1" max="120" name="age" required type="number">
           </label>
           <label class="grid gap-2">
@@ -71,6 +73,10 @@
             <span class="text-sm font-bold text-on-surface-variant">Email Address</span>
             <input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="email" required type="email">
           </label>
+<label class="grid gap-2"><span class="text-sm font-bold text-on-surface-variant">Gender</span><select class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="gender" required><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select></label>
+<label class="grid gap-2"><span class="text-sm font-bold text-on-surface-variant">WhatsApp Number</span><input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="whatsappNumber" type="tel" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit number" required></label>
+<label class="grid gap-2"><span class="text-sm font-bold text-on-surface-variant">City</span><input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="city" maxlength="100" required></label>
+<label class="grid gap-2"><span class="text-sm font-bold text-on-surface-variant">Country</span><input class="rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="country" maxlength="100" value="India" required></label>
           <label class="grid gap-2 md:col-span-2">
             <span class="text-sm font-bold text-on-surface-variant">Medical History <span class="font-normal">(optional)</span></span>
             <textarea class="min-h-24 rounded-lg border-outline-variant bg-surface-container-low px-4 py-3 focus:border-primary focus:ring-primary" name="history" placeholder="Past surgeries, pregnancy history, cycle concerns, medications"></textarea>
@@ -117,6 +123,6 @@
     </div>
   <p class="aura-developer-credit w-full max-w-[1200px] mx-auto px-container-padding-desktop pb-gutter text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
 </footer>
-  <script src="/assets/js/patient-register.js"></script>
+  <script src="/assets/js/patient-register.js?v=20261106-booking-handoff"></script>
 </body>
 </html>

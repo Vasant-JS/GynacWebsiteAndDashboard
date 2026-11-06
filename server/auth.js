@@ -125,14 +125,22 @@ router.post('/patient/register', async (req, res) => {
   const diabetes = parseBoolean(req.body.diabetes);
   const bloodPressure = parseBoolean(req.body.bloodPressure || req.body.bp);
   const otherConditions = String(req.body.otherConditions || '').trim();
+  const gender = String(req.body.gender || '').trim();
+  const whatsappNumber = normalizeIndianMobile(req.body.whatsappNumber);
+  const city = String(req.body.city || '').trim();
+  const country = String(req.body.country || '').trim();
 
   if (!/^[A-Za-z][A-Za-z\s.'-]{1,79}$/.test(displayName)) return res.status(400).json({ message: 'Enter a valid full name.' });
   if (!Number.isInteger(age) || age < 1 || age > 120) return res.status(400).json({ message: 'Enter a valid age.' });
   if (!phone) return res.status(400).json({ message: 'Enter a valid 10-digit mobile number without +91.' });
+  if (!['Male', 'Female', 'Other', 'Prefer not to say'].includes(gender)) return res.status(400).json({ message: 'Select a gender.' });
+  if (!whatsappNumber) return res.status(400).json({ message: 'Enter a valid 10-digit WhatsApp number.' });
+  if (!city || city.length > 100 || !country || country.length > 100) return res.status(400).json({ message: 'City and country are required (up to 100 characters).' });
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
 
   const profile = {
     age,
+    gender, whatsappNumber, city, country,
     medicalHistory: history || null,
     allergies: allergies || null,
     conditions: {
@@ -149,18 +157,12 @@ router.post('/patient/register', async (req, res) => {
       `
         INSERT INTO users (role, display_name, email, phone, profile, metadata)
         VALUES ('PATIENT', $1, $2, $3, $4::jsonb, $5::jsonb)
-        ON CONFLICT (phone) WHERE phone IS NOT NULL
-        DO UPDATE SET
-          display_name = EXCLUDED.display_name,
-          email = EXCLUDED.email,
-          profile = users.profile || EXCLUDED.profile,
-          metadata = users.metadata || EXCLUDED.metadata,
-          status = 'ACTIVE',
-          updated_at = now()
+        ON CONFLICT DO NOTHING
         RETURNING id, display_name, email, phone, profile
       `,
       [displayName, email, phone, JSON.stringify(profile), JSON.stringify({ source: 'patient_registration' })],
     );
+    if (!result.rowCount) return res.status(409).json({ message: 'This email or mobile number is already registered. Please log in.' });
     res.status(201).json({
       message: 'Registration completed. Please login with your mobile number.',
       redirectTo: '/patient/login.html?registered=1',

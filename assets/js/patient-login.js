@@ -12,6 +12,10 @@
   const resendButton = document.querySelector('[data-resend-otp]');
   let currentPhone = '';
   let resendTimer = null;
+  const nextPath = new URLSearchParams(window.location.search).get('next');
+  const bookingDestination = nextPath === '/patient/book-reason.html' ? nextPath : null;
+  const registrationUrl = '/patient/register.html' + (bookingDestination ? '?next=' + encodeURIComponent(bookingDestination) : '');
+  document.querySelectorAll('a[href="/patient/register.html"]').forEach(link => { link.href = registrationUrl; });
 
   if (!message.isConnected && loginPhase) {
     message.className = 'mt-3 text-sm font-bold text-[#006a62]';
@@ -24,7 +28,12 @@
   }
 
   function showRegisterPrompt(text) {
-    message.innerHTML = `${text} <a class="underline" href="/patient/register.html">Register as patient</a>`;
+    message.textContent = text + ' ';
+    const link = document.createElement('a');
+    link.className = 'underline';
+    link.href = registrationUrl;
+    link.textContent = 'Register as patient';
+    message.appendChild(link);
     message.className = 'mt-3 text-sm font-bold text-[#ba1a1a]';
   }
 
@@ -154,7 +163,7 @@
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Invalid OTP.');
       if (data.user) localStorage.setItem(`auraSessionUser_${data.user.role}`, JSON.stringify(data.user));
-      window.location.href = data.redirectTo;
+      window.location.href = bookingDestination || data.redirectTo;
     } catch (error) {
       showMessage(error.message, 'error');
     }

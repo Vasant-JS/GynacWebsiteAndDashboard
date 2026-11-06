@@ -22,8 +22,8 @@
 
   async function updateAppointment(id, statusValue) {
     list.innerHTML = loadingMarkup('Updating appointment...');
-    await updateAppointmentStatus(id, statusValue);
-    await load();
+    try { await updateAppointmentStatus(id, statusValue); await load(); }
+    catch (error) { await load(); setText(status,error.message); }
   }
 
   async function load() {

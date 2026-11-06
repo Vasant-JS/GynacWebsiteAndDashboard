@@ -1,6 +1,6 @@
 (function () {
-  const { $, $all, bindTabs, escapeHtml, loadingMarkup, setText, todayKey } = window.Aura;
-  const { appointmentCard, emptyAppointmentsLabel, filterAppointments, updateAppointmentStatus, api, searchPatientCard } = window.AuraDoctor;
+  const { $, $all, bindTabs, escapeHtml, loadingMarkup, setText } = window.Aura;
+  const { appointmentCard, emptyAppointmentsLabel, updateAppointmentStatus, api, searchPatientCard } = window.AuraDoctor;
 
   const status = $('#doctor-status');
   const schedule = $('#doctor-schedule-list');
@@ -11,21 +11,32 @@
   if (!status || !schedule || !updates) return;
 
   let activeTab = 'today';
-  let appointments = [];
-  const syncTabs = bindTabs(tabButtons, () => activeTab, (tab) => { activeTab = tab; }, renderSchedule);
+  let rosterRequest = 0;
+  const syncTabs = bindTabs(tabButtons, () => activeTab, (tab) => { activeTab = tab; }, loadRoster);
 
-  function renderSchedule() {
+  async function loadRoster() {
+    const request = ++rosterRequest;
+    const period = activeTab;
     syncTabs();
-    const items = filterAppointments(appointments, activeTab, todayKey());
-    schedule.innerHTML = items.length
-      ? items.map(appointmentCard).join('')
-      : `<p class="rounded-xl bg-white p-5 text-[#5a4044]">${emptyAppointmentsLabel(activeTab)}</p>`;
+    schedule.innerHTML = loadingMarkup('Loading appointments...');
+    try {
+      const data = await api.dashboardRoster(period);
+      if (request !== rosterRequest) return;
+      const items = data.appointments || [];
+      schedule.innerHTML = items.length
+        ? items.map(appointmentCard).join('')
+        : `<p class="rounded-xl bg-white p-5 text-[#5a4044]">${emptyAppointmentsLabel(period)}</p>`;
+    } catch (error) {
+      if (request !== rosterRequest) return;
+      schedule.innerHTML = `<p class="rounded-xl bg-white p-5 text-[#ba1a1a]">${escapeHtml(error.message)}</p>`;
+    }
   }
 
   function renderStats(data) {
-    setText($('#total-appointments'), data.stats.totalAppointments ?? data.stats.todaysAppointments);
+    setText($('#today-appointments'), data.stats.todaysAppointments ?? 0);
     setText($('#pending-appointments'), data.stats.pendingAppointments ?? 0);
     setText($('#missed-appointments'), data.stats.missedAppointments ?? 0);
+    setText($('#completed-appointments'), data.stats.completedAppointments ?? 0);
   }
 
   function renderUpdates(notifications) {
@@ -35,15 +46,15 @@
   }
 
   async function load() {
-    schedule.innerHTML = loadingMarkup('Loading appointments...');
     updates.innerHTML = loadingMarkup('Loading updates...');
     try {
-      const date = todayKey();
-      const [dashboard, scheduleData] = await Promise.all([api.dashboard(), api.schedule(date, date.slice(0, 7))]);
-      setText(status, `Connected to PostgreSQL - ${dashboard.doctor.displayName}`);
-      appointments = scheduleData.monthly || [];
+      const dashboard = await api.dashboard();
+      const doctorName = dashboard.doctor.displayName || 'Doctor';
+      setText($('#doctor-greeting'), `Good ${new Intl.DateTimeFormat('en', { timeZone: 'Asia/Kolkata', hour: 'numeric', hour12: false }).format(new Date()) < 12 ? 'morning' : 'afternoon'}, ${doctorName}`);
+      setText($('#dashboard-date'), new Intl.DateTimeFormat('en-IN', { dateStyle: 'full', timeZone: 'Asia/Kolkata' }).format(new Date()));
+      setText(status, 'Today’s clinic activity is up to date.');
       renderStats(dashboard);
-      renderSchedule();
+      await loadRoster();
       renderUpdates(dashboard.notifications || []);
     } catch (error) {
       setText(status, error.message);
@@ -71,8 +82,8 @@
     const cancelButton = event.target.closest('[data-cancel]');
     if (!cancelButton) return;
     schedule.innerHTML = loadingMarkup('Updating appointment...');
-    await updateAppointmentStatus(cancelButton.dataset.cancel, 'CANCELLED');
-    await load();
+    try { await updateAppointmentStatus(cancelButton.dataset.cancel, 'CANCELLED'); await load(); }
+    catch (error) { await load(); schedule.insertAdjacentHTML('afterbegin', `<p role="alert">${escapeHtml(error.message)}</p>`); }
   });
   search?.addEventListener('input', window.Aura.debounce(searchPatients, 250));
 

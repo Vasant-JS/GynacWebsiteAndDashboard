@@ -12,14 +12,15 @@
   const modalClose = document.getElementById('appointment-modal-close');
   const modalForm = document.getElementById('appointment-modal-form');
   const actionMessage = document.getElementById('appointment-action-message');
-  let currentDocumentTab = 'reports';
-  let currentAppointmentTab = 'upcoming';
+  const requestedTab = new URLSearchParams(window.location.search).get('tab');
+  let currentDocumentTab = requestedTab === 'prescriptions' ? 'prescriptions' : 'reports';
+  let currentAppointmentTab = requestedTab === 'past' ? 'past' : 'upcoming';
   let lastData = null;
   let appointments = [];
 
   function formatDate(value) {
     if (!value) return '-';
-    return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
+    return new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }).format(new Date(value));
   }
 
   function loadingMarkup(label) {
@@ -36,7 +37,7 @@
       const response = await fetch(endpoint);
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Unable to load data.');
-      if (status) status.textContent = 'Connected to PostgreSQL';
+      if (status) status.textContent = mode === 'appointments' ? 'Your appointment history' : 'Your care records';
       if (mode === 'appointments') {
         appointments = data.appointments || [];
         renderAppointments();
@@ -51,20 +52,19 @@
       }
     } catch (error) {
       if (status) status.textContent = error.message;
-      target.innerHTML = '<p class="aura-card aura-card--padded text-[#ba1a1a]">PostgreSQL is required to show exact data from DB.</p>';
+      if (target) target.innerHTML = '<p class="aura-card aura-card--padded text-[#ba1a1a]">Unable to load your records. Please refresh the page or sign in again.</p>';
     }
   }
 
   function isFutureAppointment(item) {
     const appointmentDate = new Date(item.appointment_at);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return appointmentDate.getTime() >= today.getTime() && item.status !== 'CANCELLED' && item.status !== 'COMPLETED';
+    return appointmentDate.getTime() > Date.now() && item.status !== 'CANCELLED' && item.status !== 'COMPLETED';
   }
 
   function renderAppointments() {
     appointmentTabs.forEach((button) => {
       const active = button.dataset.appointmentTab === currentAppointmentTab;
+      button.setAttribute('aria-selected', String(active));
       button.classList.toggle('border-b-2', active);
       button.classList.toggle('border-[#b0004a]', active);
       button.classList.toggle('text-[#b0004a]', active);
@@ -79,8 +79,11 @@
     const feedback = item.metadata?.feedback;
     const canChange = isFutureAppointment(item);
     const canComplete = item.status !== 'COMPLETED' && item.status !== 'CANCELLED';
+    const isClosed = item.status === 'COMPLETED' || item.status === 'CANCELLED';
+    const meetLink = item.metadata?.virtualMeeting?.meetLink || item.metadata?.virtualMeeting?.calendarEventId
+      ? `/api/consultations/${encodeURIComponent(item.id)}/join?role=PATIENT` : null;
     const hasPayment = Boolean(item.payment_id);
-    const paymentLabel = hasPayment ? `${item.payment_currency || 'INR'} ${item.payment_amount || 0} - ${item.payment_status}` : 'Payment not started';
+    const paymentLabel = hasPayment ? `${item.payment_currency || 'INR'} ${item.payment_amount || 0} - ${item.payment_status}` : 'No online payment collected';
     const disabledClass = 'cursor-not-allowed opacity-40';
     const menuItemClass = 'flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-bold text-[#000767] hover:bg-[#f4f2ff] disabled:cursor-not-allowed disabled:opacity-40';
     return `
@@ -91,6 +94,10 @@
             <h3 class="mt-1 text-xl font-extrabold">${item.service_type}</h3>
             <p class="text-[#5a4044]">${item.doctor_name || '-'} - ${item.location || '-'}</p>
             <p class="mt-3 inline-block rounded-full bg-[#edecff] px-3 py-1 text-sm font-bold">${item.status.replaceAll('_', ' ')}</p>
+            ${meetLink ? isClosed
+              ? `<button class="mt-3 inline-block cursor-not-allowed rounded-full border border-[#8e9b9a] px-4 py-2 text-sm font-bold text-[#6b7776] opacity-60" type="button" disabled title="Google Meet is unavailable for ${item.status.toLowerCase()} appointments">Join Google Meet</button>`
+              : `<a class="mt-3 inline-block rounded-full border border-[#006a62] px-4 py-2 text-sm font-bold text-[#006a62]" href="${meetLink}" target="_blank" rel="noopener noreferrer">Join Google Meet</a>` : ''}
+            ${item.metadata?.virtualMeeting?.mode === 'not_configured' ? '<p class="mt-3 text-sm text-[#5a4044]">Google Meet link will appear here after Calendar is configured.</p>' : ''}
             <p class="mt-2 text-sm font-bold text-[#006a62]">${paymentLabel}</p>
             ${feedback ? `<p class="mt-3 text-sm text-[#5a4044]">Feedback: ${'★'.repeat(feedback.rating)} ${feedback.comment || ''}</p>` : ''}
           </div>
@@ -115,11 +122,7 @@
                 <a class="${menuItemClass}" href="/api/patient/payments/${item.payment_id}/receipt" target="_blank">
                   <span class="material-symbols-outlined text-lg">receipt_long</span>Receipt
                 </a>
-              ` : `
-                <button class="${menuItemClass}" data-appointment-pay="${item.id}" data-payment-id="${item.payment_id || ''}" type="button">
-                  <span class="material-symbols-outlined text-lg">payments</span>${hasPayment ? 'Pay Now' : 'Create Payment'}
-                </button>
-              `}
+              ` : ''}
             </div>
           </div>
         </div>
@@ -148,6 +151,7 @@
   }
 
   async function updateAppointmentStatus(id, statusValue) {
+    try {
     target.innerHTML = loadingMarkup('Updating appointment...');
     const response = await fetch(`/api/patient/appointments/${id}/status`, {
       method: 'PATCH',
@@ -157,6 +161,10 @@
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || 'Unable to update appointment.');
     await load();
+    } catch (error) {
+      await load();
+      if (status) status.textContent = error.message;
+    }
   }
 
   function wireAppointmentActions() {
@@ -234,6 +242,7 @@
     if (!lastData) return;
     tabButtons.forEach((button) => {
       const active = button.dataset.documentTab === currentDocumentTab;
+      button.setAttribute('aria-selected', String(active));
       button.classList.toggle('border-b-2', active);
       button.classList.toggle('border-[#b0004a]', active);
       button.classList.toggle('text-[#b0004a]', active);
@@ -253,11 +262,13 @@
 
   tabButtons.forEach((button) => button.addEventListener('click', () => { currentDocumentTab = button.dataset.documentTab; renderDocumentTab(); }));
   appointmentTabs.forEach((button) => button.addEventListener('click', () => { currentAppointmentTab = button.dataset.appointmentTab; renderAppointments(); }));
-  document.addEventListener('click', (event) => {
+  const closeAppointmentMenus = (event) => {
     if (target?.contains(event.target) && event.target.closest('[data-appointment-menu], [data-appointment-menu-toggle]')) return;
     target.querySelectorAll('[data-appointment-menu]').forEach((node) => node.classList.add('hidden'));
     target.querySelectorAll('[data-appointment-menu-toggle]').forEach((node) => node.setAttribute('aria-expanded', 'false'));
-  });
+  };
+  document.addEventListener('click', closeAppointmentMenus);
+  window.PatientShell?.registerCleanup(() => document.removeEventListener('click', closeAppointmentMenus));
   modalClose?.addEventListener('click', closeModal);
   actionModal?.addEventListener('click', (event) => { if (event.target === actionModal) closeModal(); });
   uploadForm?.addEventListener('submit', async (event) => {

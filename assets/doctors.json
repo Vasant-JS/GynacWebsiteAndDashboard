@@ -1,0 +1,24 @@
+[
+  {
+    "key": "abhay-m-patel",
+    "name": "Dr Abhay M Patel",
+    "qualifications": "MBBS MS(OBG)",
+    "photoUrl": "/assets/images/doctors/abhay-m-patel.jpeg",
+    "specialization": "Obstetrics and Gynecology"
+  },
+  {
+    "key": "hemamohan",
+    "name": "Dr Hemamohan",
+    "qualifications": "MBBS MD(OBG). Laparoscopic Surgeon. MBA(Hospital Admin)",
+    "photoUrl": "/assets/images/doctors/hemamohan.jpeg",
+    "specialization": "Obstetrics and Gynecology",
+    "title": "Laparoscopic Surgeon"
+  },
+  {
+    "key": "sahana-hegde",
+    "name": "Dr Sahana Hegde",
+    "qualifications": "MBBS MD(OBG)",
+    "photoUrl": "/assets/images/doctors/sahana-hegde.jpeg",
+    "specialization": "Obstetrics and Gynecology"
+  }
+]

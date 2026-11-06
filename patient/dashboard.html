@@ -1,259 +1,66 @@
-<!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="/assets/css/aura-portal.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "tertiary": "#6941ab",
-                        "error": "#ba1a1a",
-                        "surface-container": "#edecff",
-                        "on-tertiary": "#ffffff",
-                        "surface-container-high": "#e6e6ff",
-                        "on-secondary": "#ffffff",
-                        "outline-variant": "#e3bdc3",
-                        "on-tertiary-fixed": "#260058",
-                        "on-secondary-fixed-variant": "#005049",
-                        "secondary": "#006a62",
-                        "primary": "#b0004a",
-                        "on-surface": "#000767",
-                        "secondary-container": "#81f3e5",
-                        "inverse-primary": "#ffb2bf",
-                        "on-secondary-fixed": "#00201d",
-                        "primary-fixed": "#ffd9de",
-                        "on-primary-container": "#fff2f3",
-                        "surface-variant": "#e0e0ff",
-                        "primary-fixed-dim": "#ffb2bf",
-                        "on-error-container": "#93000a",
-                        "surface": "#fbf8ff",
-                        "on-surface-variant": "#5a4044",
-                        "outline": "#8e6f74",
-                        "on-primary": "#ffffff",
-                        "tertiary-fixed": "#ebdcff",
-                        "on-tertiary-container": "#fbf3ff",
-                        "secondary-fixed-dim": "#66d9cc",
-                        "on-secondary-container": "#006f66",
-                        "on-tertiary-fixed-variant": "#572e99",
-                        "error-container": "#ffdad6",
-                        "primary-container": "#d81b60",
-                        "surface-container-low": "#f4f2ff",
-                        "surface-bright": "#fbf8ff",
-                        "tertiary-fixed-dim": "#d4bbff",
-                        "surface-dim": "#d5d7ff",
-                        "on-primary-fixed": "#3f0016",
-                        "surface-container-lowest": "#ffffff",
-                        "inverse-surface": "#1b247f",
-                        "on-primary-fixed-variant": "#90003b",
-                        "secondary-fixed": "#84f5e8",
-                        "tertiary-container": "#825bc6",
-                        "on-background": "#000767",
-                        "on-error": "#ffffff",
-                        "inverse-on-surface": "#f1efff",
-                        "surface-tint": "#bc004f",
-                        "surface-container-highest": "#e0e0ff",
-                        "background": "#fbf8ff"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "base": "8px",
-                        "container-padding-mobile": "16px",
-                        "gutter": "24px",
-                        "container-padding-desktop": "48px",
-                        "section-gap": "64px"
-                    },
-                    "fontFamily": {
-                        "body-lg": ["Manrope"],
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Manrope"],
-                        "label-sm": ["Manrope"],
-                        "body-sm": ["Manrope"],
-                        "headline-lg": ["Manrope"],
-                        "headline-xl": ["Manrope"],
-                        "label-md": ["Manrope"],
-                        "headline-lg-mobile": ["Manrope"]
-                    },
-                    "fontSize": {
-                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
-                        "headline-xl": ["40px", {"lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
-                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
-                    }
-                },
-            },
-        }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .tonal-elevation {
-            box-shadow: 0px 4px 20px rgba(26, 35, 126, 0.05);
-        }
-    </style>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patient Dashboard | Sumohan Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/aura-portal.css">
+  <link rel="stylesheet" href="/assets/css/patient-shell.css?v=20261105-ui">
+  <link rel="stylesheet" href="/assets/css/patient-dashboard.css?v=20261105-ui">
+  <link rel="stylesheet" href="/assets/css/patient-portal-pages.css?v=20261105-slot-scroll">
+  <link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
 </head>
-<body class="bg-background text-on-background font-body-md overflow-x-hidden">
-<div class="flex min-h-screen">
-<!-- SideNavBar - JSON Mapping Execution -->
-<aside class="bg-surface-container-low dark:bg-surface-dim h-screen sticky left-0 w-64 flex flex-col shadow-sm py-base gap-base">
-<div class="px-base py-gutter flex flex-col gap-base">
-<div class="flex items-center gap-base px-base mb-gutter">
-<img alt="Patient Profile Picture" class="w-12 h-12 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYNB43S75HfG0CKt4hTlVL9dR7K22FMuYAeF2cwUT9CG-7qMJi8djRwrNLvJQGvE4m1-Rce_lQ7Z_rH-L3TVrx2KXOANzhpEHC5lPumTZT6uObU8bKKo0L4amvFz6wTHAeLd5oe6qlSuWEbnQtW-oAc5dnB1Iu0u8yPBAT1y1ty2PA6wN4h-9zmlVF2d2YfYktSFINfuHSkukjjPnQrOY7NZBWyqBskoiUWzpY_r8bl8AlzdAGaRoJ0uSAhDw7wF8NGYbF6e5SDqI"/>
-<div>
-<h2 class="text-on-surface font-headline-md text-headline-md leading-tight">Patient Portal</h2>
-<p class="text-on-surface-variant font-body-sm text-body-sm">Welcome back, Sarah</p>
-</div>
-</div>
-<nav class="flex flex-col gap-base">
-<!-- Dashboard Item (Active) -->
-<a class="flex items-center gap-base py-3 px-base bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary border-l-4 border-primary font-bold hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all" href="/patient/dashboard.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="font-label-md text-label-md">Dashboard</span>
-</a>
-<!-- Appointments Item -->
-<a class="flex items-center gap-base py-3 px-base text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all" href="/patient/appointments.html">
-<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
-<span class="font-label-md text-label-md">Appointments</span>
-</a>
-<!-- Medical Reports Item -->
-<a class="flex items-center gap-base py-3 px-base text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface transition-all" href="/patient/reports.html">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span class="font-label-md text-label-md">Medical Reports</span>
-</a>
-</nav>
-</div>
-<div class="mt-auto px-base pb-section-gap">
-<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-xl flex items-center justify-center gap-base hover:opacity-90 active:scale-95 transition-all tonal-elevation">
-<span class="material-symbols-outlined" data-icon="add">add</span>
-                    Book New Consultation
-                </button>
-</div>
-</aside>
-<!-- Main Content Area -->
-<main class="flex-1 overflow-y-auto">
-<!-- Top Bar -->
-<header class="h-20 bg-surface flex justify-between items-center px-container-padding-desktop sticky top-0 z-10 shadow-sm">
-<h1 class="text-primary font-headline-lg text-headline-lg">Sumohan Care</h1>
-<div class="flex items-center gap-gutter">
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="notifications">notifications</span>
-<div data-patient-account-slot></div>
-</div>
-</header>
-<div class="px-container-padding-desktop py-gutter max-w-[1200px] mx-auto">
-<!-- Welcome Section -->
-<div class="flex flex-col gap-gutter md:flex-row md:items-end md:justify-between mb-section-gap">
-<div>
-<p class="text-secondary font-label-md text-label-md" id="patient-status">Loading from PostgreSQL...</p>
-<h2 class="text-on-surface font-headline-xl text-headline-xl mb-base" id="patient-title">Patient Dashboard</h2>
-<p class="text-on-surface-variant font-body-lg text-body-lg" id="patient-summary">Your dashboard will update with records from the database.</p>
-</div>
-</div>
-<!-- Bento Grid Layout -->
-<div class="grid grid-cols-12 gap-gutter mb-section-gap">
-<!-- Upcoming Appointment Card (Primary Focus) -->
-<div class="col-span-12 md:col-span-8 bg-surface-container-lowest p-gutter rounded-xl border-l-4 border-secondary tonal-elevation" id="upcoming-card">
-<p class="text-on-surface-variant font-body-md text-body-md">Loading upcoming appointment...</p>
-</div>
-<!-- Health Tip Card (Secondary) -->
-<div class="col-span-12 md:col-span-4 bg-primary-container p-gutter rounded-xl tonal-elevation flex flex-col justify-between relative overflow-hidden">
-<div class="relative z-10">
-<h4 class="text-on-primary-container font-headline-md text-headline-md mb-base">Wellness Insight</h4>
-<p class="text-on-primary-container opacity-90 font-body-md text-body-md" id="patient-wellness-insight">Your care insights will appear as your clinical records are updated.</p>
-</div>
-<a class="relative z-10 text-on-primary-container font-label-md text-label-md underline mt-base" href="/patient/profile.html">View profile</a>
-<span class="absolute -right-8 -bottom-8 material-symbols-outlined text-white opacity-10 text-[120px]" data-icon="favorite">favorite</span>
-</div>
-<!-- Recent Prescriptions -->
-<div class="col-span-12 md:col-span-6 bg-surface-container-lowest p-gutter rounded-xl border border-outline-variant tonal-elevation">
-<div class="flex justify-between items-center mb-gutter">
-<h3 class="text-on-surface font-headline-md text-headline-md">Recent Prescriptions</h3>
-<a class="text-primary font-label-sm text-label-sm" href="/patient/reports.html">VIEW ALL</a>
-</div>
-<div class="space-y-base" id="patient-prescriptions-list">
-<p class="text-on-surface-variant font-body-md text-body-md">Loading prescriptions...</p>
-</div>
-</div>
-<!-- Recent Reports -->
-<div class="col-span-12 md:col-span-6 bg-surface-container-lowest p-gutter rounded-xl border border-outline-variant tonal-elevation">
-<div class="flex justify-between items-center mb-gutter">
-<h3 class="text-on-surface font-headline-md text-headline-md">Recent Reports</h3>
-<a class="text-primary font-label-sm text-label-sm" href="/patient/reports.html">VIEW ALL</a>
-</div>
-<div class="space-y-base" id="patient-reports-list">
-<p class="text-on-surface-variant font-body-md text-body-md">Loading reports...</p>
-</div>
-</div>
-</div>
-<!-- Appointment History Table -->
-<div class="bg-surface-container-lowest rounded-xl tonal-elevation overflow-hidden border border-outline-variant">
-<div class="px-gutter py-gutter bg-surface-container-low flex justify-between items-center">
-<h3 class="text-on-surface font-headline-md text-headline-md">Appointment History</h3>
-<div class="flex items-center gap-base text-on-surface-variant font-body-sm">
-<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
-                            Filter History
-                        </div>
-</div>
-<div class="overflow-x-auto">
-<table class="w-full text-left">
-<thead class="bg-surface-container-high">
-<tr>
-<th class="px-gutter py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Service</th>
-<th class="px-gutter py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Doctor</th>
-<th class="px-gutter py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Date</th>
-<th class="px-gutter py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
-<th class="px-gutter py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Action</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-variant" id="patient-history-list">
-<tr>
-<td class="px-gutter py-4 font-body-md text-on-surface-variant" colspan="5">Loading appointment history...</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<!-- Footer - JSON Mapping Execution -->
-<footer class="bg-surface-container-highest dark:bg-surface-container-lowest grid grid-cols-1 md:grid-cols-4 gap-gutter px-container-padding-desktop py-section-gap w-full mt-section-gap">
-<div class="col-span-1">
-<h2 class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface-variant mb-base">Sumohan Care</h2>
-<p class="text-body-sm font-body-sm text-on-surface-variant">© 2024 Sumohan Care. Clinical Excellence &amp; Empathy.</p>
-</div>
-<div class="flex flex-col gap-base">
-<h4 class="font-label-md text-label-md text-primary">Patient Info</h4>
-<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="/patient/dashboard.html">Privacy Policy</a>
-<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="/patient/dashboard.html">Terms of Service</a>
-</div>
-<div class="flex flex-col gap-base">
-<h4 class="font-label-md text-label-md text-primary">Support</h4>
-<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="/patient/dashboard.html">Patient Rights</a>
-<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="/patient/dashboard.html">Contact Support</a>
-</div>
-<div class="col-span-1">
-<img class="w-full h-32 object-cover rounded-xl shadow-sm" data-alt="A tranquil and professional medical consultation room featuring soft lavender and white tones, minimalist wooden furniture, and abundant natural light filtering through sheer curtains. The environment feels serene, boutique, and focused on patient comfort and clinical excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvCQOeKGgJunFZ_W_R50ZY2lnZgv4xqEEBi7kM_LdXOBD9hFI9XyVEl9vKrMQwjo1Mw5wl81utbjDOetcYNNQVmUmkP_IgLg-2pgAPjq3OlvHgICIxZYLWUkxh-SyqLq23aeYK8GI274W_IQeP2UFekx084cKcG88mmMWoLc5f-Ht1M_dSDs9xU3fesz3oyuvjKRkZ4msa847xxDWIwc_kvyjnyemiH5CQIxvOH4_AnKLpDQTMnA2_sB78Z2VPOZr6JaMaMPkTt4U"/>
-</div>
-<p class="aura-developer-credit col-span-1 md:col-span-4 w-full text-label-sm font-label-sm text-on-surface-variant text-center md:text-left">Developed by <a class="text-primary font-bold hover:underline" href="http://ekathvainnovations.com/" target="_blank" rel="noopener">Ekathva Innvoations</a></p>
-</footer>
-</main>
-</div>
-<script src="/assets/js/patient-dashboard.js?v=2026070811"></script>
-<script src="/assets/js/design-live.js"></script>  <script src="/assets/js/aura-sidebar.js?v=2026070812"></script>
-</body></html>
+<body class="patient-dashboard" data-patient-page="dashboard">
+  <div class="patient-app">
+    <div id="patient-sidebar-slot"></div>
+    <div class="patient-app__main">
+      <div id="patient-navbar-slot"></div>
+      <main class="patient-page">
+        <div class="patient-page__intro"><p class="patient-eyebrow" id="patient-status" role="status">Loading your care summary…</p><p>Appointments and records in one place</p></div>
+
+        <section class="patient-hero patient-card" aria-labelledby="patient-title">
+          <div class="patient-hero__top">
+            <div class="patient-hero__person"><span class="patient-hero__avatar material-symbols-outlined" aria-hidden="true">person</span><div><h1 id="patient-title">Welcome to your dashboard</h1><div class="patient-hero__details"><span id="patient-case-id">Loading patient details…</span><span id="patient-location" hidden></span><span id="patient-blood-group" hidden></span></div></div></div>
+            <a class="patient-button" href="/patient/book-reason.html"><span class="material-symbols-outlined" aria-hidden="true">calendar_add_on</span>Book Consultation</a>
+          </div>
+          <p class="patient-hero__summary" id="patient-summary">Your upcoming visit and care records will appear here.</p>
+        </section>
+
+        <section class="patient-metrics" aria-label="Appointment overview">
+          <a class="patient-metric patient-card" href="/patient/appointments.html"><span class="patient-metric__icon patient-metric__icon--rose material-symbols-outlined" aria-hidden="true">event_upcoming</span><span><small>Next appointment</small><strong id="metric-next">—</strong><em id="metric-next-detail">Checking your bookings</em></span></a>
+          <a class="patient-metric patient-card" href="/patient/appointments.html"><span class="patient-metric__icon patient-metric__icon--teal material-symbols-outlined" aria-hidden="true">calendar_month</span><span><small>Upcoming visits</small><strong id="metric-upcoming">—</strong><em id="metric-upcoming-detail">Scheduled consultations</em></span></a>
+          <a class="patient-metric patient-card" href="/patient/appointments.html?tab=past"><span class="patient-metric__icon patient-metric__icon--blue material-symbols-outlined" aria-hidden="true">task_alt</span><span><small>Completed visits</small><strong id="metric-completed">—</strong><em id="metric-completed-detail">Consultations completed</em></span></a>
+          <a class="patient-metric patient-card" href="/patient/appointments.html?tab=past"><span class="patient-metric__icon patient-metric__icon--lavender material-symbols-outlined" aria-hidden="true">history</span><span><small>Last appointment</small><strong id="metric-last">—</strong><em id="metric-last-detail">Most recent past booking</em></span></a>
+        </section>
+
+        <div class="patient-workspace">
+          <div class="patient-workspace__primary">
+            <section class="patient-card patient-section" aria-labelledby="upcoming-heading"><div class="patient-section__heading"><div><p class="patient-eyebrow">Your next visit</p><h2 id="upcoming-heading">Upcoming Appointment</h2></div><a href="/patient/appointments.html">View all <span aria-hidden="true">→</span></a></div><div id="upcoming-card" aria-live="polite"><p class="patient-empty">Loading appointment…</p></div></section>
+
+            <section class="patient-card patient-section" aria-labelledby="prescriptions-heading"><div class="patient-section__heading"><div><p class="patient-eyebrow">Your care records</p><h2 id="prescriptions-heading">Recent Prescriptions</h2></div><a href="/patient/reports.html?tab=prescriptions">View all <span aria-hidden="true">→</span></a></div><div class="patient-prescriptions" id="patient-prescriptions-list"><p class="patient-empty">Loading prescriptions…</p></div></section>
+
+            <section class="patient-card patient-section" aria-labelledby="history-heading"><div class="patient-section__heading"><div><p class="patient-eyebrow">Previous bookings</p><h2 id="history-heading">Recent Appointment History</h2></div><a href="/patient/appointments.html?tab=past">View all <span aria-hidden="true">→</span></a></div><div class="patient-history" id="patient-history-list"><p class="patient-empty">Loading appointments…</p></div></section>
+          </div>
+
+          <div class="patient-workspace__secondary">
+            <section class="patient-card patient-section patient-plan" aria-labelledby="plan-heading"><span class="patient-plan__icon material-symbols-outlined" aria-hidden="true">calendar_today</span><p class="patient-eyebrow">Plan your care</p><h2 id="plan-heading">Your appointment picture</h2><p id="patient-plan-summary">We’re checking your appointment record.</p><div class="patient-plan__links"><a href="/patient/appointments.html">Manage visits <span aria-hidden="true">→</span></a><a id="patient-plan-book-link" href="/patient/book-reason.html">Book a consultation <span aria-hidden="true">→</span></a></div></section>
+
+            <section class="patient-card patient-section" aria-labelledby="reports-heading"><div class="patient-section__heading"><div><p class="patient-eyebrow">Documents</p><h2 id="reports-heading">Recent Reports</h2></div><a href="/patient/reports.html">View all <span aria-hidden="true">→</span></a></div><div class="patient-reports" id="patient-reports-list"><p class="patient-empty">Loading reports…</p></div></section>
+
+            <section class="patient-card patient-section patient-support" aria-labelledby="support-heading"><span class="material-symbols-outlined" aria-hidden="true">emergency</span><h2 id="support-heading">24/7 Hospital Support</h2><p>For urgent medical help, contact the hospital directly.</p><a class="patient-support__phone" href="tel:+918618818012"><span class="material-symbols-outlined" aria-hidden="true">call</span>+91 86188 18012</a><small>Sumohan Medico Surgical Centre · Shivamogga</small></section>
+          </div>
+        </div>
+        <footer class="patient-footer">Developed by <a href="https://ekathvainnovations.com/" target="_blank" rel="noopener noreferrer">Ekathva Innovations</a></footer>
+      </main>
+    </div>
+  </div>
+  <div id="patient-mobile-nav-slot"></div>
+  <script src="/assets/js/patient-shell.js?v=20261106-razorpay"></script>
+  <script src="/assets/js/patient-dashboard.js?v=20261106-calendar"></script>
+</body>
+</html>

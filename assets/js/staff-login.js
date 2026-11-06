@@ -11,8 +11,8 @@
       email.value = 'admin@aura.test';
       password.value = 'admin123';
     } else {
-      email.value = 'doctor@aura.test';
-      password.value = 'doctor123';
+      email.value = '';
+      password.value = '';
     }
   }
 

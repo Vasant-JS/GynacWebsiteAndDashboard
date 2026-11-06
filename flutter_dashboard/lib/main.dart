@@ -244,7 +244,7 @@ class DoctorMiniProfile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text('Dr. Elena\nRossi', style: TextStyle(color: _navy, fontWeight: FontWeight.w900, fontSize: 20, height: 1.25)),
+                Text('Doctor', style: TextStyle(color: _navy, fontWeight: FontWeight.w900, fontSize: 20, height: 1.25)),
                 SizedBox(height: 4),
                 Text('Chief\nGynecologist', style: TextStyle(color: Color(0xFF3B1B24), fontSize: 15, height: 1.25)),
               ],
@@ -551,7 +551,7 @@ class UpcomingAppointmentCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          const Text('Dr. Elena Rossi', style: TextStyle(color: _navy, fontSize: 30, fontWeight: FontWeight.w900)),
+          const Text('Doctor', style: TextStyle(color: _navy, fontSize: 30, fontWeight: FontWeight.w900)),
           const Text('Senior Gynecological Specialist', style: TextStyle(color: _textMuted, fontSize: 20)),
           const SizedBox(height: 28),
           Container(
@@ -682,9 +682,9 @@ class AppointmentHistoryPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const rows = [
-      ['Prenatal Consultation', 'Dr. Elena Rossi', '12 Oct, 2024', 'COMPLETED'],
-      ['Pelvic Ultrasound', 'Dr. Sarah Jenkins', '04 Oct, 2024', 'COMPLETED'],
-      ['Routine Checkup', 'Dr. Maya Patel', '22 Sep, 2024', 'COMPLETED'],
+      ['Prenatal Consultation', 'Doctor', '12 Oct, 2024', 'COMPLETED'],
+      ['Pelvic Ultrasound', 'Doctor', '04 Oct, 2024', 'COMPLETED'],
+      ['Routine Checkup', 'Doctor', '22 Sep, 2024', 'COMPLETED'],
     ];
     return Container(
       decoration: sourceCard(),
@@ -737,7 +737,7 @@ class DoctorHeader extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Good Morning, Dr. Rossi', style: TextStyle(color: _navy, fontSize: 40, fontWeight: FontWeight.w900)),
+        Text('Good Morning, Doctor', style: TextStyle(color: _navy, fontSize: 40, fontWeight: FontWeight.w900)),
         SizedBox(height: 8),
         Text('You have 12 appointments scheduled for today.', style: TextStyle(color: _textMuted, fontSize: 20)),
       ],

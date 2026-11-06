@@ -1,147 +1,104 @@
 (function () {
-  const status = document.getElementById('patient-status');
-  const title = document.getElementById('patient-title');
-  const summary = document.getElementById('patient-summary');
-  const upcoming = document.getElementById('upcoming-card');
-  const prescriptions = document.getElementById('patient-prescriptions-list');
-  const reports = document.getElementById('patient-reports-list');
-  const history = document.getElementById('patient-history-list');
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (value) => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+  const dateFormat = (value, options) => value ? new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', ...options }).format(new Date(value)) : '—';
+  const dateOnly = (value) => value ? dateFormat(value, { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+  const dateTime = (value) => value ? dateFormat(value, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+  const empty = (message) => `<p class="patient-empty">${escapeHtml(message)}</p>`;
+  const statusLabel = (value) => String(value || 'Scheduled').replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
 
-  function formatDate(value, options = { dateStyle: 'medium', timeStyle: 'short' }) {
-    if (!value) return '-';
-    return new Intl.DateTimeFormat('en-IN', options).format(new Date(value));
+  function setText(id, value) { const node = $(id); if (node) node.textContent = value; }
+  function setOptional(id, value) { const node = $(id); if (node) { node.hidden = !value; if (value) node.textContent = value; } }
+
+  function renderPatient(patient) {
+    const hour = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false }).format(new Date()));
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    setText('patient-title', `${greeting}, ${patient.name || 'Patient'}`);
+    setText('patient-case-id', patient.id ? `Case ID: SC-${patient.id}` : 'Patient record');
+    setOptional('patient-location', patient.profile?.city ? `${patient.profile.city}${patient.profile.country ? `, ${patient.profile.country}` : ''}` : patient.profile?.permanentAddress || '');
+    setOptional('patient-blood-group', patient.profile?.bloodGroup ? `Blood group: ${patient.profile.bloodGroup}` : '');
+    window.PatientShell?.setPatient(patient);
   }
 
-  function emptyCard(message) {
-    return `<p class="text-on-surface-variant font-body-md text-body-md">${message}</p>`;
-  }
-
-  function loadingMarkup(label) {
-    return `<div class="aura-loading rounded-xl bg-white p-4"><span class="aura-spinner" aria-hidden="true"></span><span>${label}</span></div>`;
-  }
-
-  function loadingRow(label) {
-    return `<tr><td class="px-gutter py-4" colspan="5"><div class="aura-loading"><span class="aura-spinner" aria-hidden="true"></span><span>${label}</span></div></td></tr>`;
-  }
-
-  function statusPill(value) {
-    const statusValue = String(value || 'UNKNOWN').replaceAll('_', ' ');
-    const isCancelled = statusValue === 'CANCELLED';
-    return `<span class="px-3 py-1 rounded-full ${isCancelled ? 'bg-error-container text-on-error-container' : 'bg-surface-container-high text-on-surface-variant'} font-label-sm text-label-sm">${statusValue}</span>`;
+  function renderMetrics(data) {
+    const stats = data.appointmentStats || {};
+    setText('metric-next', data.upcoming ? dateOnly(data.upcoming.appointment_at) : 'None booked');
+    setText('metric-next-detail', data.upcoming ? dateFormat(data.upcoming.appointment_at, { timeStyle: 'short' }) + ' IST' : 'Book when you are ready');
+    setText('metric-upcoming', String(stats.upcoming_count ?? 0));
+    setText('metric-upcoming-detail', Number(stats.upcoming_count) === 1 ? 'Scheduled consultation' : 'Scheduled consultations');
+    setText('metric-completed', String(stats.completed_count ?? 0));
+    setText('metric-last', stats.last_visit_at ? dateOnly(stats.last_visit_at) : 'No past booking');
+    setText('metric-last-detail', Number(stats.past_count) ? `${stats.past_count} past ${Number(stats.past_count) === 1 ? 'booking' : 'bookings'}` : 'Your appointment history');
+    setText('patient-plan-summary', data.upcoming
+      ? `Your next consultation is on ${dateTime(data.upcoming.appointment_at)} IST${data.upcoming.doctor_name ? ` with ${data.upcoming.doctor_name}` : ''}. You can review or manage it from Visits.`
+      : Number(stats.past_count) ? 'You have no upcoming consultation. Your past bookings remain available in Visits, and you can book a follow-up when needed.'
+        : 'You have no upcoming consultation yet. Book a visit to start your care journey.');
+    const bookingLink = $('patient-plan-book-link');
+    if (bookingLink && Number(stats.past_count)) {
+      bookingLink.href = '/patient/book-reason.html?type=follow-up';
+      bookingLink.innerHTML = 'Book a follow-up <span aria-hidden="true">→</span>';
+    }
   }
 
   function renderUpcoming(item) {
     if (!item) {
-      upcoming.innerHTML = `
-        <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider">Upcoming Appointment</span>
-        <h3 class="text-on-surface font-headline-md text-headline-md mt-base">No upcoming appointments</h3>
-        <p class="mt-base text-on-surface-variant font-body-md text-body-md">Book a consultation when you are ready.</p>
-      `;
+      $('upcoming-card').innerHTML = empty('No upcoming appointment. Book a consultation when you are ready.');
       return;
     }
-
-    upcoming.innerHTML = `
-      <div class="flex flex-wrap justify-between gap-gutter mb-gutter">
-        <div>
-          <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider">Upcoming Appointment</span>
-          <h3 class="text-on-surface font-headline-md text-headline-md mt-base">${item.doctor_name || 'Doctor not assigned'}</h3>
-          <p class="text-on-surface-variant font-body-md text-body-md">${item.service_type || 'Consultation'}</p>
-        </div>
-        <div class="text-left md:text-right">
-          <p class="text-primary font-headline-md text-headline-md">${formatDate(item.appointment_at, { dateStyle: 'medium' })}</p>
-          <p class="text-on-surface-variant font-label-md text-label-md">${formatDate(item.appointment_at, { timeStyle: 'short' })}</p>
-        </div>
-      </div>
-      <div class="flex gap-gutter items-center p-base bg-surface-container-low rounded-lg">
-        <span class="material-symbols-outlined text-secondary" data-icon="location_on">location_on</span>
-        <span class="text-on-surface font-body-md text-body-md">${item.location || 'Location to be confirmed'}</span>
-      </div>
-      <div class="mt-gutter flex flex-wrap gap-base">
-        <a class="bg-primary text-on-primary px-6 py-2 rounded-lg font-label-md text-label-md" href="/patient/appointments.html">View Appointment</a>
-        ${item.metadata?.virtualMeeting?.meetLink ? `<a class="border border-outline text-on-surface-variant px-6 py-2 rounded-lg font-label-md text-label-md" href="${item.metadata.virtualMeeting.meetLink}" target="_blank">Meet Link</a>` : ''}
-      </div>
-    `;
+    const meeting = item.metadata?.virtualMeeting;
+    const safeMeeting = meeting?.meetLink || meeting?.calendarEventId ? `/api/consultations/${encodeURIComponent(item.id)}/join?role=PATIENT` : null;
+    const isClosed = item.status === 'COMPLETED' || item.status === 'CANCELLED';
+    $('upcoming-card').innerHTML = `
+      <div class="patient-upcoming"><div class="patient-upcoming__main"><span class="patient-upcoming__icon material-symbols-outlined" aria-hidden="true">stethoscope</span><div><h3>${escapeHtml(item.doctor_name || 'Doctor to be assigned')}</h3><p>${escapeHtml(item.service_type || 'Consultation')}</p><p class="patient-upcoming__date">${escapeHtml(dateTime(item.appointment_at))} IST</p><p>${escapeHtml(item.location || 'Location to be confirmed')}</p><span class="patient-badge">${escapeHtml(statusLabel(item.status))}</span></div></div></div>
+      <div class="patient-upcoming__actions"><a href="/patient/appointments.html">View appointment</a>${safeMeeting ? isClosed ? '<button type="button" disabled title="Google Meet is unavailable for completed or cancelled appointments">Join Google Meet</button>' : `<a href="${escapeHtml(safeMeeting)}" target="_blank" rel="noopener noreferrer">Join Google Meet</a>` : ''}</div>`;
   }
 
   function renderPrescriptions(items) {
-    prescriptions.innerHTML = items.length ? items.map((item) => {
-      const med = item.medications?.[0] || {};
-      return `
-        <article class="flex items-center justify-between p-4 bg-surface rounded-lg">
-          <div class="flex items-center gap-base">
-            <div class="w-10 h-10 bg-secondary-container rounded-full flex items-center justify-center">
-              <span class="material-symbols-outlined text-on-secondary-container" data-icon="medication">medication</span>
-            </div>
-            <div>
-              <p class="text-on-surface font-label-md text-label-md">${med.name || 'Prescription'}</p>
-              <p class="text-on-surface-variant font-body-sm text-body-sm">${[med.dosage, med.frequency, med.duration].filter(Boolean).join(' - ') || item.status || formatDate(item.created_at)}</p>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join('') : emptyCard('No prescriptions found in the database.');
-  }
-
-  function renderReports(items) {
-    reports.innerHTML = items.length ? items.map((item) => `
-      <article class="flex items-center justify-between p-4 bg-surface rounded-lg">
-        <div class="flex items-center gap-base">
-          <div class="w-10 h-10 bg-tertiary-fixed rounded-full flex items-center justify-center">
-            <span class="material-symbols-outlined text-on-tertiary-fixed" data-icon="lab_research">lab_research</span>
-          </div>
-          <div>
-            <p class="text-on-surface font-label-md text-label-md">${item.name}</p>
-            <p class="text-on-surface-variant font-body-sm text-body-sm">${item.document_date || item.status || formatDate(item.created_at)}</p>
-          </div>
-        </div>
-        ${item.file_name ? `<a class="text-primary font-label-sm text-label-sm" href="/api/patient/documents/${item.id}/download">Download</a>` : ''}
-      </article>
-    `).join('') : emptyCard('No reports found in the database.');
+    const list = Array.isArray(items) ? items : [];
+    $('patient-prescriptions-list').innerHTML = list.length ? list.slice(0, 2).map((item) => {
+      const medication = Array.isArray(item.medications) ? item.medications[0] || {} : {};
+      const details = [medication.dosage, medication.frequency, medication.duration].filter(Boolean);
+      return `<article class="patient-prescription"><span class="patient-badge patient-badge--muted">${escapeHtml(statusLabel(item.status || 'Prescription'))}</span><h3>${escapeHtml(medication.name || 'Prescription')}</h3>${details.length ? details.map((detail) => `<p>${escapeHtml(detail)}</p>`).join('') : `<p>Issued ${escapeHtml(dateOnly(item.created_at))}</p>`}</article>`;
+    }).join('') : empty('No prescriptions available yet.');
   }
 
   function renderHistory(items) {
-    history.innerHTML = items.length ? items.map((item) => `
-      <tr>
-        <td class="px-gutter py-4 font-body-md text-on-surface">${item.service_type || '-'}</td>
-        <td class="px-gutter py-4 font-body-md text-on-surface">${item.doctor_name || '-'}</td>
-        <td class="px-gutter py-4 font-body-md text-on-surface-variant">${formatDate(item.appointment_at)}</td>
-        <td class="px-gutter py-4">${statusPill(item.status)}</td>
-        <td class="px-gutter py-4">
-          <a class="text-primary font-label-md text-label-md hover:underline" href="/patient/appointments.html">View Details</a>
-        </td>
-      </tr>
-    `).join('') : '<tr><td class="px-gutter py-4 font-body-md text-on-surface-variant" colspan="5">No appointment history found in the database.</td></tr>';
+    const list = Array.isArray(items) ? items : [];
+    $('patient-history-list').innerHTML = list.length ? list.slice(0, 3).map((item) => `
+      <article class="patient-visit"><span class="patient-visit__date">${escapeHtml(dateFormat(item.appointment_at, { day: '2-digit', month: 'short' }))}</span><div class="patient-visit__body"><h3>${escapeHtml(item.service_type || 'Consultation')}</h3><p>${escapeHtml(item.doctor_name || 'Doctor not assigned')} · ${escapeHtml(dateTime(item.appointment_at))} IST</p></div><div class="patient-visit__end"><span class="patient-badge patient-badge--muted">${escapeHtml(statusLabel(item.status))}</span><a href="/patient/appointments.html?tab=past">View details →</a></div></article>`).join('') : empty('No previous appointments to show.');
+  }
+
+  function renderReports(items) {
+    const list = Array.isArray(items) ? items : [];
+    $('patient-reports-list').innerHTML = list.length ? list.slice(0, 3).map((item) => `
+      <article class="patient-report"><span class="material-symbols-outlined" aria-hidden="true">description</span><div><strong>${escapeHtml(item.name || 'Medical document')}</strong><small>${escapeHtml(item.document_date || dateOnly(item.created_at))} · ${escapeHtml(item.document_type === 'OLD_PRESCRIPTION' ? 'Uploaded prescription' : 'Report')}</small></div>${item.file_name ? `<a href="/api/patient/documents/${encodeURIComponent(item.id)}/download" aria-label="Download ${escapeHtml(item.name || 'document')}">Download</a>` : ''}</article>`).join('') : empty('No reports uploaded yet.');
   }
 
   async function load() {
     try {
-      upcoming.innerHTML = loadingMarkup('Loading upcoming appointment...');
-      prescriptions.innerHTML = loadingMarkup('Loading prescriptions...');
-      reports.innerHTML = loadingMarkup('Loading reports...');
-      history.innerHTML = loadingRow('Loading appointment history...');
       const response = await fetch('/api/patient/dashboard');
-      const data = await response.json();
       if (response.status === 401) {
         window.location.href = `/patient/login.html?next=${encodeURIComponent('/patient/dashboard.html')}`;
         return;
       }
-      if (!response.ok) throw new Error(data.message || 'Unable to load dashboard.');
-
-      status.textContent = 'Connected to PostgreSQL';
-      title.textContent = `Hello, ${data.patient.name}`;
-      summary.textContent = 'Your dashboard is showing records from the database.';
-
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Unable to load your dashboard.');
+      setText('patient-status', 'Your care overview');
+      setText('patient-summary', 'Review your appointments, prescriptions and documents below.');
+      renderPatient(data.patient || {});
+      renderMetrics(data);
       renderUpcoming(data.upcoming);
-      renderPrescriptions(data.prescriptions || []);
-      renderReports(data.reports || []);
-      renderHistory(data.history || []);
+      renderPrescriptions(data.prescriptions);
+      renderHistory(data.history);
+      renderReports(data.reports);
     } catch (error) {
-      status.textContent = error.message;
-      summary.textContent = 'We could not load your patient record. Please login again if the issue continues.';
-      upcoming.innerHTML = '<h3 class="text-2xl font-extrabold">Unable to load dashboard</h3><p class="text-[#5a4044]">Please refresh once or login again.</p>';
-      prescriptions.innerHTML = emptyCard('No prescriptions loaded.');
-      reports.innerHTML = emptyCard('No reports loaded.');
-      history.innerHTML = '<tr><td class="px-gutter py-4 font-body-md text-on-surface-variant" colspan="5">No appointment history loaded.</td></tr>';
+      setText('patient-status', error.message);
+      setText('patient-summary', 'We could not load your care records. Please refresh or sign in again.');
+      $('upcoming-card').innerHTML = empty('Appointment information is unavailable.');
+      $('patient-prescriptions-list').innerHTML = empty('Prescriptions could not be loaded.');
+      $('patient-history-list').innerHTML = empty('Visit history could not be loaded.');
+      $('patient-reports-list').innerHTML = empty('Reports could not be loaded.');
+      setText('patient-plan-summary', 'Appointment information is unavailable right now.');
     }
   }
 

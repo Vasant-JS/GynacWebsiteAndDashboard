@@ -9,14 +9,20 @@ const { authRouter } = require('./server/auth');
 const { patientRouter } = require('./server/patient');
 const { doctorRouter } = require('./server/doctor');
 const { adminRouter } = require('./server/admin');
+const { caseHistoryRouter, ensureCaseHistorySchema } = require('./server/case-history');
+const { publicRouter, ensurePublicSchema } = require('./server/public');
 const { requireRole } = require('./server/access');
+const { meetingRouter } = require('./server/meeting-routes');
+const { webhookHandler } = require('./server/razorpay-payments');
 
 const app = express();
 const port = Number(process.env.PORT || 5177);
 const rootDir = __dirname;
 const flutterDashboardDir = path.join(rootDir, 'flutter_dashboard', 'build', 'web');
 
-app.use(express.json());
+// Signature verification requires the original bytes, before JSON/session middleware.
+app.post('/api/payments/razorpay/webhook',express.raw({type:'application/json',limit:'256kb'}),webhookHandler);
+app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 const usePgSession = process.env.USE_PG_SESSION === 'true';
@@ -47,8 +53,10 @@ app.use(
 );
 
 app.use('/api/auth', authRouter);
+app.use('/api/public', publicRouter);
+app.use('/api/consultations', requireRole('PATIENT','DOCTOR'), meetingRouter);
 app.use('/api/patient', requireRole('PATIENT'), patientRouter);
-app.use('/api/doctor', requireRole('DOCTOR'), doctorRouter);
+app.use('/api/doctor', requireRole('DOCTOR'), caseHistoryRouter, doctorRouter);
 app.use('/api/admin', requireRole('ADMIN'), adminRouter);
 app.get(['/dashboard-app', '/dashboard-app/'], (req, res, next) => {
   const role = String(req.query.role || '').toLowerCase();
@@ -60,6 +68,13 @@ app.use('/dashboard-app', express.static(flutterDashboardDir));
 app.get(/^\/dashboard-app(?:\/.*)?$/, (_req, res) => {
   res.sendFile(path.join(flutterDashboardDir, 'index.html'));
 });
+// Keep legacy public URLs compatible with the single-page website.
+app.get('/website/doctor-profile.html', (req, res) => res.redirect('/?doctor=' + encodeURIComponent(String(req.query.doctor || '')) + '#doctor-details'));
+const publicSections = {
+  '/website/index.html': '', '/website/about.html': 'about', '/website/doctors.html': 'doctors',
+  '/website/contact.html': 'contact',
+};
+app.get(Object.keys(publicSections), (req, res) => res.redirect('/' + (publicSections[req.path] ? '#' + publicSections[req.path] : '')));
 app.use(express.static(rootDir));
 
 app.get('/', (_req, res) => {
@@ -70,7 +85,7 @@ app.use((error, _req, res, _next) => {
   const detail = error.message || error.code || 'Unexpected server error';
   const status = error.status || (error.name === 'MulterError' ? 400 : 500);
   res.status(status).json({
-    message: status === 400 ? detail : 'Server error. Check database connection and server logs.',
+    message: error.publicMessage || (status === 400 ? detail : 'Server error. Check database connection and server logs.'),
     detail,
   });
 });
@@ -120,6 +135,8 @@ async function ensureDefaultAdmin() {
 }
 
 async function start() {
+  await ensureCaseHistorySchema();
+  await ensurePublicSchema();
   await Promise.all([ensurePerformanceIndexes(), ensureDefaultAdmin()]);
   app.listen(port, () => {
     console.log(`Sumohan Care app running at http://localhost:${port}`);

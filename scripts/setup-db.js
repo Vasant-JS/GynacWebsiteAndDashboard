@@ -335,6 +335,9 @@ async function setupSchema() {
     `,
   );
 
+  await require('../server/case-history').ensureCaseHistorySchema(client);
+  await require('../server/public').ensurePublicSchema(client);
+  await require('../server/doctor-roster').syncDoctorRoster(client);
   await client.end();
 }
 
@@ -342,7 +345,7 @@ createDatabaseIfNeeded()
   .then(setupSchema)
   .then(() => {
     console.log('PostgreSQL schema is ready.');
-    if (process.env.SKIP_DB_SEED !== 'true') console.log('Seed logins: doctor@aura.test / doctor123, admin@aura.test / admin123');
+    if (process.env.SKIP_DB_SEED !== 'true') console.log('Development admin login: admin@aura.test / admin123. Configure doctor accounts from Manage Doctors.');
   })
   .catch((error) => {
     console.error('Database setup failed.');

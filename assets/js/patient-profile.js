@@ -58,6 +58,7 @@
     currentPatient = patient;
     const profile = profileOf(patient);
     const name = displayName(patient);
+    window.PatientShell?.setPatient(patient);
     setText(fields.name, name);
     setText(fields.fullName, name);
     setText(fields.memberSince, formatMemberSince(patient));

@@ -23,6 +23,7 @@
         ['Dashboard', '/patient/dashboard.html', 'dashboard'],
         ['Appointments', '/patient/appointments.html', 'calendar_today'],
         ['Medical Reports', '/patient/reports.html', 'description'],
+        ['Book Follow-Up', '/patient/book-reason.html?type=follow-up', 'history'],
       ],
       mobile: [
         ['Home', '/patient/dashboard.html', 'dashboard'],
@@ -39,17 +40,22 @@
       actionIcon: 'logout',
       actionLabel: 'Logout',
       nav: [
-        ['Dashboard', '/doctor/dashboard.html', 'dashboard'],
-        ['Appointments', '/doctor/schedule.html', 'calendar_today'],
-        ['Patients', '/doctor/patients.html', 'groups'],
-        ['Slot Management', '/doctor/slots.html', 'event_available'],
-        ['Settings', '/doctor/profile.html', 'settings'],
+        ['Dashboard', '/doctor/dashboard.html', 'grid_view'],
+        ['Patient Registry', '/doctor/patients.html', 'group'],
+        ['Appointments / Schedule', '/doctor/schedule.html', 'calendar_clock'],
+        ['Clinical Case Sheets', '/doctor/patients.html?view=case-sheets', 'description'],
+        ['Prescriptions & Pharmacy', '/doctor/prescription.html', 'prescriptions'],
+        ['Payments & Transactions', '/doctor/payments.html', 'payments'],
+        ['Admin Central', '/admin/dashboard.html', 'admin_panel_settings'],
       ],
       mobile: [
         ['Home', '/doctor/dashboard.html', 'dashboard'],
         ['Schedule', '/doctor/schedule.html', 'calendar_today'],
         ['Patients', '/doctor/patients.html', 'groups'],
+        ['Cases', '/doctor/patients.html?view=case-sheets', 'description'],
+        ['Rx', '/doctor/prescription.html', 'prescriptions'],
         ['Slots', '/doctor/slots.html', 'event_available'],
+        ['Payments', '/doctor/payments.html', 'payments'],
       ],
     },
     admin: {
@@ -65,6 +71,7 @@
         ['Doctors', '/admin/doctors.html', 'stethoscope'],
         ['Patient Records', '/admin/patients.html', 'groups'],
         ['Revenue', '/admin/revenue.html', 'payments'],
+        ['Contact Enquiries', '/admin/enquiries.html', 'mail'],
         ['WhatsApp', '/admin/whatsapp.html', 'chat'],
         ['Settings', '/admin/settings.html', 'settings'],
       ],
@@ -73,6 +80,7 @@
         ['Doctors', '/admin/doctors.html', 'stethoscope'],
         ['Patients', '/admin/patients.html', 'groups'],
         ['Revenue', '/admin/revenue.html', 'payments'],
+        ['Enquiries', '/admin/enquiries.html', 'mail'],
       ],
     },
   };
@@ -81,7 +89,6 @@
   const sessionKey = `auraSessionUser_${portal.toUpperCase()}`;
   const routeSets = {
     patient: new Set([
-      '/patient/dashboard.html',
       '/patient/appointments.html',
       '/patient/reports.html',
       '/patient/profile.html',
@@ -94,6 +101,7 @@
       '/doctor/patients.html',
       '/doctor/profile.html',
       '/doctor/slots.html',
+      '/doctor/payments.html',
       '/doctor/prescription.html',
       '/doctor/appointment-details.html',
     ]),
@@ -101,31 +109,34 @@
 
   const doctorListDependencies = ['/assets/js/aura-core.js', '/assets/js/doctor-portal.js'];
   const pageScripts = {
-    '/patient/dashboard.html': ['/assets/js/patient-dashboard.js'],
-    '/patient/appointments.html': ['/assets/js/patient-simple-page.js'],
-    '/patient/reports.html': ['/assets/js/patient-simple-page.js'],
+    '/patient/dashboard.html': ['/assets/js/patient-dashboard.js?v=20261106-calendar'],
+    '/patient/appointments.html': ['/assets/js/patient-simple-page.js?v=20261106-calendar'],
+    '/patient/reports.html': ['/assets/js/patient-simple-page.js?v=20261106-calendar'],
     '/patient/profile.html': ['/assets/js/patient-profile.js'],
-    '/patient/book-reason.html': ['/assets/js/design-live.js'],
-    '/patient/book-slot.html': ['/assets/js/book-slot.js'],
-    '/doctor/dashboard.html': [...doctorListDependencies, '/assets/js/doctor-dashboard.js'],
-    '/doctor/schedule.html': [...doctorListDependencies, '/assets/js/doctor-appointments.js'],
+    '/patient/book-reason.html': ['/assets/js/consultation-reason.js'],
+    '/patient/book-slot.html': ['/assets/js/book-slot.js?v=20261106-razorpay'],
+    '/doctor/dashboard.html': [...doctorListDependencies, '/assets/js/doctor-dashboard.js?v=20261106-calendar'],
+    '/doctor/schedule.html': [...doctorListDependencies, '/assets/js/doctor-appointments.js?v=20261106-calendar'],
     '/doctor/patients.html': [...doctorListDependencies, '/assets/js/doctor-patients.js'],
-    '/doctor/profile.html': ['/assets/js/doctor-profile.js'],
+    '/doctor/profile.html': ['/assets/js/doctor-profile.js?v=20261106-profile'],
     '/doctor/slots.html': ['/assets/js/doctor-slots.js'],
-    '/doctor/appointment-details.html': ['/assets/js/doctor-appointment-details.js'],
+    '/doctor/payments.html': [...doctorListDependencies, '/assets/js/doctor-payments.js?v=20261106-razorpay'],
+    '/doctor/appointment-details.html': ['/assets/js/doctor-appointment-details.js?v=20261106-calendar'],
     '/doctor/prescription.html': ['/assets/js/design-live.js'],
   };
 
-  function isActive(href, currentPath = window.location.pathname) {
-    if (currentPath === '/doctor/appointment-details.html' && href === '/doctor/schedule.html') return true;
-    return currentPath === href;
+  function isActive(href, currentPath = `${window.location.pathname}${window.location.search}`) {
+    const target = new URL(href, window.location.origin);
+    const current = new URL(currentPath, window.location.origin);
+    if (current.pathname === '/doctor/appointment-details.html' && target.pathname === '/doctor/schedule.html') return true;
+    return current.pathname === target.pathname && current.search === target.search;
   }
 
   function navLinks(items) {
     return items.map((item) => {
       const [label, href, icon] = item;
       return `
-      <a href="${href}" ${isActive(href) ? 'aria-current="page"' : ''}>
+      <a class="${portal === 'doctor' ? 'doctor-sidebar__link' : ''}" href="${href}" ${isActive(href) ? 'aria-current="page"' : ''}>
         <span class="material-symbols-outlined">${icon}</span>
         <span>${label}</span>
       </a>
@@ -137,7 +148,7 @@
   sidebar.className = 'aura-sidebar';
   sidebar.innerHTML = `
     <div class="aura-sidebar__brand">
-      <h1>Sumohan Care</h1>
+      <h1 class="sumohan-brand"><img class="sumohan-brand__icon" src="/assets/images/sumohan-care-logo.png" alt="" width="44" height="44"><span class="sumohan-brand__name">Sumohan Care</span></h1>
       <p>${config.portalLabel}</p>
     </div>
     <div class="aura-sidebar__person">
@@ -211,9 +222,90 @@
     return null;
   }
 
-  function setActiveLinks(currentPath = window.location.pathname) {
+  function fetchFragment(pathname) {
+    return fetch(pathname, { cache: 'no-store' }).then(async (response) => {
+      if (!response.ok) throw new Error(`Could not load ${pathname}`);
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      return doc.body.firstElementChild;
+    });
+  }
+
+  async function mountDoctorSidebar() {
+    const reusableSidebar = await fetchFragment('/doctor/sidebar.html');
+    if (!reusableSidebar?.matches('.aura-sidebar')) return;
+    const nav = reusableSidebar.querySelector('.aura-nav');
+    if (nav) nav.innerHTML = navLinks(config.nav);
+    const currentSidebar = document.querySelector('.aura-sidebar');
+    if (currentSidebar) currentSidebar.replaceWith(reusableSidebar);
+    applySessionPerson(readStoredUser());
+    setActiveLinks();
+  }
+
+  async function ensureDoctorTopbar(host = contentHost()) {
+    if (portal !== 'doctor' || !host || host.querySelector('.doctor-topbar')) return;
+    const topbar = await fetchFragment('/doctor/topbar.html');
+    if (!topbar?.matches('.doctor-topbar')) return;
+    host.prepend(topbar);
+    applySessionPerson(readStoredUser());
+    syncDoctorPageHeading(host);
+  }
+
+  function syncDoctorPageHeading(host = contentHost()) {
+    if (portal !== 'doctor' || !host) return;
+    const topbar = host.querySelector('.doctor-topbar');
+    const titleNode = topbar?.querySelector('[data-doctor-page-title]');
+    const subtitleNode = topbar?.querySelector('[data-doctor-page-subtitle]');
+    const pageTitle = host.querySelector('#doctor-patients-title, .aura-page > .aura-title, .aura-page h1, h1');
+    if (!titleNode || !pageTitle) return;
+
+    const isDashboardGreeting = pageTitle.id === 'doctor-greeting';
+    const title = isDashboardGreeting ? 'Dashboard' : pageTitle.textContent.trim();
+    const page = window.location.pathname;
+    const subtitle = host.querySelector('#doctor-patients-description, .aura-page > .aura-subtitle, .aura-subtitle')?.textContent.trim()
+      || (page === '/doctor/dashboard.html' ? 'Clinical activity overview' : '');
+
+    titleNode.textContent = title;
+    subtitleNode.textContent = subtitle;
+    subtitleNode.hidden = !subtitle;
+
+    if (isDashboardGreeting) {
+      pageTitle.remove();
+    } else {
+      pageTitle.remove();
+      const description = host.querySelector('#doctor-patients-description, .aura-page > .aura-subtitle, .aura-subtitle');
+      description?.remove();
+    }
+  }
+
+  function bindDoctorAccountMenu() {
+    if (portal !== 'doctor') return;
+    document.body.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-doctor-account-toggle]');
+      const dropdown = document.querySelector('[data-doctor-account-dropdown]');
+      if (!dropdown) return;
+      if (toggle) {
+        event.stopPropagation();
+        const willOpen = dropdown.classList.contains('hidden');
+        dropdown.classList.toggle('hidden', !willOpen);
+        toggle.setAttribute('aria-expanded', String(willOpen));
+        return;
+      }
+      if (!event.target.closest('.doctor-account')) {
+        dropdown.classList.add('hidden');
+        document.querySelector('[data-doctor-account-toggle]')?.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      document.querySelector('[data-doctor-account-dropdown]')?.classList.add('hidden');
+      document.querySelector('[data-doctor-account-toggle]')?.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function setActiveLinks(currentPath = `${window.location.pathname}${window.location.search}`) {
     document.querySelectorAll('.aura-nav a, .aura-mobile-nav a').forEach((link) => {
-      const active = link.getAttribute('href') === currentPath;
+      const active = isActive(link.getAttribute('href'), currentPath);
       link.toggleAttribute('aria-current', active);
       if (active) link.setAttribute('aria-current', 'page');
     });
@@ -271,6 +363,10 @@
     document.querySelectorAll('.aura-sidebar__name').forEach((node) => { node.textContent = name; });
     document.querySelectorAll('.aura-sidebar__meta').forEach((node) => {
       node.textContent = portal === 'doctor' ? (profile.title || profile.specialization || profile.designation || 'Care dashboard') : 'Welcome back';
+    });
+    document.querySelectorAll('.doctor-topbar__name').forEach((node) => { node.textContent = name; });
+    document.querySelectorAll('.doctor-topbar__meta').forEach((node) => {
+      node.textContent = profile.title || profile.specialization || profile.designation || 'Doctor account';
     });
     document.querySelectorAll('.aura-avatar').forEach((node) => {
       if (!node.querySelector('img')) return;
@@ -452,13 +548,15 @@
 
       host.className = 'aura-main';
       host.innerHTML = nextMain.innerHTML;
+      await ensureDoctorTopbar(host);
       if (portal === 'patient') document.body.dataset.patientPage = pageMode(url.pathname);
       document.title = doc.title || document.title;
       installRouteOverlays(doc);
-      setActiveLinks(url.pathname);
+      setActiveLinks(`${url.pathname}${url.search}`);
       if (push) window.history.pushState({ auraRoute: url.pathname }, '', `${url.pathname}${url.search}`);
       window.scrollTo({ top: 0, behavior: 'instant' });
       await runPageScripts(url.pathname);
+      syncDoctorPageHeading(host);
       syncSessionPerson();
       ensureDeveloperCredit();
       return true;
@@ -485,6 +583,9 @@
     const link = event.target.closest('a[href]');
     if (!link || link.target || link.hasAttribute('download') || event.defaultPrevented) return;
     const url = new URL(link.href, window.location.origin);
+    // A case sheet uses a full page lifecycle so unsaved-change protection and
+    // patient-specific event handlers cannot persist into another consultation.
+    if (url.pathname === '/doctor/appointment-details.html' || window.location.pathname === '/doctor/appointment-details.html') return;
     const routes = routeSets[portal];
     if (url.origin !== window.location.origin || !routes?.has(url.pathname)) return;
     event.preventDefault();
@@ -495,6 +596,12 @@
     document.body.addEventListener('click', handleRouteClick);
     window.addEventListener('popstate', () => loadPortalRoute(`${window.location.pathname}${window.location.search}`, false));
     setActiveLinks();
+  }
+
+  if (portal === 'doctor') {
+    mountDoctorSidebar().catch((error) => console.error(error));
+    ensureDoctorTopbar().catch((error) => console.error(error));
+    bindDoctorAccountMenu();
   }
 
   syncSessionPerson();

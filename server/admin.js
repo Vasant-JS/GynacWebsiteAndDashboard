@@ -90,7 +90,7 @@ router.get('/doctors', async (_req, res, next) => {
                count(a.id) FILTER (WHERE a.appointment_at::date = current_date AND a.status <> 'CANCELLED') AS today_slots
         FROM users u
         LEFT JOIN appointments a ON a.doctor_id = u.id
-        WHERE u.role = 'DOCTOR'
+        WHERE u.role = 'DOCTOR' AND COALESCE(u.metadata->>'retiredFromRoster', 'false') <> 'true'
         GROUP BY u.id
         ORDER BY u.display_name ASC
       `,
@@ -159,18 +159,19 @@ router.get('/payments', async (_req, res, next) => {
   try {
     const summary = await pool.query(
       `
-        SELECT COALESCE(sum(amount) FILTER (WHERE created_at::date = current_date AND status = 'PAID'), 0) AS today,
+        SELECT COALESCE(sum(amount - COALESCE((metadata->>'refundedAmount')::numeric,0)) FILTER (WHERE created_at::date = current_date AND status = 'PAID'), 0) AS today,
                COALESCE(sum(amount) FILTER (WHERE status = 'PENDING'), 0) AS pending,
-               COALESCE(sum(amount) FILTER (WHERE status = 'REFUNDED'), 0) AS refunded
+               COALESCE(sum(COALESCE((metadata->>'refundedAmount')::numeric,CASE WHEN status='REFUNDED' THEN amount ELSE 0 END)), 0) AS refunded
         FROM payments
       `,
     );
     const payments = await pool.query(
       `
-        SELECT p.*, u.display_name AS patient_name, a.service_type, a.appointment_at
+        SELECT p.*, u.display_name AS patient_name, a.service_type, a.appointment_at, d.display_name AS doctor_name
         FROM payments p
         LEFT JOIN users u ON u.id = p.patient_id
         LEFT JOIN appointments a ON a.id = p.appointment_id
+        LEFT JOIN users d ON d.id = a.doctor_id
         ORDER BY p.created_at DESC LIMIT 100
       `,
     );
@@ -183,6 +184,8 @@ router.get('/payments', async (_req, res, next) => {
 
 router.patch('/payments/:id/status', async (req, res, next) => {
   try {
+    const payment = await pool.query('SELECT metadata FROM payments WHERE id=$1',[req.params.id]);
+    if(payment.rows[0]?.metadata?.gateway==='razorpay')return res.status(409).json({message:'Razorpay statuses are verified by the gateway and cannot be changed manually.'});
     const status = String(req.body.status || '').toUpperCase();
     if (!['PENDING', 'PAID', 'FAILED', 'REFUNDED'].includes(status)) return res.status(400).json({ message: 'Unsupported payment status.' });
     const updated = await pool.query('UPDATE payments SET status = $1, metadata = metadata || $2::jsonb WHERE id = $3 RETURNING *', [status, JSON.stringify({ updatedBy: 'admin_portal', updatedAt: new Date().toISOString() }), req.params.id]);
@@ -205,3 +208,33 @@ router.get('/settings/attributes', async (_req, res, next) => {
 });
 
 module.exports = { adminRouter: router };
+
+router.patch('/doctors/:id/profile', async (req, res, next) => {
+  if (!/^[0-9a-f-]{36}$/i.test(req.params.id)) return res.status(400).json({ message: 'Invalid doctor.' });
+  const email = String(req.body.email || '').trim().toLowerCase();
+  const password = String(req.body.password || '');
+  if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ message: 'Enter the doctor login email.' });
+  if (password && (password.length < 12 || password.length > 72)) return res.status(400).json({ message: 'Use a password of 12 to 72 characters.' });
+  const qualifications = String(req.body.qualifications || '').trim();
+  const languages = req.body.languages || [];
+  const experienceYears = req.body.experienceYears === '' || req.body.experienceYears == null ? null : Number(req.body.experienceYears);
+  const feePatch = {};
+  if(Object.prototype.hasOwnProperty.call(req.body,'consultationFee')) {
+    if(req.body.consultationFee==='' || req.body.consultationFee===null)feePatch.consultationFee=null;
+    else {
+      try { feePatch.consultationFee=require('./razorpay').amountInPaise(req.body.consultationFee)/100; }
+      catch(_) { return res.status(400).json({message:'Enter a positive consultation fee with at most two decimal places.'}); }
+    }
+  }
+  if (qualifications.length > 500 || !Array.isArray(languages) || languages.length > 10 || languages.some(value => typeof value !== 'string' || value.length > 40)) return res.status(400).json({ message: 'Invalid professional details.' });
+  if (experienceYears !== null && (!Number.isFinite(experienceYears) || experienceYears < 0 || experienceYears > 80)) return res.status(400).json({ message: 'Enter valid years of experience.' });
+  try {
+    const hash = password ? await bcrypt.hash(password, 12) : null;
+    const result = await pool.query("UPDATE users SET email = $1, password_hash = COALESCE($2, password_hash), profile = profile || $3::jsonb, updated_at = now() WHERE id = $4 AND role = 'DOCTOR' AND COALESCE(metadata->>'retiredFromRoster', 'false') <> 'true' RETURNING id", [email, hash, JSON.stringify({ qualifications, languages, experienceYears, ...feePatch }), req.params.id]);
+    if (!result.rowCount) return res.status(404).json({ message: 'Doctor not found.' });
+    res.json({ message: 'Doctor account and professional details saved.' });
+  } catch (error) {
+    if (error.code === '23505') return res.status(409).json({ message: 'This email is already used by another account.' });
+    next(error);
+  }
+});

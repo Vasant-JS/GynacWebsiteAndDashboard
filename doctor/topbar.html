@@ -1,0 +1,27 @@
+<header class="doctor-topbar">
+  <div class="doctor-topbar__context">
+    <div class="doctor-topbar__page">
+      <strong data-doctor-page-title>Doctor Portal</strong>
+      <span data-doctor-page-subtitle></span>
+    </div>
+  </div>
+  <div class="doctor-account">
+    <div class="doctor-account__identity">
+      <strong class="doctor-topbar__name">Doctor</strong>
+      <span class="doctor-topbar__meta">Care dashboard</span>
+    </div>
+    <button class="doctor-account__toggle" type="button" aria-label="Open doctor account menu" aria-expanded="false" aria-controls="doctor-account-dropdown" data-doctor-account-toggle>
+      <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+    </button>
+    <div class="doctor-account__dropdown hidden" id="doctor-account-dropdown" data-doctor-account-dropdown>
+      <a href="/doctor/profile.html">
+        <span class="material-symbols-outlined" aria-hidden="true">person</span>
+        Profile
+      </a>
+      <button type="button" data-aura-logout>
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+        Logout
+      </button>
+    </div>
+  </div>
+</header>

@@ -9,8 +9,15 @@
   const tabButtons = $all('[data-patient-tab]');
   if (!input || !searchResults || !tabResults) return;
 
+  const caseSheetView = new URLSearchParams(window.location.search).get('view') === 'case-sheets';
+  if (caseSheetView) {
+    setText($('#doctor-patients-title'), 'Clinical Case Sheets');
+    setText($('#doctor-patients-description'), 'Choose a patient visit to open its clinical case sheet and consultation history.');
+    document.title = 'Clinical Case Sheets | Sumohan Care';
+  }
+
   let activeTab = 'current';
-  let patientLists = { current: [], future: [] };
+  let patientLists = { current: [], future: [], past: [] };
   const syncTabs = bindTabs(tabButtons, () => activeTab, (tab) => { activeTab = tab; }, renderTabs);
 
   function renderTabs() {
@@ -18,7 +25,7 @@
     const items = patientLists[activeTab] || [];
     const empty = activeTab === 'current'
       ? 'No current patients with appointments today.'
-      : 'No patients with future appointments.';
+      : activeTab === 'past' ? 'No past consultations.' : 'No patients with future appointments.';
     tabResults.innerHTML = items.length
       ? items.map(appointmentPatientCard).join('')
       : `<p class="aura-card aura-card--padded text-[#5a4044]">${empty}</p>`;
@@ -28,7 +35,7 @@
     tabResults.innerHTML = loadingMarkup('Loading patient registry...', 'aura-card aura-card--padded');
     try {
       const data = await api.patientLists();
-      patientLists = { current: data.current || [], future: data.future || [] };
+      patientLists = { current: data.current || [], future: data.future || [], past: data.past || [] };
       setText(status, 'Connected to PostgreSQL');
       renderTabs();
     } catch (error) {
