@@ -3,7 +3,6 @@
   const monthLabel = document.getElementById('month-label');
   const slotsContainer = document.getElementById('slots-container');
   const summaryDoctor = document.getElementById('summary-doctor');
-  const summaryDoctorSelect = document.getElementById('summary-doctor-select');
   const summaryService = document.getElementById('summary-service');
   const summaryReason = document.getElementById('summary-reason');
   const summaryTime = document.getElementById('summary-time');
@@ -71,9 +70,7 @@
   }
   let selectedDate = null;
   let selectedSlot = null;
-  let selectedDoctorId = null;
   let booking = {};
-  let doctors = [];
   let availabilityRows = [];
   let bookedRows = [];
   let defaultSlots = [];
@@ -188,11 +185,7 @@
   }
 
   function syncSummary() {
-    const selectedDoctor = doctors.find(doctor => doctor.id === selectedDoctorId);
-    const photo = document.getElementById('booking-doctor-photo');
-    if (photo) { photo.src = selectedDoctor?.profile?.photoUrl || '/assets/images/sumohan-care-logo.png'; photo.alt = selectedDoctor?.name || 'Selected doctor'; }
-    const doctor = doctors.find((item) => item.id === selectedDoctorId) || doctors[0];
-    summaryDoctor.textContent = doctor ? `${doctor.name} • ${doctor.title}` : '-';
+    if(summaryDoctor)summaryDoctor.textContent='A doctor is recorded when they attend your appointment.';
     summaryService.textContent = booking.service || '-';
     summaryReason.textContent = booking.otherReason || booking.reason || '-';
     summaryTime.textContent = selectedDate && selectedSlot ? `${formatDate(selectedDate)} - ${selectedSlot}` : '-';
@@ -205,36 +198,16 @@
 
   async function loadAvailability() {
     const month = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`;
-    if (selectedDoctorId) {
-      const response = await fetch(`/api/patient/booking/availability?doctorId=${encodeURIComponent(selectedDoctorId)}&month=${month}`);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Unable to load availability.');
-      availabilityRows = data.availability || [];
-      bookedRows = data.booked || [];
-      defaultSlots = data.defaultSlots || [];
-    } else {
-      availabilityRows = [];
-      bookedRows = [];
-    }
+    const response=await fetch('/api/patient/booking/availability?month='+month);
+    const data=await response.json();if(!response.ok)throw new Error(data.message || 'Unable to load hospital times.');
+    availabilityRows=[];bookedRows=[];defaultSlots=data.defaultSlots || [];
     renderCalendar();
     renderSlots();
   }
 
   async function init() {
     paymentConfig=await paymentRequest('config');
-    const [bookingRes, doctorRes] = await Promise.all([fetch('/api/patient/booking'), fetch('/api/patient/booking/doctors')]);
-    const bookingData = await bookingRes.json();
-    const doctorData = await doctorRes.json();
-    booking = bookingData.booking || {};
-    doctors = doctorData.doctors || [];
-    if (!doctors.length) {
-      throw new Error(doctorData.message || 'No doctors are available for booking. Please contact Sumohan Care.');
-    }
-    selectedDoctorId = doctors.some(doctor => doctor.id === booking.doctorId) ? booking.doctorId : doctors[0]?.id;
-    const selectionResponse = await fetch('/api/patient/booking/details', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ doctorId: selectedDoctorId }) });
-    if (!selectionResponse.ok) throw new Error('Could not select this doctor. Please try again.');
-    summaryDoctorSelect.innerHTML = doctors.map((doctor) => `<option value="${doctor.id}">${doctor.name}</option>`).join('');
-    if (selectedDoctorId) summaryDoctorSelect.value = selectedDoctorId;
+    const bookingRes=await fetch('/api/patient/booking');const bookingData=await bookingRes.json();if(!bookingRes.ok)throw new Error(bookingData.message);booking=bookingData.booking || {};
     selectedDate = booking.date && !isPastDate(booking.date) ? booking.date : null;
     selectedSlot = selectedDate && booking.time && !isPastOrCurrentSlot(selectedDate, booking.time) ? booking.time : null;
     const profileResponse = await fetch('/api/patient/profile');
@@ -242,14 +215,6 @@
     syncSummary();
     await loadAvailability();
   }
-
-  summaryDoctorSelect?.addEventListener('change', async () => {
-    selectedDoctorId = summaryDoctorSelect.value;
-    resetBookingButton();
-    await fetch('/api/patient/booking/details', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ doctorId: selectedDoctorId }) });
-    await loadAvailability();
-    syncSummary();
-  });
 
   document.getElementById('prev-month')?.addEventListener('click', async () => {
     const previous = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);

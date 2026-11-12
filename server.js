@@ -135,6 +135,7 @@ async function ensureDefaultAdmin() {
 }
 
 async function start() {
+  await require('./server/attendance').ensureAttendanceSchema();
   await ensureCaseHistorySchema();
   await ensurePublicSchema();
   await Promise.all([ensurePerformanceIndexes(), ensureDefaultAdmin()]);

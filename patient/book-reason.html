@@ -26,9 +26,8 @@
           <label id="follow-up-visit-field">Previous consultation<select name="previousAppointmentId" class="aura-field" disabled><option value="">No previous consultation</option></select><small>A previous consultation is required only for follow-ups.</small></label>
           <label id="follow-up-reference-field" hidden>Previous Hospital Case ID / OPD Slip Number<input name="previousCaseReference" class="aura-field" maxlength="120" placeholder="Your existing hospital case reference"><small>Use this if the earlier consultation is not listed above.</small></label>
           <label>Consultation category<select name="service" class="aura-field" required><option value="">Select category</option><option>Obstetrics (pregnancy)</option><option>Gynecology</option><option>Male infertility consultation</option><option>Female infertility consultation</option><option>General check-up</option><option>Postnatal consultation</option><option>Family planning / Contraception</option><option>Menopause</option><option>Menstrual problems</option><option>Discharge PV</option><option>PMOS/PCOS</option><option>Other Concerns</option></select></label>
-          <label>Preferred specialist<select name="doctorId" class="aura-field"><option value="">Any Available Specialist</option></select></label>
           <label>Reason for consultation<textarea name="reason" class="aura-field" rows="5" maxlength="4000" placeholder="Briefly describe your concern" required></textarea></label>
-          <p id="booking-history-summary" class="patient-form-hint"></p><p id="book-reason-message" class="patient-form-message" role="status"></p><button class="patient-button" type="submit">Choose Doctor &amp; Slot <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
+          <p id="booking-history-summary" class="patient-form-hint"></p><p id="book-reason-message" class="patient-form-message" role="status"></p><button class="patient-button" type="submit">Choose Date &amp; Time <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
         </form>
       </section><aside class="patient-card patient-data-card patient-booking-help"><span class="material-symbols-outlined" aria-hidden="true">folder_shared</span><h2>Your records stay together</h2><p>Your profile, previous consultations, prescriptions, and uploaded reports remain linked to your account for follow-up care.</p><a href="/patient/reports.html">Review your reports →</a></aside></div>
       <footer class="patient-footer">Developed by <a href="https://ekathvainnovations.com/" target="_blank" rel="noopener noreferrer">Ekathva Innovations</a></footer>
@@ -36,6 +35,6 @@
   </div></div>
   <div id="patient-mobile-nav-slot"></div>
   <script src="/assets/js/patient-shell.js?v=20261106-razorpay"></script>
-  <script src="/assets/js/consultation-reason.js?v=20261106-booking-handoff"></script>
+  <script src="/assets/js/consultation-reason.js?v=20261112-queue"></script>
 </body>
 </html>

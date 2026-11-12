@@ -92,7 +92,7 @@
           <div>
             <p class="text-sm font-bold text-[#b0004a]">${formatDate(item.appointment_at)}</p>
             <h3 class="mt-1 text-xl font-extrabold">${item.service_type}</h3>
-            <p class="text-[#5a4044]">${item.doctor_name || '-'} - ${item.location || '-'}</p>
+            <p class="text-[#5a4044]">${item.doctor_name ? 'Attended by '+item.doctor_name : 'Not yet attended'} - ${item.location || '-'}</p>
             <p class="mt-3 inline-block rounded-full bg-[#edecff] px-3 py-1 text-sm font-bold">${item.status.replaceAll('_', ' ')}</p>
             ${meetLink ? isClosed
               ? `<button class="mt-3 inline-block cursor-not-allowed rounded-full border border-[#8e9b9a] px-4 py-2 text-sm font-bold text-[#6b7776] opacity-60" type="button" disabled title="Google Meet is unavailable for ${item.status.toLowerCase()} appointments">Join Google Meet</button>`

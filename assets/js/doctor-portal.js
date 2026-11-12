@@ -92,6 +92,7 @@
 
   function appointmentPatientCard(item) {
     const patient = item.patient || {};
+    const caseView=new URLSearchParams(location.search).get('view')==='case-sheets';
     return `
       <article class="grid gap-4 rounded-xl border border-[#e3bdc3] bg-white p-5 shadow-sm md:grid-cols-[1fr_auto] md:items-center">
         <div>
@@ -100,9 +101,9 @@
           <p class="text-[#5a4044]">${escapeHtml(patientMeta(patient))}</p>
           <p class="mt-2 font-bold text-[#b0004a]">${escapeHtml(item.serviceType || 'Consultation')}</p>
         </div>
-        <a class="inline-flex items-center justify-center gap-2 rounded-full bg-[#006a62] px-5 py-3 font-bold text-white" href="/doctor/appointment-details.html?appointmentId=${encodeURIComponent(item.appointmentId)}">
+        <a class="inline-flex items-center justify-center gap-2 rounded-full bg-[#006a62] px-5 py-3 font-bold text-white" href="/doctor/${caseView?'case-history':'appointment-details'}.html?appointmentId=${encodeURIComponent(item.appointmentId)}">
           <span class="material-symbols-outlined text-lg">badge</span>
-          Open Patient Info
+          ${caseView?'Open Case Sheet':'Open Patient Info'}
         </a>
       </article>
     `;
@@ -114,7 +115,7 @@
         <h2 class="text-2xl font-extrabold">${escapeHtml(patient.name)}</h2>
         <p class="mt-1 text-[#5a4044]">${[patient.phone, patient.email].filter(Boolean).map(escapeHtml).join(' - ') || '-'}</p>
         <p class="mt-3 font-bold text-[#006a62]">${escapeHtml(patient.concern || 'Not recorded')}</p>
-        ${patient.appointmentId ? `<a class="aura-button mt-4" href="/doctor/appointment-details.html?appointmentId=${encodeURIComponent(patient.appointmentId)}">Open Case History</a>` : ''}
+        ${patient.appointmentId ? `<a class="aura-button mt-4" href="/doctor/case-history.html?appointmentId=${encodeURIComponent(patient.appointmentId)}">Open Case History</a>` : ''}
       </article>
     `;
   }

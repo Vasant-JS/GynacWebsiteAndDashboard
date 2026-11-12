@@ -119,6 +119,8 @@ async function setupSchema() {
     CREATE TABLE IF NOT EXISTS appointments (
       id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       doctor_id uuid REFERENCES users(id) ON DELETE SET NULL,
+      attended_by uuid REFERENCES users(id) ON DELETE SET NULL,
+      attended_at timestamptz,
       patient_id uuid REFERENCES users(id) ON DELETE SET NULL,
       appointment_at timestamptz NOT NULL,
       duration_minutes integer NOT NULL DEFAULT 30,

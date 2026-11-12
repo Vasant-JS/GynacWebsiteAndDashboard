@@ -10,7 +10,7 @@ const gateway=require('../server/razorpay');
 
 test('Razorpay checkout, ownership, signatures, webhook recovery and duplicate capture protection',async()=>{
   const ids={doctor:crypto.randomUUID(),patient:crypto.randomUUID(),other:crypto.randomUUID()};
-  const envKeys=['PAYMENT_PROVIDER','RAZORPAY_MODE','RAZORPAY_KEY_ID','RAZORPAY_KEY_SECRET','RAZORPAY_WEBHOOK_SECRET'];
+  const envKeys=['HOSPITAL_CONSULTATION_FEE','PAYMENT_PROVIDER','RAZORPAY_MODE','RAZORPAY_KEY_ID','RAZORPAY_KEY_SECRET','RAZORPAY_WEBHOOK_SECRET'];
   const originalEnv=Object.fromEntries(envKeys.map(key=>[key,process.env[key]]));
   Object.assign(process.env,{PAYMENT_PROVIDER:'razorpay',RAZORPAY_MODE:'test',RAZORPAY_KEY_ID:'rzp_test_simulated',RAZORPAY_KEY_SECRET:'test-key-secret',RAZORPAY_WEBHOOK_SECRET:'test-hook-secret'});
   const originalFetch=global.fetch;const providerPayments=new Map();let lastOrder,server,orders=0;const sessions={};
@@ -21,6 +21,7 @@ test('Razorpay checkout, ownership, signatures, webhook recovery and duplicate c
     return payment?Response.json(payment):Response.json({error:{}},{status:404});
   };
   try {
+    await require('../server/attendance').ensureAttendanceSchema();
     await pool.query(`INSERT INTO users (id,role,display_name,profile,metadata) VALUES
       ($1,'DOCTOR','Razorpay Test Doctor','{"consultationFee":800}','{"test":true}'),
       ($2,'PATIENT','Razorpay Test Patient','{}','{"test":true}'),
@@ -45,7 +46,7 @@ test('Razorpay checkout, ownership, signatures, webhook recovery and duplicate c
     assert.equal((await call('/api/patient/razorpay/order',declaration)).status,503);process.env.RAZORPAY_KEY_SECRET=savedSecret;
     assert.equal((await call('/api/patient/razorpay/order',{...declaration,medicalConsent:false})).status,400);
     await pool.query("UPDATE users SET profile=profile - 'consultationFee' WHERE id=$1",[ids.doctor]);
-    assert.equal((await call('/api/patient/razorpay/order',declaration)).status,400);
+    process.env.HOSPITAL_CONSULTATION_FEE='0';assert.equal((await call('/api/patient/razorpay/order',declaration)).status,503);process.env.HOSPITAL_CONSULTATION_FEE='800';
     await pool.query("UPDATE users SET profile=profile || '{\"consultationFee\":800}'::jsonb WHERE id=$1",[ids.doctor]);
     const order=await call('/api/patient/razorpay/order',{...declaration,amount:1});assert.equal(order.status,201);
     assert.equal(order.data.amount,80000);assert.equal(lastOrder.amount,80000);assert.equal(lastOrder.partial_payment,false);
@@ -72,7 +73,7 @@ test('Razorpay checkout, ownership, signatures, webhook recovery and duplicate c
     assert.equal((await hook(order.data,'pay_test1','payment.failed')).status,200);
     assert.equal((await pool.query('SELECT status FROM payments WHERE id=$1',[id])).rows[0].status,'PAID');
     assert.equal((await pool.query('SELECT count(*) FROM appointments WHERE patient_id=$1',[ids.patient])).rows[0].count,'1');
-    assert.equal((await pool.query("SELECT count(*) FROM notifications WHERE user_id=$1 AND title='New consultation'",[ids.doctor])).rows[0].count,'1');
+    assert.equal((await pool.query("SELECT count(*) FROM notifications WHERE user_id=$1 AND title='New hospital consultation' AND metadata->>'appointmentId'=$2",[ids.doctor,booked.data.appointmentId])).rows[0].count,'1');
     // Simulate a lost checkout callback: a signed webhook completes the saved booking without any session.
     await call('/api/patient/booking/reason',booking);
     const second=await call('/api/patient/razorpay/order',{...declaration,time:'09:15 AM'});capture(second.data,'pay_test2');
@@ -80,7 +81,7 @@ test('Razorpay checkout, ownership, signatures, webhook recovery and duplicate c
     assert.equal((await call('/api/patient/razorpay/'+second.data.paymentId+'/status',null,'PATIENT','GET')).data.outcome,'BOOKED');
     // A paid slot conflict becomes a review item instead of silently losing the payment or double-booking.
     const conflict=await call('/api/patient/razorpay/order',{...declaration,time:'09:30 AM'});
-    await pool.query("INSERT INTO appointments (doctor_id,patient_id,appointment_at,service_type,status) VALUES ($1,$2,'2030-02-10T09:30:00+05:30','Test','SCHEDULED')",[ids.doctor,ids.other]);
+    await pool.query("INSERT INTO appointments (doctor_id,patient_id,appointment_at,service_type,status) VALUES ($1,$2,'2030-02-10T09:30:00+05:30','Test','SCHEDULED')",[ids.doctor,ids.patient]);
     capture(conflict.data,'pay_test3');assert.equal((await hook(conflict.data,'pay_test3')).status,200);
     const review=await call('/api/patient/razorpay/'+conflict.data.paymentId+'/status',null,'PATIENT','GET');assert.equal(review.data.status,'PAID');assert.equal(review.data.outcome,'REQUIRES_REVIEW');assert.equal(review.data.appointmentId,null);
     capture(conflict.data,'pay_test3',{status:'refunded',amount_refunded:conflict.data.amount});
@@ -92,8 +93,9 @@ test('Razorpay checkout, ownership, signatures, webhook recovery and duplicate c
   } finally {
     global.fetch=originalFetch;for(const key of envKeys){if(originalEnv[key]===undefined)delete process.env[key];else process.env[key]=originalEnv[key];}
     if(server)await new Promise(resolve=>server.close(resolve));
+    await pool.query("DELETE FROM notifications WHERE metadata->>'appointmentId' IN (SELECT id::text FROM appointments WHERE patient_id=ANY($1::uuid[]))",[[ids.patient,ids.other]]);
     await pool.query('DELETE FROM payments WHERE patient_id=ANY($1::uuid[])',[[ids.patient,ids.other]]);
-    await pool.query('DELETE FROM appointments WHERE doctor_id=$1',[ids.doctor]);
+    await pool.query('DELETE FROM appointments WHERE patient_id=ANY($1::uuid[])',[[ids.patient,ids.other]]);
     await pool.query('DELETE FROM users WHERE id=ANY($1::uuid[])',[Object.values(ids)]);await pool.end();
   }
 });

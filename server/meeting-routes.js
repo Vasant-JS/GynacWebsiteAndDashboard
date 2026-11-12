@@ -10,7 +10,7 @@ router.get('/:id/join', async (req,res,next) => {
     if (!['DOCTOR','PATIENT'].includes(role)) return res.status(400).send('Invalid consultation role.');
     const user = role === req.authUser.role ? req.authUser : req.session[role === 'DOCTOR' ? 'doctorUser' : 'patientUser'];
     if (!user || user.role !== role) return res.status(401).send('Please sign in to your consultation account.');
-    const column = role === 'DOCTOR' ? 'doctor_id' : 'patient_id';
+    const column = role === 'DOCTOR' ? 'attended_by' : 'patient_id';
     const result = await pool.query(`SELECT * FROM appointments WHERE id=$1 AND ${column}=$2`,[req.params.id,user.id]);
     const appointment = result.rows[0];
     if (!appointment) return res.status(404).send('Consultation not found.');

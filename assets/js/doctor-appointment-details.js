@@ -1,44 +1,48 @@
-(function () {
-  const status = document.getElementById('appointment-detail-status');
-  const recentReportsList = document.getElementById('recent-reports-list');
-  const prescriptionsList = document.getElementById('doctor-prescriptions-list');
-  const form = document.getElementById('doctor-prescription-form');
-  const message = document.getElementById('doctor-prescription-message');
-  const prescriptionRecordLabel = document.getElementById('prescription-record-label');
-  const prescriptionPatientName = document.getElementById('prescription-patient-name');
-  const prescriptionPatientMeta = document.getElementById('prescription-patient-meta');
-  const prescriptionPatientBlood = document.getElementById('prescription-patient-blood');
-  const prescriptionBookingStatus = document.getElementById('prescription-booking-status');
-  const medicationRows = document.getElementById('prescription-medication-rows');
-  const addMedicineRowButton = document.getElementById('add-medicine-row');
-  const prescriptionDraftButton = document.getElementById('prescription-save-draft');
-  const writtenPrescriptionName = document.getElementById('written-prescription-name');
-  const writtenPrescriptionPhoto = document.getElementById('written-prescription-photo');
-  const uploadWrittenPrescription = document.getElementById('upload-written-prescription');
-  const writtenPrescriptionMessage = document.getElementById('written-prescription-message');
-  const patientName = document.getElementById('appointment-patient-name');
-  const patientStatus = document.getElementById('appointment-patient-status');
-  const patientDemographics = document.getElementById('appointment-patient-demographics');
-  const patientContact = document.getElementById('appointment-patient-contact');
-  const patientLastVisit = document.getElementById('appointment-last-visit');
-  const patientBloodType = document.getElementById('appointment-blood-type');
-  const emailLink = document.getElementById('appointment-email-link');
-  const phoneLink = document.getElementById('appointment-phone-link');
-  const sessionDate = document.getElementById('appointment-session-date');
-  const sessionTime = document.getElementById('appointment-session-time');
-  const sessionMeetLink = document.getElementById('appointment-meet-link');
-  const sessionMeetStatus = document.getElementById('appointment-meet-status');
-  const serviceType = document.getElementById('appointment-service-type');
-  const actionsList = document.getElementById('appointment-actions-list');
-  const caseTitle = document.getElementById('case-title');
-  const caseDate = document.getElementById('case-date');
-  const caseSummary = document.getElementById('case-summary');
-  const observationsInput = document.getElementById('consultation-observations');
-  const actionsInput = document.getElementById('consultation-actions');
-  const notesMessage = document.getElementById('consultation-notes-message');
-  const markCompletedButton = document.getElementById('appointment-mark-completed');
-  const tabButtons = Array.from(document.querySelectorAll('[data-detail-tab]'));
-  const panels = Array.from(document.querySelectorAll('[data-detail-panel]'));
+(function(){
+  const pageRoot=document.querySelector('.aura-page');
+  const pageSignal=window.DoctorPage.signal;
+  const pageFetch=(url,options={})=>fetch(url,{signal:pageSignal,...options});
+  const pageDocument={getElementById:id=>pageRoot.querySelector('[id="'+CSS.escape(id)+'"]'),querySelector:selector=>pageRoot.querySelector(selector),querySelectorAll:selector=>pageRoot.querySelectorAll(selector)};
+  const status = pageDocument.getElementById('appointment-detail-status');
+  const recentReportsList = pageDocument.getElementById('recent-reports-list');
+  const prescriptionsList = pageDocument.getElementById('doctor-prescriptions-list');
+  const form = pageDocument.getElementById('doctor-prescription-form');
+  const message = pageDocument.getElementById('doctor-prescription-message');
+  const prescriptionRecordLabel = pageDocument.getElementById('prescription-record-label');
+  const prescriptionPatientName = pageDocument.getElementById('prescription-patient-name');
+  const prescriptionPatientMeta = pageDocument.getElementById('prescription-patient-meta');
+  const prescriptionPatientBlood = pageDocument.getElementById('prescription-patient-blood');
+  const prescriptionBookingStatus = pageDocument.getElementById('prescription-booking-status');
+  const medicationRows = pageDocument.getElementById('prescription-medication-rows');
+  const addMedicineRowButton = pageDocument.getElementById('add-medicine-row');
+  const prescriptionDraftButton = pageDocument.getElementById('prescription-save-draft');
+  const writtenPrescriptionName = pageDocument.getElementById('written-prescription-name');
+  const writtenPrescriptionPhoto = pageDocument.getElementById('written-prescription-photo');
+  const uploadWrittenPrescription = pageDocument.getElementById('upload-written-prescription');
+  const writtenPrescriptionMessage = pageDocument.getElementById('written-prescription-message');
+  const patientName = pageDocument.getElementById('appointment-patient-name');
+  const patientStatus = pageDocument.getElementById('appointment-patient-status');
+  const patientDemographics = pageDocument.getElementById('appointment-patient-demographics');
+  const patientContact = pageDocument.getElementById('appointment-patient-contact');
+  const patientLastVisit = pageDocument.getElementById('appointment-last-visit');
+  const patientBloodType = pageDocument.getElementById('appointment-blood-type');
+  const emailLink = pageDocument.getElementById('appointment-email-link');
+  const phoneLink = pageDocument.getElementById('appointment-phone-link');
+  const sessionDate = pageDocument.getElementById('appointment-session-date');
+  const sessionTime = pageDocument.getElementById('appointment-session-time');
+  const sessionMeetLink = pageDocument.getElementById('appointment-meet-link');
+  const sessionMeetStatus = pageDocument.getElementById('appointment-meet-status');
+  const serviceType = pageDocument.getElementById('appointment-service-type');
+  const actionsList = pageDocument.getElementById('appointment-actions-list');
+  const caseTitle = pageDocument.getElementById('case-title');
+  const caseDate = pageDocument.getElementById('case-date');
+  const caseSummary = pageDocument.getElementById('case-summary');
+  const observationsInput = pageDocument.getElementById('consultation-observations');
+  const actionsInput = pageDocument.getElementById('consultation-actions');
+  const notesMessage = pageDocument.getElementById('consultation-notes-message');
+  const markCompletedButton = pageDocument.getElementById('appointment-mark-completed');
+  const tabButtons = Array.from(pageDocument.querySelectorAll('[data-detail-tab]'));
+  const panels = Array.from(pageDocument.querySelectorAll('[data-detail-panel]'));
   let context = null;
   let prescriptionFormHydrated = false;
 
@@ -48,7 +52,7 @@
 
   function formatDate(value, options = { dateStyle: 'medium', timeStyle: 'short' }) {
     if (!value) return '-';
-    return new Intl.DateTimeFormat('en-IN', options).format(new Date(value));
+    return new Intl.DateTimeFormat('en-IN', {timeZone:'Asia/Kolkata',...options}).format(new Date(value));
   }
 
   function setText(node, value) {
@@ -89,7 +93,8 @@
   }
 
   function switchTab(name) {
-    tabButtons.forEach((button) => {
+    pageDocument.getElementById('appointment-attend').onclick=async()=>{const button=pageDocument.getElementById('appointment-attend');button.disabled=true;try{const response=await pageFetch('/api/doctor/appointments/'+context.appointment.id+'/attend',{method:'POST'});const result=await response.json();if(!response.ok)throw new Error(result.message);await loadContext();}catch(error){setText(status,error.message);}finally{button.disabled=false;}};
+  tabButtons.forEach((button) => {
       const active = button.dataset.detailTab === name;
       button.classList.toggle('active-tab', active);
       button.classList.toggle('text-[#5a4044]', !active);
@@ -220,11 +225,14 @@
     const profile = patient.profile || {};
     const appointment = context.appointment || {};
     const notes = appointment.notes || {};
+    const historyLink=pageDocument.getElementById('appointment-full-history'),workspaceLink=pageDocument.getElementById('appointment-rx-workspace');
+    if(historyLink)historyLink.href='/doctor/case-history.html?appointmentId='+encodeURIComponent(appointment.id);
+    if(workspaceLink)workspaceLink.href='/doctor/prescription.html?appointmentId='+encodeURIComponent(appointment.id);
     const recommendedActions = Array.isArray(notes.recommendedActions) ? notes.recommendedActions : [];
     const ageGender = [patientAge(profile), profile.gender || profile.sex].filter(Boolean).join(' / ');
     const isCompleted = String(appointment.status || '').toUpperCase() === 'COMPLETED';
 
-    setText(status, 'Connected to PostgreSQL');
+    setText(status, appointment.attendedName ? 'Attended by '+appointment.attendedName : 'Not yet attended. Click Attend appointment to begin.');pageDocument.getElementById('appointment-attend').hidden=!appointment.canAttend;
     setText(patientName, patient.name || 'Patient');
     setText(patientStatus, appointment.status ? appointment.status.replaceAll('_', ' ') : 'Active Patient');
     setText(patientDemographics, ageGender || '-');
@@ -241,7 +249,7 @@
     setText(serviceType, appointment.serviceType || 'Consultation');
     const meeting = appointment.virtualMeeting || appointment.metadata?.virtualMeeting || null;
     const meetLink = meeting?.meetLink || meeting?.calendarEventId ? `/api/consultations/${encodeURIComponent(appointment.id)}/join?role=DOCTOR` : null;
-    const meetingClosed = isCompleted || String(appointment.status || '').toUpperCase() === 'CANCELLED';
+    const meetingClosed = !appointment.canEdit || isCompleted || String(appointment.status || '').toUpperCase() === 'CANCELLED';
     if (sessionMeetLink) {
       if (meetLink && !meetingClosed) sessionMeetLink.href = meetLink;
       else sessionMeetLink.removeAttribute('href');
@@ -282,15 +290,18 @@
     renderPrescriptions();
     ensureMedicationRows();
     hydratePrescriptionDraft();
+    for(const id of ['consultation-save-draft','consultation-save-notes','appointment-mark-completed','prescription-save-draft','add-medicine-row','upload-written-prescription']){const c=pageDocument.getElementById(id);if(c)c.disabled=!appointment.canEdit || (id==='appointment-mark-completed'&&isCompleted);}
+    for(const c of pageRoot.querySelectorAll('#doctor-prescription-form input,#doctor-prescription-form button,#doctor-prescription-form select,#consultation-observations,#consultation-actions'))c.disabled=!appointment.canEdit;
   }
 
   async function loadContext() {
     prescriptionsList.innerHTML = loadingMarkup('Loading prescriptions...');
     recentReportsList.innerHTML = loadingMarkup('Loading uploaded reports...');
     const appointmentId = new URLSearchParams(window.location.search).get('appointmentId');
-    const response = await fetch(`/api/doctor/appointment-context${appointmentId ? `?appointmentId=${encodeURIComponent(appointmentId)}` : ''}`);
+    const response = await pageFetch(`/api/doctor/appointment-context${appointmentId ? `?appointmentId=${encodeURIComponent(appointmentId)}` : ''}`);
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || 'Unable to load appointment.');
+    if(pageSignal.aborted)return;
     context = data;
     renderContext();
     window.dispatchEvent(new CustomEvent('appointment-context-ready', { detail: data }));
@@ -307,7 +318,7 @@
     notesMessage.innerHTML = `<span class="aura-loading"><span class="aura-spinner" aria-hidden="true"></span><span>${nextStatus === 'COMPLETED' ? 'Saving and completing appointment...' : 'Saving notes...'}</span></span>`;
     const recommendedActions = (actionsInput.value || '').split(',').map((item) => item.trim()).filter(Boolean);
     try {
-      const response = await fetch(`/api/doctor/appointments/${context.appointment.id}/notes`, {
+      const response = await pageFetch(`/api/doctor/appointments/${context.appointment.id}/notes`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ observations: observationsInput.value, recommendedActions, status: nextStatus }),
@@ -324,8 +335,8 @@
   }
 
   tabButtons.forEach((button) => button.addEventListener('click', () => switchTab(button.dataset.detailTab)));
-  document.getElementById('consultation-save-draft')?.addEventListener('click', () => saveConsultation(''));
-  document.getElementById('consultation-save-notes')?.addEventListener('click', () => saveConsultation('IN_PROGRESS'));
+  pageDocument.getElementById('consultation-save-draft')?.addEventListener('click', () => saveConsultation(''));
+  pageDocument.getElementById('consultation-save-notes')?.addEventListener('click', () => saveConsultation('IN_PROGRESS'));
   markCompletedButton?.addEventListener('click', () => saveConsultation('COMPLETED'));
   addMedicineRowButton?.addEventListener('click', () => medicationRows?.insertAdjacentHTML('beforeend', medicationRowTemplate()));
   medicationRows?.addEventListener('click', (event) => {
@@ -351,7 +362,7 @@
       return;
     }
     try {
-      const response = await fetch('/api/doctor/prescriptions', {
+      const response = await pageFetch('/api/doctor/prescriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ appointmentId: context.appointment.id, status: statusValueUpper, medications, advice: formData.get('advice'), followUpDate: formData.get('followUpDate') }),
@@ -390,7 +401,7 @@
     payload.append('name', writtenPrescriptionName?.value || 'Written Prescription Photo');
     payload.append('documentDate', new Date().toISOString().slice(0, 10));
     try {
-      const response = await fetch(`/api/doctor/appointments/${context.appointment.id}/prescription-photo`, {
+      const response = await pageFetch(`/api/doctor/appointments/${context.appointment.id}/prescription-photo`, {
         method: 'POST',
         body: payload,
       });

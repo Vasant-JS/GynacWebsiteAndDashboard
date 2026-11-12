@@ -30,7 +30,7 @@
     setText('metric-last', stats.last_visit_at ? dateOnly(stats.last_visit_at) : 'No past booking');
     setText('metric-last-detail', Number(stats.past_count) ? `${stats.past_count} past ${Number(stats.past_count) === 1 ? 'booking' : 'bookings'}` : 'Your appointment history');
     setText('patient-plan-summary', data.upcoming
-      ? `Your next consultation is on ${dateTime(data.upcoming.appointment_at)} IST${data.upcoming.doctor_name ? ` with ${data.upcoming.doctor_name}` : ''}. You can review or manage it from Visits.`
+      ? `Your next consultation is on ${dateTime(data.upcoming.appointment_at)} IST${data.upcoming.doctor_name ? ` (attended by ${data.upcoming.doctor_name})` : ''}. You can review or manage it from Visits.`
       : Number(stats.past_count) ? 'You have no upcoming consultation. Your past bookings remain available in Visits, and you can book a follow-up when needed.'
         : 'You have no upcoming consultation yet. Book a visit to start your care journey.');
     const bookingLink = $('patient-plan-book-link');
@@ -49,7 +49,7 @@
     const safeMeeting = meeting?.meetLink || meeting?.calendarEventId ? `/api/consultations/${encodeURIComponent(item.id)}/join?role=PATIENT` : null;
     const isClosed = item.status === 'COMPLETED' || item.status === 'CANCELLED';
     $('upcoming-card').innerHTML = `
-      <div class="patient-upcoming"><div class="patient-upcoming__main"><span class="patient-upcoming__icon material-symbols-outlined" aria-hidden="true">stethoscope</span><div><h3>${escapeHtml(item.doctor_name || 'Doctor to be assigned')}</h3><p>${escapeHtml(item.service_type || 'Consultation')}</p><p class="patient-upcoming__date">${escapeHtml(dateTime(item.appointment_at))} IST</p><p>${escapeHtml(item.location || 'Location to be confirmed')}</p><span class="patient-badge">${escapeHtml(statusLabel(item.status))}</span></div></div></div>
+      <div class="patient-upcoming"><div class="patient-upcoming__main"><span class="patient-upcoming__icon material-symbols-outlined" aria-hidden="true">stethoscope</span><div><h3>${escapeHtml(item.doctor_name ? 'Attended by '+item.doctor_name : 'Doctor recorded on attendance')}</h3><p>${escapeHtml(item.service_type || 'Consultation')}</p><p class="patient-upcoming__date">${escapeHtml(dateTime(item.appointment_at))} IST</p><p>${escapeHtml(item.location || 'Location to be confirmed')}</p><span class="patient-badge">${escapeHtml(statusLabel(item.status))}</span></div></div></div>
       <div class="patient-upcoming__actions"><a href="/patient/appointments.html">View appointment</a>${safeMeeting ? isClosed ? '<button type="button" disabled title="Google Meet is unavailable for completed or cancelled appointments">Join Google Meet</button>' : `<a href="${escapeHtml(safeMeeting)}" target="_blank" rel="noopener noreferrer">Join Google Meet</a>` : ''}</div>`;
   }
 
@@ -65,7 +65,7 @@
   function renderHistory(items) {
     const list = Array.isArray(items) ? items : [];
     $('patient-history-list').innerHTML = list.length ? list.slice(0, 3).map((item) => `
-      <article class="patient-visit"><span class="patient-visit__date">${escapeHtml(dateFormat(item.appointment_at, { day: '2-digit', month: 'short' }))}</span><div class="patient-visit__body"><h3>${escapeHtml(item.service_type || 'Consultation')}</h3><p>${escapeHtml(item.doctor_name || 'Doctor not assigned')} · ${escapeHtml(dateTime(item.appointment_at))} IST</p></div><div class="patient-visit__end"><span class="patient-badge patient-badge--muted">${escapeHtml(statusLabel(item.status))}</span><a href="/patient/appointments.html?tab=past">View details →</a></div></article>`).join('') : empty('No previous appointments to show.');
+      <article class="patient-visit"><span class="patient-visit__date">${escapeHtml(dateFormat(item.appointment_at, { day: '2-digit', month: 'short' }))}</span><div class="patient-visit__body"><h3>${escapeHtml(item.service_type || 'Consultation')}</h3><p>${escapeHtml(item.doctor_name || 'Not yet attended')} · ${escapeHtml(dateTime(item.appointment_at))} IST</p></div><div class="patient-visit__end"><span class="patient-badge patient-badge--muted">${escapeHtml(statusLabel(item.status))}</span><a href="/patient/appointments.html?tab=past">View details →</a></div></article>`).join('') : empty('No previous appointments to show.');
   }
 
   function renderReports(items) {

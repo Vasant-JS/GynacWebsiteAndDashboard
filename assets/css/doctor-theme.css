@@ -1,0 +1,28 @@
+/* Shared doctor portal theme. Keep navigation independent of each page's body styles. */
+@font-face{font-family:'Doctor Symbols';src:url('/assets/fonts/material-symbols-outlined.ttf') format('truetype');font-display:block}
+body.doctor-portal{font-family:'Plus Jakarta Sans',sans-serif;background:#faf8ff;color:#131b2e;font-size:14px;line-height:1.6}
+.doctor-portal button,.doctor-portal input,.doctor-portal select,.doctor-portal textarea{font-family:inherit}
+.doctor-portal .material-symbols-outlined{font-family:'Doctor Symbols';font-weight:400;font-style:normal;font-feature-settings:'liga';line-height:1;white-space:nowrap}
+.doctor-portal .aura-sidebar,.doctor-portal .doctor-topbar,.doctor-portal .aura-mobile-nav{font-family:'Plus Jakarta Sans',sans-serif;line-height:1.5;--aura-primary:#b0004a;--aura-secondary:#006a62;--aura-text:#000767;--aura-muted:#5a4044;--aura-outline:#e3bdc3}
+.doctor-portal .doctor-sidebar__link{line-height:1.5}
+.doctor-portal .aura-main{min-width:0;padding-top:0}
+/* The header is already flush with the main area's top; no negative top margin needed. */
+.doctor-portal .aura-main>.doctor-topbar{margin-top:0!important}
+.doctor-portal .aura-page{--aura-primary:#00504a;--aura-secondary:#00504a;--aura-text:#131b2e;--aura-muted:#64716e;--aura-outline:#e8e8f1}
+.doctor-portal .aura-page:not(.dw-page){font-size:14px;line-height:1.6}
+.doctor-portal .aura-page:not(.dw-page) h1{font-size:26px;line-height:1.25;font-weight:800;color:#131b2e}
+.doctor-portal .aura-page:not(.dw-page) h2{font-size:19px;line-height:1.35;font-weight:800;color:#131b2e}
+.doctor-portal .aura-page:not(.dw-page) h3{font-size:14px;line-height:1.5;font-weight:800;color:#131b2e}
+.doctor-portal .aura-subtitle{font-size:12px;line-height:1.6;color:#64716e}
+.doctor-portal .aura-card{border-color:#e8e8f1;border-radius:16px;box-shadow:0 3px 12px #131b2e04}
+.doctor-portal .aura-card--padded{padding:22px}
+.doctor-portal .aura-page:not(.dw-page) label{font-size:12px;font-weight:700}
+.doctor-portal .aura-field{font-size:12px;min-height:42px;padding:10px 12px;border-color:#cbd7d3;border-radius:8px}
+.doctor-portal .aura-page .aura-button{font-size:12px;font-weight:750;min-height:42px;padding:10px 14px;border-radius:9px;background:#00504a;border:1px solid #00504a;color:white}
+.doctor-portal .aura-page .aura-button--secondary,.doctor-portal .case-secondary{background:white;color:#00504a;border:1px solid #cbd9d5;border-radius:9px;font-size:12px}
+.doctor-portal .aura-page [class~="text-[#5a4044]"]{color:#64716e}
+.doctor-portal .aura-page [class~="text-[#006a62]"]{color:#00504a}
+.doctor-portal .aura-page [class~="text-[#b0004a]"]{color:#b81059}
+.doctor-portal .aura-page [class~="border-[#e3bdc3]"]{border-color:#e8e8f1}
+.doctor-portal .aura-page [class~="bg-[#006a62]"]{background:#00504a}
+@media(max-width:767px){.doctor-portal .aura-main{padding-top:0}.doctor-portal .aura-card--padded{padding:16px}.doctor-portal .aura-page:not(.dw-page) h1{font-size:22px}}

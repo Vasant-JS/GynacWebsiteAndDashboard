@@ -5,19 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Appointment Details | Sumohan Care</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/assets/css/aura-portal.css?v=20261024" rel="stylesheet">
 <link href="/assets/css/brand.css" rel="stylesheet">
 <link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
 <link rel="stylesheet" href="/assets/css/case-history.css">
-</head>
-<body>
+<link rel="stylesheet" href="/assets/css/doctor-theme.css?v=20261106-shared-theme"><link rel="stylesheet" href="/assets/css/doctor-workspace.css?v=20261112-sections"></head>
+<body class="doctor-portal">
   <div class="aura-shell">
     <aside class="aura-sidebar"></aside>
     <main class="aura-main">
       <section class="aura-page">
-        <p class="aura-eyebrow" id="appointment-detail-status">Loading appointment context...</p>
+        <button class="aura-button mb-4" id="appointment-attend" type="button" hidden>Attend appointment</button><p class="aura-eyebrow" id="appointment-detail-status">Loading appointment context...</p>
+        <div class="flex flex-wrap gap-3 mb-4"><a class="aura-button" id="appointment-full-history" href="/doctor/patients.html?view=case-sheets">Full Patient History</a><a class="aura-button" id="appointment-rx-workspace" href="/doctor/prescription.html">Prescription Workspace</a></div>
 
         <section class="aura-card aura-card--padded flex flex-wrap items-center gap-6">
           <div class="relative">
@@ -267,8 +268,8 @@
   </div>
 
   <nav class="aura-mobile-nav"></nav>
-  <script src="/assets/js/clinical-schema.js"></script><script src="/assets/js/case-history.js"></script>
-<script src="/assets/js/doctor-appointment-details.js?v=20261106-calendar"></script>
-  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
+  <script src="/assets/js/doctor-page.js?v=20261112-shell"></script><script src="/assets/js/clinical-schema.js"></script><script src="/assets/js/case-history.js?v=20261112-queue"></script>
+<script src="/assets/js/doctor-appointment-details.js?v=20261112-queue"></script>
+  <script src="/assets/js/aura-sidebar.js?v=20261112-shell"></script>
 </body>
 </html>

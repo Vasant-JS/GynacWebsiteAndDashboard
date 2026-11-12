@@ -121,13 +121,13 @@ function to24HourTime(timeLabel) {
 
 function assertFutureSlot(date, time) {
   const time24 = to24HourTime(time);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !time24) {
+  if (!require('../assets/js/clinical-schema').dateValue(date) || !time24) {
     const error = new Error('A valid future date and slot are required.');
     error.status = 400;
     throw error;
   }
   const appointmentAt = new Date(`${date}T${time24}+05:30`);
-  if (appointmentAt.getTime() <= Date.now()) {
+  if (!Number.isFinite(appointmentAt.getTime()) || appointmentAt.getTime() <= Date.now()) {
     const error = new Error('Choose a date and slot later than the current time.');
     error.status = 400;
     throw error;
@@ -186,36 +186,15 @@ async function assertSlotAvailable(doctorId, date, time, excludeAppointmentId, d
     throw error;
   }
   assertFutureSlot(date, time);
-  const availability = await db.query(
-    'SELECT is_available, slots FROM doctor_availability WHERE doctor_id = $1 AND available_date = $2::date LIMIT 1',
-    [doctorId, date],
-  );
-  const availableSlots = availability.rowCount ? availability.rows[0].slots : DEFAULT_SLOTS;
-  if (availability.rowCount && !availability.rows[0].is_available) {
-    const error = new Error('Doctor is not available on the selected date.');
-    error.status = 409;
-    throw error;
-  }
-  if (!availableSlots.includes(time)) {
-    const error = new Error('Selected slot is not available for this doctor.');
-    error.status = 409;
-    throw error;
-  }
-  const appointmentAt = `${date}T${time24}+05:30`;
-  const conflict = await db.query(
-    `
-      SELECT id FROM appointments
-      WHERE doctor_id = $1 AND appointment_at = $2::timestamptz AND status <> 'CANCELLED'
-        AND ($3::uuid IS NULL OR id <> $3::uuid)
-      LIMIT 1
-    `,
-    [doctorId, appointmentAt, excludeAppointmentId || null],
-  );
-  if (conflict.rowCount) {
-    const error = new Error('Selected slot has already been booked.');
-    error.status = 409;
-    throw error;
-  }
+  if(!DEFAULT_SLOTS.includes(time))throw Object.assign(new Error('Choose a hospital consultation time.'),{status:400});
+  const appointmentAt = date+'T'+time24+'+05:30';
+  return appointmentAt;
+}
+async function assertHospitalBookingSlot(patientId,date,time,excludeAppointmentId,db){
+  const appointmentAt=await assertSlotAvailable(null,date,time);
+  await db.query('SELECT id FROM users WHERE id=$1 FOR UPDATE',[patientId]);
+  const duplicate=await db.query("SELECT id FROM appointments WHERE patient_id=$1 AND appointment_at=$2::timestamptz AND status<>'CANCELLED' AND ($3::uuid IS NULL OR id<>$3::uuid)",[patientId,appointmentAt,excludeAppointmentId || null]);
+  if(duplicate.rowCount)throw Object.assign(new Error('You already have a consultation booked at this time.'),{status:409});
   return appointmentAt;
 }
 
@@ -228,7 +207,7 @@ router.get('/dashboard', async (req, res, next) => {
         `
           SELECT a.*, d.display_name AS doctor_name, d.profile AS doctor_profile
           FROM appointments a
-          LEFT JOIN users d ON d.id = a.doctor_id
+          LEFT JOIN users d ON d.id = a.attended_by
           WHERE a.patient_id = $1
             AND a.appointment_at >= now()
             AND a.status NOT IN ('CANCELLED', 'COMPLETED')
@@ -241,7 +220,7 @@ router.get('/dashboard', async (req, res, next) => {
         `
           SELECT a.id, a.appointment_at, a.service_type, a.status, a.metadata, d.display_name AS doctor_name
           FROM appointments a
-          LEFT JOIN users d ON d.id = a.doctor_id
+          LEFT JOIN users d ON d.id = a.attended_by
           WHERE a.patient_id = $1
             AND (a.appointment_at < now() OR a.status = 'COMPLETED')
             AND a.status <> 'CANCELLED'
@@ -296,7 +275,7 @@ router.get('/appointments', async (req, res, next) => {
                d.display_name AS doctor_name,
                p.id AS payment_id, p.amount AS payment_amount, p.currency AS payment_currency, p.status AS payment_status
         FROM appointments a
-        LEFT JOIN users d ON d.id = a.doctor_id
+        LEFT JOIN users d ON d.id = a.attended_by
         LEFT JOIN LATERAL (
           SELECT id, amount, currency, status FROM payments
           WHERE appointment_id = a.id
@@ -334,7 +313,7 @@ router.patch('/appointments/:id/reschedule', async (req, res, next) => {
     const { appointment } = await getPatientAppointment(req, req.params.id);
     if (!appointment) return res.status(404).json({ message: 'Appointment not found.' });
     if (appointment.status === 'CANCELLED') return res.status(409).json({ message: 'Cancelled appointments cannot be rescheduled.' });
-    const updated = await changeAppointment(appointment.id,'PATIENT',appointment.patient_id,{status:'SCHEDULED',prepareTime:(item,client)=>assertSlotAvailable(item.doctor_id,String(req.body.date || '').trim(),String(req.body.time || '').trim(),item.id,client)});
+    const updated = await changeAppointment(appointment.id,'PATIENT',appointment.patient_id,{status:'SCHEDULED',prepareTime:(item,client)=>assertHospitalBookingSlot(item.patient_id,String(req.body.date || '').trim(),String(req.body.time || '').trim(),item.id,client)});
     res.json({ appointment: updated });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
@@ -527,7 +506,7 @@ router.get('/documents/:id/download', async (req, res, next) => {
 
 router.get('/booking', (req, res) => {
   const booking = req.session.booking || {};
-  res.json({ booking: { ...booking, service: booking.service || serviceForReason(booking.reason) } });
+  res.json({ booking: { ...booking, doctorId:null, service: booking.service || serviceForReason(booking.reason) } });
 });
 
 router.get('/booking/doctors', async (_req, res, next) => {
@@ -541,19 +520,7 @@ router.get('/booking/doctors', async (_req, res, next) => {
 
 router.get('/booking/availability', async (req, res, next) => {
   try {
-    const doctors = await getDoctors();
-    const doctor = doctors.find((item) => item.id === req.query.doctorId) || doctors[0];
-    if (!doctor) return res.status(404).json({ message: 'Doctor record not found in database.' });
-    const { start, end } = monthBounds(req.query.month);
-    const availability = await pool.query(
-      'SELECT available_date::text AS date, is_available, slots FROM doctor_availability WHERE doctor_id = $1 AND available_date >= $2::date AND available_date < $3::date ORDER BY available_date ASC',
-      [doctor.id, start, end],
-    );
-    const booked = await pool.query(
-      "SELECT (appointment_at AT TIME ZONE 'Asia/Kolkata')::date::text AS date, to_char(appointment_at AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM') AS slot FROM appointments WHERE doctor_id = $1 AND (appointment_at AT TIME ZONE 'Asia/Kolkata')::date >= $2::date AND (appointment_at AT TIME ZONE 'Asia/Kolkata')::date < $3::date AND status <> 'CANCELLED'",
-      [doctor.id, start, end],
-    );
-    res.json({ doctorId: doctor.id, defaultSlots: DEFAULT_SLOTS, availability: availability.rows, booked: booked.rows });
+    res.json({defaultSlots:DEFAULT_SLOTS,availability:[],booked:[],bookingMode:'HOSPITAL_QUEUE'});
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
     next(error);
@@ -573,11 +540,6 @@ router.post('/booking/reason', async (req, res, next) => {
   if (previousCaseReference.length > 120) return res.status(400).json({ message: 'Previous case reference must be 120 characters or fewer.' });
   const doctorId = String(req.body.doctorId || '').trim();
   try {
-    if (doctorId) {
-      if (!/^[0-9a-f-]{36}$/i.test(doctorId)) return res.status(400).json({ message: 'Choose a valid doctor.' });
-      const selectedDoctor = await pool.query("SELECT id FROM users WHERE id = $1 AND role = 'DOCTOR' AND status = 'ACTIVE'", [doctorId]);
-      if (!selectedDoctor.rowCount) return res.status(400).json({ message: 'The selected doctor is unavailable.' });
-    }
     if (previousAppointmentId) {
       if (!/^[0-9a-f-]{36}$/i.test(previousAppointmentId)) return res.status(400).json({ message: 'Choose a previous consultation.' });
       const patient = await getPatient(req);
@@ -585,7 +547,7 @@ router.post('/booking/reason', async (req, res, next) => {
       if (!previous.rowCount) return res.status(400).json({ message: 'Previous consultation is not available for this patient.' });
     } else if (consultationType === 'FOLLOW_UP' && !previousCaseReference) return res.status(400).json({ message: 'Choose a previous consultation or enter a hospital case reference for follow-up.' });
   } catch (error) { return next(error); }
-  req.session.booking = { ...(req.session.booking || {}), service, reason, otherReason, consultationType, previousAppointmentId, previousCaseReference, doctorId: doctorId || null, consent: null, paymentId: null };
+  req.session.booking = { ...(req.session.booking || {}), service, reason, otherReason, consultationType, previousAppointmentId, previousCaseReference, doctorId: null, consent: null, paymentId: null };
   res.json({ redirectTo: '/patient/book-slot.html', booking: req.session.booking });
 });
 
@@ -599,7 +561,7 @@ router.post('/booking/details', (req, res) => {
     ...(service ? { service } : {}),
     ...(reason ? { reason } : {}),
     ...(Object.prototype.hasOwnProperty.call(req.body, 'otherReason') ? { otherReason } : {}),
-    ...(doctorId ? { doctorId } : {}),
+    doctorId: null,
   };
   res.json({ booking: req.session.booking });
 });
@@ -609,7 +571,7 @@ router.post('/booking/slot', (req, res) => {
     const date = String(req.body.date || '').trim();
     const time = String(req.body.time || '').trim();
     assertFutureSlot(date, time);
-    req.session.booking = { ...(req.session.booking || {}), date, time, paymentId: null };
+    req.session.booking = { ...(req.session.booking || {}), doctorId:null, date, time, paymentId: null };
     res.json({ booking: req.session.booking });
   } catch (error) {
     res.status(error.status || 400).json({ message: error.message });
@@ -633,22 +595,10 @@ async function bookingContext(req, body = {}) {
     error.status = 404;
     throw error;
   }
-  const doctorResult = await pool.query(
-    `
-      SELECT id, display_name, email, profile
-      FROM users
-      WHERE role = 'DOCTOR' AND status = 'ACTIVE' AND ($1::uuid IS NULL OR id = $1::uuid)
-      ORDER BY CASE WHEN id = $1::uuid THEN 0 ELSE 1 END, created_at ASC
-      LIMIT 1
-    `,
-    [booking.doctorId || null],
-  );
-  const doctor = doctorResult.rows[0];
-  if (!doctor) {
-    const error = new Error('Doctor record not found in database.');
-    error.status = 404;
-    throw error;
-  }
+  booking.doctorId=null;
+  const fee=Number(process.env.HOSPITAL_CONSULTATION_FEE || 800);
+  if(!Number.isFinite(fee)||fee<=0)throw Object.assign(new Error('Hospital consultation fee is not configured.'),{status:503});
+  const doctor={id:null,display_name:'Sumohan Care clinical team',email:null,profile:{consultationFee:fee}};
   const appointmentAt = await assertSlotAvailable(doctor.id, booking.date, booking.time);
   const serviceType = booking.service || serviceForReason(booking.reason);
   const amount = Number(doctor.profile?.consultationFee || 800);
@@ -726,9 +676,7 @@ router.patch('/booking/payment/:id/pay-and-book', async (req, res, next) => {
     client = await pool.connect();
     await client.query('BEGIN');
     const consent = await bookingDeclaration(booking, patient, req.body, client);
-    const active = await client.query("SELECT id FROM users WHERE id = $1 AND role = 'DOCTOR' AND status = 'ACTIVE' FOR UPDATE", [doctor.id]);
-    if (!active.rowCount) throw Object.assign(new Error('This doctor is no longer available.'), { status: 409 });
-    const appointmentAt = await assertSlotAvailable(doctor.id, booking.date, booking.time, null, client);
+    const appointmentAt = await assertHospitalBookingSlot(patient.id, booking.date, booking.time, null, client);
     const paid = await client.query(
       `
         UPDATE payments
@@ -774,7 +722,7 @@ router.patch('/booking/payment/:id/pay-and-book', async (req, res, next) => {
     );
     await client.query('UPDATE payments SET appointment_id = $1 WHERE id = $2', [appointment.rows[0].id, paid.rows[0].id]);
     if (booking.documentIds?.length) await client.query('UPDATE medical_documents SET appointment_id = $1 WHERE id = ANY($2::uuid[]) AND patient_id = $3 AND appointment_id IS NULL', [appointment.rows[0].id, booking.documentIds, patient.id]);
-    await client.query("INSERT INTO notifications (user_id,title,body,category,metadata) VALUES ($1,'Appointment booked',$2,'APPOINTMENT',$3::jsonb),($4,'New consultation',$2,'APPOINTMENT',$3::jsonb)", [patient.id,`${serviceType} on ${booking.date} at ${booking.time}`,JSON.stringify({appointmentId:appointment.rows[0].id}),doctor.id]);
+    await require('./attendance').notifyBooking(client,patient.id,appointment.rows[0].id,`${serviceType} on ${booking.date} at ${booking.time}`);
     await client.query('COMMIT');
     let meeting;
     try {
@@ -805,15 +753,13 @@ router.post('/booking/confirm', async (req, res, next) => {
     client = await pool.connect();
     await client.query('BEGIN');
     const consent = await bookingDeclaration(booking, patient, req.body, client);
-    const active = await client.query("SELECT id FROM users WHERE id = $1 AND role = 'DOCTOR' AND status = 'ACTIVE' FOR UPDATE", [doctor.id]);
-    if (!active.rowCount) throw Object.assign(new Error('This doctor is no longer available.'), { status: 409 });
-    const appointmentAt = await assertSlotAvailable(doctor.id, booking.date, booking.time, null, client);
+    const appointmentAt = await assertHospitalBookingSlot(patient.id, booking.date, booking.time, null, client);
     const saved = await client.query(`INSERT INTO appointments (doctor_id, patient_id, appointment_at, service_type, status, location, notes, metadata, duration_minutes)
       VALUES ($1, $2, $3::timestamptz, $4, 'SCHEDULED', 'Sumohan Hospital, Shivamogga', $5::jsonb, $6::jsonb, 15) RETURNING *`,
       [doctor.id, patient.id, appointmentAt, serviceType, JSON.stringify({ reason: booking.reason, otherReason: booking.otherReason || null }), JSON.stringify({ source: 'patient_booking_flow', ...bookingHistoryMetadata(booking, consent), paymentStatus: 'NOT_COLLECTED' })]);
     const appointment = saved.rows[0];
     if (booking.documentIds?.length) await client.query('UPDATE medical_documents SET appointment_id = $1 WHERE id = ANY($2::uuid[]) AND patient_id = $3 AND appointment_id IS NULL', [appointment.id, booking.documentIds, patient.id]);
-    await client.query("INSERT INTO notifications (user_id, title, body, category, metadata) VALUES ($1, 'Appointment booked', $2, 'APPOINTMENT', $3::jsonb), ($4, 'New consultation', $2, 'APPOINTMENT', $3::jsonb)", [patient.id, `${serviceType} on ${booking.date} at ${booking.time}`, JSON.stringify({ appointmentId: appointment.id }), doctor.id]);
+    await require('./attendance').notifyBooking(client,patient.id,appointment.id,`${serviceType} on ${booking.date} at ${booking.time}`);
     await client.query('COMMIT');
     let meeting;
     try {
@@ -875,7 +821,7 @@ router.get('/payments/:id/receipt', async (req, res, next) => {
         SELECT p.*, a.service_type, a.appointment_at, d.display_name AS doctor_name
         FROM payments p
         LEFT JOIN appointments a ON a.id = p.appointment_id
-        LEFT JOIN users d ON d.id = a.doctor_id
+        LEFT JOIN users d ON d.id = a.attended_by
         WHERE p.id = $1 AND p.patient_id = $2
         LIMIT 1
       `,
@@ -900,4 +846,4 @@ router.get('/payments/:id/receipt', async (req, res, next) => {
 });
 
 router.use('/razorpay',require('./razorpay-payments').patientPaymentRouter);
-module.exports = { patientRouter: router, bookingContext, bookingDeclaration, bookingHistoryMetadata, assertSlotAvailable };
+module.exports = { patientRouter: router, bookingContext, bookingDeclaration, bookingHistoryMetadata, assertSlotAvailable,assertHospitalBookingSlot,defaultSlots:DEFAULT_SLOTS };

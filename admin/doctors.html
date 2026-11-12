@@ -197,46 +197,32 @@
 <th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Specialization</th>
 <th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Fees</th>
 <th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
-<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+<th class="px-6 py-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Attendance</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-outline-variant/30"><tr><td colspan="6" class="px-6 py-8 text-on-surface-variant">Loading doctors...</td></tr></tbody>
 </table>
-<!-- Table Pagination -->
-<div class="px-6 py-4 bg-surface-container-low flex justify-between items-center border-t border-outline-variant">
-<p class="text-body-sm font-body-sm text-on-surface-variant">Showing 3 of 42 doctors</p>
-<div class="flex gap-2">
-<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
-</button>
-<button class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center text-label-sm font-label-sm">1</button>
-<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors text-label-sm font-label-sm">2</button>
-<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors text-label-sm font-label-sm">3</button>
-<button class="w-8 h-8 rounded bg-white border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-</button>
-</div>
-</div>
+<p class="p-4 text-sm" id="admin-doctor-row-count"></p>
 </div>
 <!-- Quick Stats -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
 <div class="bg-white p-6 rounded-xl border-l-4 border-primary shadow-[0px_4px_20px_rgba(26,35,126,0.05)]">
 <p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Total Doctors</p>
-<h4 class="text-headline-md font-headline-md text-primary mt-2">42</h4>
+<h4 class="text-headline-md font-headline-md text-primary mt-2" id="admin-attendance-doctors">—</h4>
 <div class="flex items-center gap-1 text-secondary mt-1">
 <span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
-<span class="text-label-sm font-label-sm">+3 this month</span>
+<span class="text-label-sm font-label-sm">Current doctor directory</span>
 </div>
 </div>
 <div class="bg-white p-6 rounded-xl border-l-4 border-secondary shadow-[0px_4px_20px_rgba(26,35,126,0.05)]">
-<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Avg. Consultation Fee</p>
-<h4 class="text-headline-md font-headline-md text-secondary mt-2">$215.00</h4>
-<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Based on active registry</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Consultations Attended</p>
+<h4 class="text-headline-md font-headline-md text-secondary mt-2" id="admin-attendance-total">—</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Recorded attendance across doctors</p>
 </div>
 <div class="bg-white p-6 rounded-xl border-l-4 border-tertiary shadow-[0px_4px_20px_rgba(26,35,126,0.05)]">
-<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Active Slots Today</p>
-<h4 class="text-headline-md font-headline-md text-tertiary mt-2">128</h4>
-<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">across all departments</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Completed Consultations</p>
+<h4 class="text-headline-md font-headline-md text-tertiary mt-2" id="admin-attendance-completed">—</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Recorded completed consultations</p>
 </div>
 </div>
 </div>
@@ -275,6 +261,6 @@
 </footer>
 </main>
 </div>
-<script src="/assets/js/design-live.js"></script>  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
+<script src="/assets/js/design-live.js?v=20261112-queue"></script>  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
 <script src="/assets/js/aura-core.js"></script><script src="/assets/js/doctor-account-settings.js?v=20261106-razorpay"></script></body></html>
 

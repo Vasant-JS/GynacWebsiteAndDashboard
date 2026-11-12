@@ -35,9 +35,9 @@
     const token = ++request;
     slots.replaceChildren();
     if (!doctor || !input.value || !input.validity.valid) { message.textContent = 'Choose today or a future date.'; return; }
-    message.textContent = 'Loading live availability…';
+    message.textContent = 'Loading hospital consultation times…';
     try {
-      const response = await fetch(`/api/public/doctors/${encodeURIComponent(doctor.id)}/availability?date=${encodeURIComponent(input.value)}`, { cache: 'no-store' });
+      const response = await fetch(`/api/public/consultation-times?date=${encodeURIComponent(input.value)}`, { cache: 'no-store' });
       const data = await response.json();
       if (token !== request) return;
       if (!response.ok) throw new Error(data.message || 'Unable to load availability.');
@@ -46,14 +46,14 @@
         item.className = 'rounded-lg border border-outline-variant p-3 text-center text-body-sm';
         item.textContent = time; slots.appendChild(item);
       }
-      message.textContent = data.slots.length ? `${data.slots.length} available times. Availability is checked again when you book.` : 'No slots available on this date. Choose another date.';
+      message.textContent = data.slots.length ? `${data.slots.length} hospital consultation times. No doctor selection is required.` : 'No slots available on this date. Choose another date.';
     } catch (error) { if (token === request) message.textContent = error.message; }
   }
   input.addEventListener('change', loadSlots);
   window.HomeDoctorAvailability = {
     async open(name) {
       const token = ++request; doctor = null; slots.replaceChildren(); proceed.disabled = true; input.disabled = true;
-      input.min = input.value = today(); message.textContent = 'Loading doctor availability…';
+      input.min = input.value = today(); message.textContent = 'Loading consultation times…';
       try {
         const response = await fetch('/api/public/doctors', { cache: 'no-store' });
         const data = await response.json();

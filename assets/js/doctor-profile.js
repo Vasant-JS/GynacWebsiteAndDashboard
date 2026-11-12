@@ -1,12 +1,16 @@
-(function () {
-  const status = document.getElementById('doctor-profile-status');
+(function(){
+  const pageRoot=document.querySelector('.aura-page');
+  const pageSignal=window.DoctorPage.signal;
+  const pageFetch=(url,options={})=>fetch(url,{signal:pageSignal,...options});
+  const pageDocument={getElementById:id=>pageRoot.querySelector('[id="'+CSS.escape(id)+'"]'),querySelector:selector=>pageRoot.querySelector(selector),querySelectorAll:selector=>pageRoot.querySelectorAll(selector)};
+  const status = pageDocument.getElementById('doctor-profile-status');
   if (!status) return;
-  const form = document.getElementById('doctor-profile-edit');
-  const saveMessage = document.getElementById('doctor-profile-save-message');
+  const form = pageDocument.getElementById('doctor-profile-edit');
+  const saveMessage = pageDocument.getElementById('doctor-profile-save-message');
   let loaded = false;
 
   function setText(id, value) {
-    const node = document.getElementById(id);
+    const node = pageDocument.getElementById(id);
     if (node) node.textContent = value || '-';
   }
 
@@ -38,7 +42,7 @@
     const storedUser = readStoredUser();
     if (storedUser) renderProfile(storedUser, 'Loaded from login profile');
     try {
-      const response = await fetch('/api/doctor/profile', {cache:'no-store'});
+      const response = await pageFetch('/api/doctor/profile', {cache:'no-store'});
       const data = await response.json();
       const user = data.user;
       if (!response.ok || !user || user.role !== 'DOCTOR') throw new Error('Doctor session not found.');
@@ -54,7 +58,7 @@
     event.preventDefault();if(!loaded)return;
     const button=form.querySelector('button');if(button.disabled)return;button.disabled=true;saveMessage.textContent='Saving…';
     try {
-      const response=await fetch('/api/doctor/profile',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({experienceYears:form.elements.experienceYears.value,languages:form.elements.languages.value.split(',').map(value=>value.trim()).filter(Boolean)})});
+      const response=await pageFetch('/api/doctor/profile',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({experienceYears:form.elements.experienceYears.value,languages:form.elements.languages.value.split(',').map(value=>value.trim()).filter(Boolean)})});
       const data=await response.json();if(!response.ok)throw new Error(data.message || 'Unable to save profile.');
       localStorage.setItem('auraSessionUser_DOCTOR',JSON.stringify(data.user));renderProfile(data.user,'Your doctor profile');saveMessage.textContent=data.message;
     } catch(error){saveMessage.textContent=error.message;}finally{button.disabled=false;}

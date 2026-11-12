@@ -5,10 +5,11 @@ async function changeAppointment(id, role, userId, { status, prepareTime } = {})
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const column = role === 'DOCTOR' ? 'doctor_id' : 'patient_id';
+    const column = role === 'DOCTOR' ? 'attended_by' : 'patient_id';
     const result = await client.query(`SELECT * FROM appointments WHERE id=$1 AND ${column}=$2 FOR UPDATE`, [id,userId]);
     const appointment = result.rows[0];
     if (!appointment) throw Object.assign(new Error('Appointment not found.'),{status:404});
+    if(prepareTime && appointment.attended_by)throw Object.assign(new Error('This consultation has already been attended. Contact the hospital to arrange another visit.'),{status:409});
     if (['CANCELLED','COMPLETED'].includes(appointment.status) && (prepareTime || status !== appointment.status)) throw Object.assign(new Error('Closed appointments cannot be changed.'),{status:409});
     let appointmentAt = appointment.appointment_at;
     if (prepareTime) {

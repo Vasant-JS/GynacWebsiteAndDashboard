@@ -87,9 +87,9 @@ router.get('/doctors', async (_req, res, next) => {
     const result = await pool.query(
       `
         SELECT u.id, u.display_name, u.email, u.phone, u.status, u.profile,
-               count(a.id) FILTER (WHERE a.appointment_at::date = current_date AND a.status <> 'CANCELLED') AS today_slots
+               count(a.id) FILTER (WHERE (a.attended_at AT TIME ZONE 'Asia/Kolkata')::date = (now() AT TIME ZONE 'Asia/Kolkata')::date) AS today_slots, count(a.id) AS attended_count, count(a.id) FILTER (WHERE a.status='COMPLETED') AS completed_count
         FROM users u
-        LEFT JOIN appointments a ON a.doctor_id = u.id
+        LEFT JOIN appointments a ON a.attended_by = u.id
         WHERE u.role = 'DOCTOR' AND COALESCE(u.metadata->>'retiredFromRoster', 'false') <> 'true'
         GROUP BY u.id
         ORDER BY u.display_name ASC
@@ -171,7 +171,7 @@ router.get('/payments', async (_req, res, next) => {
         FROM payments p
         LEFT JOIN users u ON u.id = p.patient_id
         LEFT JOIN appointments a ON a.id = p.appointment_id
-        LEFT JOIN users d ON d.id = a.doctor_id
+        LEFT JOIN users d ON d.id = a.attended_by
         ORDER BY p.created_at DESC LIMIT 100
       `,
     );

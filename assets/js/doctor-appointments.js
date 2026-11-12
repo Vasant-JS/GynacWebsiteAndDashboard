@@ -1,51 +1,58 @@
-(function () {
-  const { $, $all, bindTabs, escapeHtml, loadingMarkup, monthKey, setText, todayKey } = window.Aura;
-  const { appointmentCard, emptyAppointmentsLabel, filterAppointments, updateAppointmentStatus, api } = window.AuraDoctor;
-
-  const status = $('#appointments-status');
-  const list = $('#appointments-list');
-  const dateInput = $('#appointments-date');
-  const tabButtons = $all('[data-appointment-tab]');
-  if (!status || !list || !dateInput) return;
-
-  let activeTab = 'today';
-  let appointments = [];
-  const syncTabs = bindTabs(tabButtons, () => activeTab, (tab) => { activeTab = tab; }, render);
-
-  function render() {
-    syncTabs();
-    const items = filterAppointments(appointments, activeTab, todayKey());
-    list.innerHTML = items.length
-      ? items.map(appointmentCard).join('')
-      : `<p class="rounded-xl bg-white p-5 text-[#5a4044]">${emptyAppointmentsLabel(activeTab)}</p>`;
+(function(){
+  const root=document.querySelector('.da-schedule');if(!root)return;
+  const {escapeHtml:esc,fetchJson}=window.Aura,signal=window.DoctorPage.signal;
+  // Keep the filters immediately below the persistent header, including after SPA navigation.
+  const headerResize=new ResizeObserver(syncFilterOffset);
+  function syncFilterOffset(){
+    root.style.setProperty('--da-filter-top',(document.querySelector('.doctor-topbar')?.getBoundingClientRect().height || 0)+'px');
   }
-
-  async function updateAppointment(id, statusValue) {
-    list.innerHTML = loadingMarkup('Updating appointment...');
-    try { await updateAppointmentStatus(id, statusValue); await load(); }
-    catch (error) { await load(); setText(status,error.message); }
+  function observeHeader(){
+    const header=document.querySelector('.doctor-topbar');
+    if(header)headerResize.observe(header);
+    syncFilterOffset();
   }
-
-  async function load() {
-    list.innerHTML = loadingMarkup('Loading appointments...');
-    try {
-      const date = dateInput.value || todayKey();
-      const data = await api.schedule(date, monthKey(date));
-      appointments = data.monthly || [];
-      setText(status, 'Connected to PostgreSQL');
-      render();
-    } catch (error) {
-      setText(status, error.message);
-      list.innerHTML = `<p class="rounded-xl bg-white p-5 text-[#ba1a1a]">${escapeHtml(error.message)}</p>`;
-    }
+  observeHeader();
+  window.addEventListener('doctor-topbar-ready',observeHeader,{signal});
+  signal.addEventListener('abort',()=>headerResize.disconnect(),{once:true});
+  const node=id=>root.querySelector('[id="'+id+'"]'),list=node('appointments-list'),message=node('appointments-status');
+  let scope='upcoming',page=1,request=0,data=null,updating=false,timer;
+  const day=value=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));
+  const today=day(new Date()),tomorrow=(()=>{const d=new Date(today+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+1);return d.toISOString().slice(0,10);})();
+  const format=(value,options)=>new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',...options}).format(new Date(value));
+  const label=value=>({IN_PROGRESS:'In progress',SCHEDULED:'Scheduled',BOOKED:'Booked',COMPLETED:'Completed',CANCELLED:'Cancelled'}[value] || value);
+  function card(item){
+    const historical=scope==='past',patient=item.patient,closed=['COMPLETED','CANCELLED'].includes(item.status),query='?appointmentId='+encodeURIComponent(item.id),meeting=item.virtualMeeting?.meetLink || item.virtualMeeting?.calendarEventId;
+    const demographics=[patient.age?patient.age+' years':'',patient.gender,patient.phone].filter(Boolean).join(' · ');
+    let actions='';
+    if(item.isMine){
+      actions+=item.status!=='CANCELLED'?`<a class="da-button ${closed||historical?'da-button--light':''}" href="/doctor/appointment-details.html${query}"><span class="material-symbols-outlined" aria-hidden="true">${closed||historical?'visibility':'stethoscope'}</span>${historical?'View consultation':item.status==='IN_PROGRESS'?'Continue consultation':closed?'View consultation':'Attend'}</a>`:'';
+      actions+=`<a class="da-button da-button--light" href="/doctor/case-history.html${query}"><span class="material-symbols-outlined" aria-hidden="true">description</span>Case Sheet</a>`;
+      if(item.status!=='CANCELLED')actions+=`<a class="da-button da-button--light" href="/doctor/prescription.html${query}"><span class="material-symbols-outlined" aria-hidden="true">prescriptions</span>Rx</a>`;
+      if(meeting)actions+=closed||historical?'<button class="da-button da-button--light" type="button" disabled>Join Google Meet</button>':`<a class="da-button da-button--light" href="/api/consultations/${encodeURIComponent(item.id)}/join?role=DOCTOR" target="_blank" rel="noopener"><span class="material-symbols-outlined" aria-hidden="true">video_call</span>Join Google Meet</a>`;
+      if(!closed&&!historical)actions+=`<button class="da-icon-button da-cancel" data-cancel="${esc(item.id)}" type="button" aria-label="Cancel appointment for ${esc(patient.name)}" title="Cancel appointment"><span class="material-symbols-outlined" aria-hidden="true">event_busy</span></button>`;
+    }else if(item.canAttend)actions=`<button class="da-button" type="button" data-attend="${esc(item.id)}"><span class="material-symbols-outlined" aria-hidden="true">stethoscope</span>Attend appointment</button>`;else actions='<span class="da-readonly"><span class="material-symbols-outlined" aria-hidden="true">lock</span>Read-only booking summary</span>';
+    return `<article class="da-appointment ${item.isMine?'da-appointment--mine':''} ${closed?'da-appointment--closed':''}"><div class="da-time"><span>${esc(label(item.status))}</span><strong>${esc(format(item.appointmentAt,{hour:'2-digit',minute:'2-digit'}))}</strong><small>${esc(format(item.appointmentAt,{day:'numeric',month:'short',year:'numeric'}))} · IST</small></div><div class="da-patient"><div class="da-patient-heading"><h3>${esc(patient.name || 'Patient')}</h3><span class="da-case">SC-${esc(patient.id)}</span><span class="da-status da-status--${esc(item.status.toLowerCase())}">${esc(label(item.status))}</span></div>${demographics?`<p class="da-demographics">${esc(demographics)}</p>`:''}<p class="da-visit"><span class="da-service">${esc(item.serviceType)}</span>${item.consultationType?`<span>${esc(item.consultationType==='FOLLOW_UP'?'Follow-up':item.consultationType==='NEW'?'New consultation':item.consultationType)}</span>`:''}${item.reason?`<span>${esc(item.reason)}</span>`:''}</p><p class="da-booked"><strong>${item.doctor.id?'Attended by:':'Attendance:'}</strong> ${esc(item.doctor.id?item.doctor.name:'Not yet attended')}${item.isMine?' <span class="da-me">You</span>':''}</p>${item.attendedAt?`<p class="da-specialization">Attended on ${esc(format(item.attendedAt,{dateStyle:'medium',timeStyle:'short'}))} IST</p>`:''}${item.doctor.specialization?`<p class="da-specialization">${esc(item.doctor.specialization)}</p>`:''}${meeting && !closed?'<p class="da-meeting"><span class="material-symbols-outlined" aria-hidden="true">videocam</span>Google Meet available</p>':''}</div><div class="da-actions">${actions}</div></article>`;
   }
-
-  dateInput.value = todayKey();
-  dateInput.addEventListener('change', load);
-  list.addEventListener('click', (event) => {
-    const cancelButton = event.target.closest('[data-cancel]');
-    if (cancelButton) updateAppointment(cancelButton.dataset.cancel, 'CANCELLED');
-  });
-
-  load();
+  function syncScope(){root.querySelectorAll('[data-appointment-scope]').forEach(button=>button.setAttribute('aria-selected',String(button.dataset.appointmentScope===scope)));node('appointments-doctor-filter').disabled=false;node('appointments-date-mode').options[0].textContent=scope==='past'?'All past dates':'All upcoming dates';node('appointments-scope-description').textContent=scope==='past'?'Past hospital appointments, newest first. Attendance and completion are recorded separately.':'Shared hospital appointments from today onwards. Click Attend to record who is seeing the patient.';}
+  function parameters(){const params=new URLSearchParams({scope,page:String(page)});for(const [key,id] of [['search','appointments-search'],['service','appointments-service'],['status','appointments-status-filter']]){const value=node(id).value.trim();if(value)params.set(key,value);}if(scope!=='my' && node('appointments-doctor-filter').value)params.set('doctorId',node('appointments-doctor-filter').value);const mode=node('appointments-date-mode').value;if(mode==='today'||mode==='tomorrow'){params.set('start',mode==='today'?today:tomorrow);params.set('end',mode==='today'?today:tomorrow);}else if(mode==='custom'){if(node('appointments-from').value)params.set('start',node('appointments-from').value);if(node('appointments-to').value)params.set('end',node('appointments-to').value);}return params;}
+  function options(id,items,first){const select=node(id),value=select.value;select.innerHTML='<option value="">'+esc(first)+'</option>'+items.map(item=>`<option value="${esc(item.id)}">${esc(item.name)}</option>`).join('');if(items.some(item=>item.id===value))select.value=value;}
+  async function load(){const token=++request;syncScope();message.textContent='Loading appointments…';message.dataset.error='false';list.setAttribute('aria-busy','true');node('appointments-prev').disabled=node('appointments-next').disabled=true;
+    try{const result=await fetchJson('/api/doctor/appointments-directory?'+parameters());if(signal.aborted||token!==request)return;data=result;
+      root.querySelectorAll('[data-count]').forEach(badge=>badge.textContent=data.counts[badge.dataset.count]);node('appointments-doctor').textContent='Signed in: '+data.currentDoctor.name;
+      options('appointments-doctor-filter',data.doctors,'All attending doctors');options('appointments-service',data.services.map(name=>({id:name,name})),'All services');
+      const groups=new Map();for(const item of data.appointments){if(!groups.has(item.date))groups.set(item.date,[]);groups.get(item.date).push(item);}
+      list.innerHTML=[...groups].map(([key,items])=>`<section class="da-day"><div class="da-day-heading"><h2><span class="material-symbols-outlined" aria-hidden="true">${key===today?'today':'event'}</span>${key===today?'Today — ':key===tomorrow?'Tomorrow — ':''}${esc(format(key+'T12:00:00+05:30',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))}</h2><span>${items.length} ${items.length===1?'appointment':'appointments'} shown</span></div><div class="da-day-cards">${items.map(card).join('')}</div></section>`).join('') || '<section class="da-empty"><span class="material-symbols-outlined" aria-hidden="true">event_available</span><h2>No appointments found</h2><p>No bookings match this view and your filters. Adjust or reset the filters to see more appointments.</p><button class="da-button" type="button" data-reset>Reset filters</button></section>';
+      const pages=Math.max(1,Math.ceil(data.total/data.pageSize));if(data.total && page>pages){page=pages;return load();}node('appointments-page-summary').textContent=data.total?`Showing ${(page-1)*data.pageSize+1}–${Math.min(page*data.pageSize,data.total)} of ${data.total} appointments`:'No matching appointments';node('appointments-page-number').textContent='Page '+page+' of '+pages;node('appointments-prev').disabled=page<=1;node('appointments-next').disabled=page>=pages;
+      message.textContent='';
+    }catch(error){if(signal.aborted||token!==request)return;message.textContent=error.message;message.dataset.error='true';list.innerHTML='<div class="da-empty"><h2>Unable to load appointments</h2><p>'+esc(error.message)+'</p><button class="da-button" type="button" data-retry>Try again</button></div>';}finally{if(token===request)list.removeAttribute('aria-busy');}}
+  function filter(){clearTimeout(timer);page=1;load();}
+  function reset(){node('appointments-filters').reset();node('appointments-date-range').hidden=true;filter();}
+  root.querySelectorAll('[data-appointment-scope]').forEach(button=>button.onclick=()=>{scope=button.dataset.appointmentScope;node('appointments-doctor-filter').value='';filter();});
+  for(const id of ['appointments-doctor-filter','appointments-service','appointments-status-filter'])node(id).onchange=filter;
+  node('appointments-search').oninput=()=>{clearTimeout(timer);timer=setTimeout(filter,300);};
+  node('appointments-date-mode').onchange=()=>{node('appointments-date-range').hidden=node('appointments-date-mode').value!=='custom';if(node('appointments-date-mode').value!=='custom')filter();};
+  node('appointments-filters').onsubmit=event=>{event.preventDefault();const start=node('appointments-from').value,end=node('appointments-to').value;if(node('appointments-date-mode').value==='custom'&&start&&end&&start>end){message.textContent='The end date must be on or after the start date.';message.dataset.error='true';return;}filter();};
+  node('appointments-clear').onclick=reset;node('appointments-refresh').onclick=load;node('appointments-prev').onclick=()=>{page--;load();};node('appointments-next').onclick=()=>{page++;load();};
+  list.onclick=async event=>{if(event.target.closest('[data-reset]'))return reset();if(event.target.closest('[data-retry]'))return load();const attend=event.target.closest('[data-attend]');if(attend){if(updating)return;updating=true;attend.disabled=true;try{await fetchJson('/api/doctor/appointments/'+encodeURIComponent(attend.dataset.attend)+'/attend',{method:'POST'});updating=false;await window.DoctorPage.navigate('/doctor/appointment-details.html?appointmentId='+encodeURIComponent(attend.dataset.attend));}catch(error){await load();message.textContent=error.message;message.dataset.error='true';}finally{updating=false;}return;}const button=event.target.closest('[data-cancel]');if(!button||updating)return;const item=data?.appointments.find(item=>item.id===button.dataset.cancel);if(!item?.isMine||!confirm('Cancel this appointment for '+item.patient.name+'?'))return;updating=true;button.disabled=true;try{await fetchJson('/api/doctor/appointments/'+encodeURIComponent(item.id)+'/status',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'CANCELLED'})});await load();message.textContent='Appointment cancelled.';}catch(error){message.textContent=error.message;message.dataset.error='true';button.disabled=false;}finally{updating=false;}};
+  window.DoctorPage.guard(()=>({busy:updating}));signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});load();
 })();

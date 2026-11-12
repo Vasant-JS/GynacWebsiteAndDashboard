@@ -27,29 +27,16 @@
   form.elements.previousCaseReference.addEventListener('input', syncType);
   syncType();
   try {
-    const [response, doctorsResponse] = await Promise.all([fetch('/api/patient/appointments'), fetch('/api/patient/booking/doctors')]);
-    const [data, doctorsData] = await Promise.all([response.json(), doctorsResponse.json()]);
+    const response=await fetch('/api/patient/appointments');
+    const data=await response.json();
     if (!response.ok) throw new Error(data.message);
-    if (!doctorsResponse.ok) throw new Error(doctorsData.message);
     const appointments = (data.appointments || []).filter(visit => visit.status !== 'CANCELLED' && new Date(visit.appointment_at) <= new Date());
     appointments.forEach(visit => {
       const option = document.createElement('option'); option.value = visit.id;
-      option.textContent = `${new Date(visit.appointment_at).toLocaleDateString('en-IN')} · ${visit.service_type} · ${visit.doctor_name}`;
+      option.textContent = `${new Date(visit.appointment_at).toLocaleDateString('en-IN')} · ${visit.service_type} · ${visit.doctor_name ? 'Attended by '+visit.doctor_name : 'Not yet attended'}`;
       previous.appendChild(option);
     });
     document.getElementById('booking-history-summary').textContent = `${appointments.length} previous consultation${appointments.length === 1 ? '' : 's'} available for follow-up.`;
-    const doctors = doctorsData.doctors || [];
-    doctors.forEach(doctor => {
-      const option = document.createElement('option');
-      option.value = doctor.id;
-      option.textContent = doctor.name;
-      form.elements.doctorId.appendChild(option);
-    });
-    const preferredName = String(draft?.doctorName || '').replace(/^Dr\.?\s*/i, '').replace(/[^a-z0-9]/gi, '').toLowerCase();
-    const preferredDoctor = doctors.find(doctor => String(doctor.name).replace(/^Dr\.?\s*/i, '').replace(/[^a-z0-9]/gi, '').toLowerCase() === preferredName);
-    const requestedDoctorId = query.get('doctor');
-    if (preferredDoctor) form.elements.doctorId.value = preferredDoctor.id;
-    else if (doctors.some(doctor => doctor.id === requestedDoctorId)) form.elements.doctorId.value = requestedDoctorId;
     syncType();
   } catch (error) { message.textContent = error.message || 'Please log in to book.'; }
   form.addEventListener('submit', async event => {

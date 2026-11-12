@@ -3,6 +3,15 @@ const { pool } = require('./db');
 const hospital = require('../assets/hospital.json');
 const { requireRole } = require('./access');
 const router = express.Router();
+router.get('/consultation-times',(req,res)=>{
+  const Clinical=require('../assets/js/clinical-schema'),date=String(req.query.date || Clinical.today());
+  if(!Clinical.dateValue(date))return res.status(400).json({message:'Choose a valid date.'});
+  const slots=require('./patient').defaultSlots.filter(slot=>{
+    const [time,meridiem]=slot.split(' '),[hour,minute]=time.split(':').map(Number),h=(hour%12)+(meridiem==='PM'?12:0);
+    return new Date(date+'T'+String(h).padStart(2,'0')+':'+String(minute).padStart(2,'0')+':00+05:30')>new Date();
+  });
+  res.json({date,slots,bookingMode:'HOSPITAL_QUEUE'});
+});
 
 async function ensurePublicSchema(client = pool) {
   await client.query(`CREATE TABLE IF NOT EXISTS contact_enquiries (

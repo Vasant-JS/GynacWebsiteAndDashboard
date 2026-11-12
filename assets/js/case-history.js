@@ -1,9 +1,13 @@
-(function () {
-  const form = document.getElementById('case-history-form');
+(function(){
+  const pageRoot=document.querySelector('.aura-page');
+  const pageSignal=window.DoctorPage.signal;
+  const pageFetch=(url,options={})=>fetch(url,{signal:pageSignal,...options});
+  const pageDocument={getElementById:id=>pageRoot.querySelector('[id="'+CSS.escape(id)+'"]'),querySelector:selector=>pageRoot.querySelector(selector),querySelectorAll:selector=>pageRoot.querySelectorAll(selector)};
+  const form = pageDocument.getElementById('case-history-form');
   if (!form) return;
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-  const message = document.getElementById('case-history-message');
-  const toolbar = document.getElementById('case-history-save');
+  const message = pageDocument.getElementById('case-history-message');
+  const toolbar = pageDocument.getElementById('case-history-save');
   let appointmentId = '', version = 0, dirty = false, state = null;
   function childRow(child = {}) {
     return `<div class="case-child-row"><label>Gender<select data-child="gender" class="aura-field p-2"><option value="">Not recorded</option>${['Male', 'Female', 'Other', 'Unknown'].map(value => `<option ${child.gender === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label><label>Age (years)<input data-child="age" class="aura-field p-2" type="number" min="0" max="120" step="0.1" value="${esc(child.age)}"></label><label>Notes<input data-child="notes" class="aura-field p-2" maxlength="1000" value="${esc(child.notes)}"></label><button type="button" data-remove-child aria-label="Remove child row" class="case-remove">Remove</button></div>`;
@@ -19,7 +23,7 @@
     if (field.type === 'multi' || field.type === 'children') return `<fieldset class="case-field case-wide" data-clinical-field="${field.key}"><legend>${esc(field.label)}</legend>${input}</fieldset>`;
     return `<label class="case-field ${field.type === 'textarea' ? 'case-wide' : ''}" data-clinical-field="${field.key}"><span>${esc(field.label)}</span>${input}</label>`;
   }
-  document.getElementById('case-fields').innerHTML = Clinical.sections.map((section, index) => `<details class="case-section" ${index < 2 ? 'open' : ''}><summary>${section.title}</summary><div class="case-grid">${section.fields.map(fieldMarkup).join('')}${section.title === 'Obstetric history' ? '<div class="case-calculations case-wide"><div>Estimated due date<strong id="case-edd">—</strong></div><div>Gestation at assessment<strong id="case-pog">—</strong></div><p>LMP estimate assumes a 28-day cycle unless adjusted. Confirm dating clinically.</p><a href="https://www.nhs.uk/pregnancy/finding-out/due-date-calculator/" target="_blank" rel="noopener noreferrer">About estimated due dates</a></div>' : ''}${section.title === 'Physical measurements' ? '<div class="case-calculations case-wide">BMI (kg/m²)<strong id="case-bmi">—</strong></div>' : ''}</div></details>`).join('');
+  pageDocument.getElementById('case-fields').innerHTML = Clinical.sections.map((section, index) => `<details class="case-section" ${index < 2 ? 'open' : ''}><summary>${section.title}</summary><div class="case-grid">${section.fields.map(fieldMarkup).join('')}${section.title === 'Obstetric history' ? '<div class="case-calculations case-wide"><div>Estimated due date<strong id="case-edd">—</strong></div><div>Gestation at assessment<strong id="case-pog">—</strong></div><p>LMP estimate assumes a 28-day cycle unless adjusted. Confirm dating clinically.</p><a href="https://www.nhs.uk/pregnancy/finding-out/due-date-calculator/" target="_blank" rel="noopener noreferrer">About estimated due dates</a></div>' : ''}${section.title === 'Physical measurements' ? '<div class="case-calculations case-wide">BMI (kg/m²)<strong id="case-bmi">—</strong></div>' : ''}</div></details>`).join('');
   function collect() {
     const data = {};
     for (const field of Clinical.fields) {
@@ -31,9 +35,9 @@
   }
   function updateCalculations() {
     const data = collect(), result = Clinical.calculations(data);
-    document.getElementById('case-edd').textContent = result.dueDate || '—';
-    document.getElementById('case-pog').textContent = result.gestationWeeks === null ? '—' : `${result.gestationWeeks} weeks ${result.gestationDays} days`;
-    document.getElementById('case-bmi').textContent = result.bmi === null ? '—' : result.bmi.toFixed(1);
+    pageDocument.getElementById('case-edd').textContent = result.dueDate || '—';
+    pageDocument.getElementById('case-pog').textContent = result.gestationWeeks === null ? '—' : `${result.gestationWeeks} weeks ${result.gestationDays} days`;
+    pageDocument.getElementById('case-bmi').textContent = result.bmi === null ? '—' : result.bmi.toFixed(1);
     Clinical.fields.filter(field => field.showWhen).forEach(field => {
       const [key, value] = field.showWhen;
       form.querySelector(`[data-clinical-field="${field.key}"]`).hidden = data[key] !== value || (field.key === 'ictResult' && data.rh !== 'Negative');
@@ -42,7 +46,7 @@
   function hydrate(data = {}) {
     form.reset();
     Clinical.fields.forEach(field => {
-      if (field.type === 'children') document.getElementById('case-children').innerHTML = (data.children || []).map(childRow).join('');
+      if (field.type === 'children') pageDocument.getElementById('case-children').innerHTML = (data.children || []).map(childRow).join('');
       else if (field.type === 'multi') form.querySelectorAll(`input[name="${field.key}"]`).forEach(input => input.checked = (data[field.key] || []).includes(input.value));
       else form.elements[field.key].value = data[field.key] ?? '';
     });
@@ -59,38 +63,39 @@
     }).join('')}</dl></section>`).join('') + `<p>EDD: ${esc(calculations?.dueDate || '—')} · Gestation: ${calculations?.gestationWeeks == null ? '—' : `${calculations.gestationWeeks}w ${calculations.gestationDays}d`} · BMI: ${esc(calculations?.bmi ?? '—')}</p>`;
   }
   function renderHistory() {
-    document.getElementById('case-timeline').innerHTML = state.history.map(visit => `<details class="case-history-entry"><summary>${esc(new Date(visit.appointment_at).toLocaleDateString('en-IN', {timeZone:'Asia/Kolkata'}))} · ${esc(visit.service_type)} · ${esc(visit.doctor_name)} ${visit.id === appointmentId ? '(current visit)' : ''}</summary><p>${esc(visit.status)}</p>${visit.data ? snapshotMarkup(visit.data, visit.calculations) : `<p>${esc(visit.notes?.observations || visit.notes?.reason || 'No structured case sheet recorded.')}</p>`}</details>`).join('') || '<p>No previous visits.</p>';
-    document.getElementById('case-revisions').innerHTML = state.revisions.map(revision => `<details class="case-history-entry"><summary>Version ${revision.version} · ${esc(new Date(revision.created_at).toLocaleString('en-IN', {timeZone:'Asia/Kolkata'}))} · ${esc(revision.doctor_name)}</summary>${snapshotMarkup(revision.data, revision.calculations)}</details>`).join('') || '<p>No saved revisions yet.</p>';
+    pageDocument.getElementById('case-timeline').innerHTML = state.history.map(visit => `<details class="case-history-entry"><summary>${esc(new Date(visit.appointment_at).toLocaleDateString('en-IN', {timeZone:'Asia/Kolkata'}))} · ${esc(visit.service_type)} · ${esc(visit.doctor_name)} ${visit.id === appointmentId ? '(current visit)' : ''}</summary><p>${esc(visit.status)}</p>${visit.data ? snapshotMarkup(visit.data, visit.calculations) : `<p>${esc(visit.notes?.observations || visit.notes?.reason || 'No structured case sheet recorded.')}</p>`}</details>`).join('') || '<p>No previous visits.</p>';
+    pageDocument.getElementById('case-revisions').innerHTML = state.revisions.map(revision => `<details class="case-history-entry"><summary>Version ${revision.version} · ${esc(new Date(revision.created_at).toLocaleString('en-IN', {timeZone:'Asia/Kolkata'}))} · ${esc(revision.doctor_name)}</summary>${snapshotMarkup(revision.data, revision.calculations)}</details>`).join('') || '<p>No saved revisions yet.</p>';
   }
   async function load() {
     toolbar.disabled = true;
-    const response = await fetch(`/api/doctor/appointments/${appointmentId}/case-history`);
+    const response = await pageFetch(`/api/doctor/appointments/${appointmentId}/case-history`);
     const data = await response.json();
     if (!response.ok) throw new Error(data.message || 'Unable to load case history.');
+    if(pageSignal.aborted)return;
     state = data; version = data.sheet?.version || 0;
-    document.getElementById('case-patient-id').textContent = data.caseId;
+    pageDocument.getElementById('case-patient-id').textContent = data.caseId;
     hydrate(data.sheet?.data || {}); renderHistory();
     const clinical = data.sheet?.data;
     if (clinical?.bloodGroup) {
       const bloodType = clinical.bloodGroup + (clinical.rh === 'Positive' ? '+' : clinical.rh === 'Negative' ? '−' : '');
       for (const id of ['appointment-blood-type', 'prescription-patient-blood']) {
-        const node = document.getElementById(id); if (node) node.textContent = bloodType;
+        const node = pageDocument.getElementById(id); if (node) node.textContent = bloodType;
       }
     }
-    dirty = false; toolbar.disabled = false;
+    dirty = false; toolbar.disabled = !data.canEdit;for(const c of form.querySelectorAll('input,select,textarea,button'))c.disabled=!data.canEdit;
     message.textContent = version ? `Saved version ${version}.` : 'No case sheet saved for this visit yet.';
   }
   window.addEventListener('appointment-context-ready', async (event) => {
-    if (appointmentId === event.detail.appointment.id) return;
+    if (appointmentId === event.detail.appointment.id && state?.canEdit===event.detail.appointment.canEdit) return;
     appointmentId = event.detail.appointment.id;
     try { await load(); } catch (error) { message.textContent = error.message; }
-  });
+  },{signal:pageSignal});
   form.addEventListener('input', () => { dirty = true; message.textContent = 'Unsaved changes'; updateCalculations(); });
   form.addEventListener('change', updateCalculations);
   form.addEventListener('click', event => {
     if (event.target.closest('#case-add-child')) {
       if (form.querySelectorAll('.case-child-row').length >= 30) return;
-      document.getElementById('case-children').insertAdjacentHTML('beforeend', childRow()); dirty = true; message.textContent = 'Unsaved changes';
+      pageDocument.getElementById('case-children').insertAdjacentHTML('beforeend', childRow()); dirty = true; message.textContent = 'Unsaved changes';
     }
     if (event.target.closest('[data-remove-child]')) { event.target.closest('.case-child-row').remove(); dirty = true; message.textContent = 'Unsaved changes'; }
   });
@@ -101,18 +106,18 @@
     try {
       const data = Clinical.normalize(collect());
       message.textContent = 'Saving case sheet…';
-      const response = await fetch(`/api/doctor/appointments/${appointmentId}/case-history`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data, version }) });
+      const response = await pageFetch(`/api/doctor/appointments/${appointmentId}/case-history`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data, version }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || 'Could not save case sheet.');
       dirty = false; await load(); message.textContent = `Case sheet saved · Version ${version}`;
     } catch (error) { message.textContent = error.message; }
     finally { toolbar.disabled = false; }
   });
-  document.getElementById('case-reload').addEventListener('click', async () => {
+  pageDocument.getElementById('case-reload').addEventListener('click', async () => {
     if (dirty && !window.confirm('Discard unsaved changes and load the latest saved case sheet?')) return;
     try { await load(); } catch (error) { message.textContent = error.message; }
   });
-  document.getElementById('case-print').addEventListener('click', () => {
+  pageDocument.getElementById('case-print').addEventListener('click', () => {
     if (!state) return;
     const popup = window.open('', '_blank');
     if (!popup) { message.textContent = 'Allow the print window to open, then try again.'; return; }
@@ -120,6 +125,6 @@
     popup.document.write(`<!doctype html><html lang="en"><head><title>Clinical Case Sheet</title><style>body{font-family:Arial,sans-serif;margin:32px;color:#182044;font-size:12px}h1{font-size:22px}h4{font-size:15px;margin:20px 0 10px}dl{display:grid;grid-template-columns:1fr 1.5fr;gap:8px}dt{font-weight:bold}dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}section{break-inside:avoid}p{line-height:1.5}@page{margin:18mm}button{padding:8px 16px}@media print{button{display:none}body{margin:0}}</style></head><body><h1>Sumohan Care · Clinical Case Sheet</h1><p>${esc(state.appointment.patient_name)}<br>${esc(state.caseId)}<br>Consultation: ${esc(new Date(state.appointment.appointment_at).toLocaleString('en-IN', {timeZone:'Asia/Kolkata'}))}<br>${dirty ? 'Current form contains unsaved changes' : 'Saved version ' + version}</p>${snapshotMarkup(data, Clinical.calculations(data))}<button onclick="window.print()">Print / Save as PDF</button></body></html>`);
     popup.document.close();
   });
-  window.addEventListener('beforeunload', event => { if (dirty) { event.preventDefault(); event.returnValue = ''; } });
+  window.DoctorPage.guard(()=>({dirty,busy:toolbar.disabled && dirty}));
   hydrate();
 })();

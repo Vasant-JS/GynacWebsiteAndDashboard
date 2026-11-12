@@ -16,8 +16,8 @@ const prescriptionPhotoUpload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
-    if (/^image\/(jpeg|png|webp)$/.test(file.mimetype)) return cb(null, true);
-    const error = new Error('Upload a JPEG, PNG, or WebP prescription photo.');
+    if (/^image\/(jpeg|png|webp)$/.test(file.mimetype) || file.mimetype==='application/pdf') return cb(null, true);
+    const error = new Error('Upload a JPEG, PNG, WebP or PDF prescription scan.');
     error.status = 400;
     return cb(error);
   },
@@ -151,33 +151,59 @@ router.get('/payments', async (req, res, next) => {
     const start = String(req.query.start || ''), end = String(req.query.end || '');
     const status = String(req.query.status || '').toUpperCase();
     const page = Number(req.query.page || 1);
+    const pageSize = Number(req.query.pageSize || 25);
     if ((start && !Clinical.dateValue(start)) || (end && !Clinical.dateValue(end)) || (start && end && start > end)) return res.status(400).json({ message: 'Choose a valid appointment date range.' });
     if (status && !['PAID', 'PENDING', 'FAILED', 'REFUNDED', 'NOT_COLLECTED'].includes(status)) return res.status(400).json({ message: 'Choose a valid payment status.' });
     if (!Number.isSafeInteger(page) || page < 1 || page > 100000) return res.status(400).json({ message: 'Invalid page number.' });
-    // Ownership comes from the authenticated doctor and the booking, never a requested doctor ID.
+    if (![25,50,100].includes(pageSize)) return res.status(400).json({message:'Invalid page size.'});
+    // Hospital payment history is available to authenticated active doctors; booking no longer selects a doctor.
     const from = `FROM appointments a LEFT JOIN payments p ON p.appointment_id = a.id
-      LEFT JOIN users u ON u.id = a.patient_id
-      WHERE a.doctor_id = $1
+      LEFT JOIN users u ON u.id = a.patient_id LEFT JOIN users d ON d.id = a.attended_by
+      WHERE $1::uuid IS NOT NULL
         AND ($2::date IS NULL OR a.appointment_at >= ($2::date::timestamp AT TIME ZONE 'Asia/Kolkata'))
         AND ($3::date IS NULL OR a.appointment_at < (($3::date + 1)::timestamp AT TIME ZONE 'Asia/Kolkata'))
         AND ($4 = '' OR COALESCE(p.status, 'NOT_COLLECTED') = $4)`;
     const params = [doctor.id, start || null, end || null, status];
-    const [summary, totals, records] = await Promise.all([
+    let extra = '';
+    const add = (sql,value) => {params.push(value);extra += ' AND '+sql.replaceAll('?', '$'+params.length);};
+    const demoSql = `COALESCE((COALESCE(p.metadata->>'mode', '') LIKE '%demo%' OR COALESCE(p.metadata->>'gateway', '') IN ('manual_demo', 'manual_placeholder') OR (p.metadata->>'gateway'='razorpay' AND p.metadata->>'mode'='test')),false)`;
+    const text = key => String(req.query[key] || '').trim();
+    const paymentStart=text('paymentStart'),paymentEnd=text('paymentEnd');
+    if ((paymentStart&&!Clinical.dateValue(paymentStart))||(paymentEnd&&!Clinical.dateValue(paymentEnd))||(paymentStart&&paymentEnd&&paymentStart>paymentEnd)) return res.status(400).json({message:'Choose a valid transaction date range.'});
+    if(paymentStart)add("p.created_at >= (?::date::timestamp AT TIME ZONE 'Asia/Kolkata')",paymentStart);
+    if(paymentEnd)add("p.created_at < ((?::date + 1)::timestamp AT TIME ZONE 'Asia/Kolkata')",paymentEnd);
+    if(text('search'))add("(concat_ws(' ',u.display_name,u.phone,concat('SC-',u.id::text),a.id::text,p.id::text,p.metadata->>'reference',p.metadata->>'razorpayPaymentId',p.metadata->>'razorpayOrderId') ILIKE ?)",'%'+text('search').slice(0,200)+'%');
+    if(text('patientSearch'))add("concat_ws(' ',u.display_name,u.phone) ILIKE ?",'%'+text('patientSearch').slice(0,200)+'%');
+    for(const [key,column] of [['service','a.service_type'],['bookingStatus','a.status'],['currency','p.currency'],['gateway',"COALESCE(p.metadata->>'gateway','Unspecified')"]])if(text(key))add(column+' = ?',text(key));
+    if(text('attendedBy')){if(text('attendedBy')==='unattended')extra+=' AND a.attended_by IS NULL';else {if(!/^[0-9a-f-]{36}$/i.test(text('attendedBy')))return res.status(400).json({message:'Invalid attending doctor.'});add('a.attended_by = ?::uuid',text('attendedBy'));}}
+    if(text('entryType')){if(!['demo','live'].includes(text('entryType')))return res.status(400).json({message:'Invalid entry type.'});extra+=' AND p.id IS NOT NULL AND '+(text('entryType')==='demo'?demoSql:'NOT '+demoSql);}
+    const min=text('minAmount'),max=text('maxAmount');
+    if([min,max].some(value=>value!==''&&(!Number.isFinite(Number(value))||Number(value)<0))||(min!==''&&max!==''&&Number(min)>Number(max)))return res.status(400).json({message:'Choose a valid amount range.'});
+    if(min!=='')add('p.amount >= ?::numeric',min);
+    if(max!=='')add('p.amount <= ?::numeric',max);
+    const filteredFrom=from+extra;
+    const sortColumns={transaction:'p.created_at',patient:'u.display_name',appointment:'a.appointment_at',doctor:'d.display_name',amount:'p.amount',paymentStatus:"COALESCE(p.status,'NOT_COLLECTED')",bookingStatus:'a.status',reference:"COALESCE(p.metadata->>'reference',p.id::text)"};
+    const sort=String(req.query.sort || 'transaction'),direction=String(req.query.direction || 'desc').toLowerCase();
+    if(!Object.hasOwn(sortColumns,sort)||!['asc','desc'].includes(direction))return res.status(400).json({message:'Invalid table sorting.'});
+    const orderBy=sortColumns[sort]+' '+direction.toUpperCase()+' NULLS LAST';
+    const [summary, totals, records, choices] = await Promise.all([
       pool.query(`SELECT p.currency, COALESCE(sum(p.amount - COALESCE((p.metadata->>'refundedAmount')::numeric,0)) FILTER (WHERE p.status = 'PAID'), 0) AS paid,
         COALESCE(sum(p.amount) FILTER (WHERE p.status = 'PENDING'), 0) AS pending,
         COALESCE(sum(COALESCE((p.metadata->>'refundedAmount')::numeric,CASE WHEN p.status='REFUNDED' THEN p.amount ELSE 0 END)), 0) AS refunded,
         count(*) FILTER (WHERE p.status = 'FAILED')::int AS failed_count
-        ${from} AND p.id IS NOT NULL GROUP BY p.currency ORDER BY p.currency`, params),
-      pool.query(`SELECT count(*)::int AS total, count(*) FILTER (WHERE p.id IS NULL)::int AS uncollected ${from}`, params),
+        ${filteredFrom} AND p.id IS NOT NULL GROUP BY p.currency ORDER BY p.currency`, params),
+      pool.query(`SELECT count(*)::int AS total, count(*) FILTER (WHERE p.id IS NULL)::int AS uncollected ${filteredFrom}`, params),
       pool.query(`SELECT p.id AS payment_id, a.id AS appointment_id, a.appointment_at, a.service_type,
-        a.status AS appointment_status, u.display_name AS patient_name, p.amount, p.currency,
+        a.status AS appointment_status, u.display_name AS patient_name, u.phone AS patient_phone, u.id AS patient_id, d.display_name AS attended_by_name, p.amount, p.currency,
         COALESCE(p.status, 'NOT_COLLECTED') AS payment_status, p.created_at AS payment_created_at,
         p.metadata->>'reference' AS reference, p.metadata->>'refundedAmount' AS refunded_amount,
-        (COALESCE(p.metadata->>'mode', '') LIKE '%demo%' OR COALESCE(p.metadata->>'gateway', '') IN ('manual_demo', 'manual_placeholder') OR (p.metadata->>'gateway'='razorpay' AND p.metadata->>'mode'='test')) AS is_demo
-        ${from} ORDER BY a.appointment_at DESC, a.id, p.created_at DESC, p.id LIMIT 25 OFFSET $5`, [...params, (page - 1) * 25]),
+        ${demoSql} AS is_demo,
+        p.metadata->>'gateway' AS gateway
+        ${filteredFrom} ORDER BY ${orderBy}, p.id DESC, a.appointment_at DESC, a.id DESC LIMIT $${params.length+1} OFFSET $${params.length+2}`, [...params, pageSize, (page - 1) * pageSize]),
+      pool.query(`SELECT DISTINCT a.service_type, p.currency, COALESCE(p.metadata->>'gateway','Unspecified') AS gateway, a.attended_by, d.display_name AS doctor_name FROM appointments a LEFT JOIN payments p ON p.appointment_id=a.id LEFT JOIN users d ON d.id=a.attended_by`),
     ]);
     res.json({ doctor: { name: doctor.display_name }, summary: summary.rows, uncollected: totals.rows[0].uncollected,
-      total: totals.rows[0].total, page, pageSize: 25, records: records.rows });
+      total: totals.rows[0].total, page, pageSize, records: records.rows, filters:{services:[...new Set(choices.rows.map(r=>r.service_type).filter(Boolean))].sort(),currencies:[...new Set(choices.rows.map(r=>r.currency).filter(Boolean))].sort(),gateways:[...new Set(choices.rows.map(r=>r.gateway))].sort(),doctors:[...new Map(choices.rows.filter(r=>r.attended_by).map(r=>[r.attended_by,{id:r.attended_by,name:r.doctor_name}])).values()]} });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'Payments are temporarily unavailable.' });
     next(error);
@@ -194,27 +220,29 @@ router.get('/dashboard', async (req, res, next) => {
           count(*) AS total_appointments,
           count(*) FILTER (WHERE appointment_at > now() AND status NOT IN ('CANCELLED', 'COMPLETED')) AS pending_appointments,
           count(*) FILTER (WHERE appointment_at < now() AND status NOT IN ('CANCELLED', 'COMPLETED')) AS missed_appointments,
-          count(*) FILTER (WHERE appointment_at::date = current_date) AS todays_appointments,
-          count(*) FILTER (WHERE appointment_at::date = current_date AND status = 'COMPLETED') AS consultations_done,
+          count(*) FILTER (WHERE (appointment_at AT TIME ZONE 'Asia/Kolkata')::date = (now() AT TIME ZONE 'Asia/Kolkata')::date AND status<>'CANCELLED') AS todays_appointments,
+          count(*) FILTER (WHERE (appointment_at AT TIME ZONE 'Asia/Kolkata')::date = (now() AT TIME ZONE 'Asia/Kolkata')::date AND status = 'COMPLETED') AS consultations_done,
           count(*) FILTER (WHERE status = 'COMPLETED') AS completed_appointments
+          ,count(*) FILTER (WHERE (appointment_at AT TIME ZONE 'Asia/Kolkata')::date=(now() AT TIME ZONE 'Asia/Kolkata')::date AND status='IN_PROGRESS') AS in_progress_today
         FROM appointments
-        WHERE doctor_id = $1
+        WHERE $1::uuid IS NOT NULL
       `,
       [doctor.id],
     );
     const scheduleResult = await pool.query(
       `
-        SELECT a.id, to_char(a.appointment_at, 'HH12:MI') AS time, to_char(a.appointment_at, 'AM') AS meridiem,
+        SELECT a.id, to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'HH12:MI') AS time, to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'AM') AS meridiem,
                a.service_type, a.status, a.metadata,
                u.display_name AS patient_name, u.phone AS patient_phone, u.profile AS patient_profile
         FROM appointments a
         LEFT JOIN users u ON u.id = a.patient_id
-        WHERE a.doctor_id = $1 AND a.appointment_at::date = current_date
+        WHERE $1::uuid IS NOT NULL AND (a.appointment_at AT TIME ZONE 'Asia/Kolkata')::date = (now() AT TIME ZONE 'Asia/Kolkata')::date
         ORDER BY a.appointment_at ASC
       `,
       [doctor.id],
     );
     const notifications = await pool.query('SELECT title, body, category, created_at FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5', [doctor.id]);
+    const activity=await pool.query("SELECT (appointment_at AT TIME ZONE 'Asia/Kolkata')::date::text AS date,count(*)::int AS count FROM appointments WHERE $1::uuid IS NOT NULL AND status<>'CANCELLED' AND (appointment_at AT TIME ZONE 'Asia/Kolkata')::date BETWEEN (now() AT TIME ZONE 'Asia/Kolkata')::date-6 AND (now() AT TIME ZONE 'Asia/Kolkata')::date GROUP BY 1 ORDER BY 1",[doctor.id]);
     const stats = statsResult.rows[0];
     const todaysAppointments = Number(stats.todays_appointments || 0);
     const consultationsDone = Number(stats.consultations_done || 0);
@@ -227,6 +255,7 @@ router.get('/dashboard', async (req, res, next) => {
         todaysAppointments,
         completedAppointments: Number(stats.completed_appointments || 0),
         consultationsDone,
+        inProgressToday:Number(stats.in_progress_today || 0),
         capacityText: todaysAppointments ? `${Math.min(100, Math.round((todaysAppointments / 14) * 100))}% capacity filled` : 'No appointments today',
         completionText: todaysAppointments ? `${Math.round((consultationsDone / todaysAppointments) * 100)}% of daily goal` : 'Ready for first consultation',
       },
@@ -242,6 +271,7 @@ router.get('/dashboard', async (req, res, next) => {
         patientWhatsApp: item.patient_profile?.whatsappNumber || item.patient_phone || null,
       })),
       notifications: notifications.rows,
+      activity:activity.rows,
       storage: 'postgres',
     });
   } catch (error) {
@@ -256,6 +286,8 @@ router.get('/dashboard/appointments', async (req, res, next) => {
     if (!doctor) return res.status(404).json({ message: 'Doctor record not found in database.' });
     const period = String(req.query.period || 'today');
     if (!['past', 'today', 'future'].includes(period)) return res.status(400).json({ message: 'Invalid appointment period.' });
+    const date=String(req.query.date || require('../assets/js/clinical-schema').today());
+    if(!require('../assets/js/clinical-schema').dateValue(date))return res.status(400).json({message:'Choose a valid roster date.'});
     const appointmentDate = "(a.appointment_at AT TIME ZONE 'Asia/Kolkata')::date";
     const comparison = period === 'past' ? '<' : period === 'future' ? '>' : '=';
     const direction = period === 'past' ? 'DESC' : 'ASC';
@@ -263,19 +295,20 @@ router.get('/dashboard/appointments', async (req, res, next) => {
       `SELECT a.id,
               to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD') AS date,
               to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM') AS time,
-              a.service_type, a.status, u.display_name AS patient_name
+              a.service_type, a.status, a.metadata, a.attended_by, a.attended_at, (SELECT display_name FROM users WHERE id=a.attended_by) AS attended_name, a.patient_id,u.phone AS patient_phone, u.display_name AS patient_name
        FROM appointments a
        LEFT JOIN users u ON u.id = a.patient_id
-       WHERE a.doctor_id = $1 AND ${appointmentDate} ${comparison} (now() AT TIME ZONE 'Asia/Kolkata')::date
+       WHERE $1::uuid IS NOT NULL AND ${appointmentDate} ${comparison} $2::date AND a.status<>'CANCELLED'
        ORDER BY a.appointment_at ${direction}
        LIMIT 100`,
-      [doctor.id],
+      [doctor.id,date],
     );
     res.json({ appointments: result.rows.map((item) => ({
       id: item.id,
       date: item.date,
       time: item.time,
       patientName: item.patient_name || 'Patient',
+      attendedBy:item.attended_by,attendedName:item.attended_name,attendedAt:item.attended_at,canAttend:!item.attended_by&&!['COMPLETED','CANCELLED'].includes(item.status),isMine:item.attended_by===doctor.id,patientId:item.patient_id,patientPhone:item.patient_phone,virtualMeeting:item.attended_by===doctor.id?item.metadata?.virtualMeeting || null:null,
       serviceType: item.service_type,
       status: item.status,
     })) });
@@ -283,6 +316,39 @@ router.get('/dashboard/appointments', async (req, res, next) => {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
     next(error);
   }
+});
+
+router.get('/appointments-directory', async (req,res,next)=>{
+  try{
+    const doctor=await currentDoctor(req);if(!doctor)return res.status(404).json({message:'Doctor not found.'});
+    const Clinical=require('../assets/js/clinical-schema');
+    const scope=['my','all','upcoming'].includes(String(req.query.scope || 'upcoming'))?'upcoming':String(req.query.scope),search=String(req.query.search || '').trim(),selectedDoctor=String(req.query.doctorId || ''),service=String(req.query.service || ''),status=String(req.query.status || ''),start=String(req.query.start || ''),end=String(req.query.end || '');
+    const page=Number(req.query.page || 1),size=10;
+    if(!['upcoming','past'].includes(scope)||!Number.isInteger(page)||page<1||page>1000000||search.length>200||service.length>200)return res.status(400).json({message:'Choose valid appointment filters.'});
+    if(selectedDoctor && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(selectedDoctor))return res.status(400).json({message:'Choose a valid doctor.'});
+    if(status && !['SCHEDULED','BOOKED','IN_PROGRESS','COMPLETED','CANCELLED'].includes(status))return res.status(400).json({message:'Choose a valid booking status.'});
+    if((start&&!Clinical.dateValue(start))||(end&&!Clinical.dateValue(end))||(start&&end&&start>end))return res.status(400).json({message:'Choose a valid date range.'});
+    const params=[doctor.id,search,selectedDoctor || null,service,status,start || null,end || null];
+    const localDate="(a.appointment_at AT TIME ZONE 'Asia/Kolkata')::date",today="(now() AT TIME ZONE 'Asia/Kolkata')::date";
+    const filters=`($2='' OR p.display_name ILIKE '%'||$2||'%' OR p.phone ILIKE '%'||$2||'%' OR ('SC-'||p.id::text) ILIKE '%'||$2||'%') AND ($3::uuid IS NULL OR a.attended_by=$3::uuid) AND ($4='' OR a.service_type=$4) AND ($5='' OR a.status=$5) AND ($6::date IS NULL OR ${localDate}>=$6::date) AND ($7::date IS NULL OR ${localDate}<=$7::date)`;
+    const join='FROM appointments a JOIN users p ON p.id=a.patient_id LEFT JOIN users d ON d.id=a.attended_by';
+    const scopeFilter=scope==='upcoming'?`${localDate}>=${today}`:`${localDate}<${today}`;
+    const [counts,records,doctors,services]=await Promise.all([
+      pool.query(`SELECT count(*) FILTER(WHERE ${localDate}>=${today} AND $1::uuid IS NOT NULL)::int AS upcoming,count(*) FILTER(WHERE ${localDate}<${today})::int AS past ${join} WHERE ${filters}`,params),
+      pool.query(`SELECT a.id,a.attended_by AS doctor_id,a.attended_at,a.patient_id,a.appointment_at,a.service_type,a.status,
+        to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD') AS date,
+        p.display_name AS patient_name,p.phone,p.profile->>'age' AS age,p.profile->>'gender' AS gender,
+        d.display_name AS doctor_name,d.profile->>'specialization' AS specialization,
+        CASE WHEN a.attended_by=$1 OR a.attended_by IS NULL THEN a.notes->>'reason' END AS reason,
+        CASE WHEN a.attended_by=$1 OR a.attended_by IS NULL THEN a.metadata->>'consultationType' END AS consultation_type,
+        CASE WHEN a.attended_by=$1 OR a.attended_by IS NULL THEN a.metadata->'virtualMeeting' END AS virtual_meeting
+        ${join} WHERE ${filters} AND ${scopeFilter} ORDER BY a.appointment_at ${scope==='past'?'DESC':'ASC'},a.id LIMIT ${size} OFFSET $8`,[...params,(page-1)*size]),
+      pool.query("SELECT id,display_name FROM users WHERE role='DOCTOR' AND status='ACTIVE' ORDER BY display_name,id"),
+      pool.query('SELECT DISTINCT service_type FROM appointments ORDER BY service_type'),
+    ]);
+    const totals=counts.rows[0];
+    res.json({currentDoctor:{id:doctor.id,name:doctor.display_name},scope,counts:totals,total:totals[scope],page,pageSize:size,doctors:doctors.rows.map(d=>({id:d.id,name:d.display_name})),services:services.rows.map(s=>s.service_type),appointments:records.rows.map(a=>({id:a.id,appointmentAt:a.appointment_at,date:a.date,serviceType:a.service_type,status:a.status,isMine:a.doctor_id===doctor.id,canAttend:!a.doctor_id&&!['COMPLETED','CANCELLED'].includes(a.status),attendedAt:a.attended_at,patient:{id:a.patient_id,name:a.patient_name,phone:a.phone,age:a.age,gender:a.gender},doctor:{id:a.doctor_id,name:a.doctor_name || 'Not yet attended',specialization:a.specialization},reason:a.reason || null,consultationType:a.consultation_type || null,virtualMeeting:a.virtual_meeting || null}))});
+  }catch(error){if(isDbUnavailable(error))return res.status(503).json({message:'Unable to connect to the appointment database.'});next(error);}
 });
 
 router.get('/schedule', async (req, res, next) => {
@@ -298,7 +364,7 @@ router.get('/schedule', async (req, res, next) => {
                u.display_name AS patient_name, u.phone AS patient_phone, u.profile AS patient_profile
         FROM appointments a
         LEFT JOIN users u ON u.id = a.patient_id
-        WHERE a.doctor_id = $1 AND a.appointment_at >= $2::date AND a.appointment_at < $3::date
+        WHERE $1::uuid IS NOT NULL AND a.appointment_at >= $2::date AND a.appointment_at < $3::date
         ORDER BY a.appointment_at ASC
       `,
       [doctor.id, start, end],
@@ -366,13 +432,17 @@ router.post('/availability', async (req, res, next) => {
   }
 });
 
+router.post('/appointments/:id/attend',async(req,res,next)=>{
+  if(!/^[0-9a-f-]{36}$/i.test(req.params.id))return res.status(400).json({message:'Invalid appointment.'});
+  try{res.json({appointment:await require('./attendance').attendAppointment(req.params.id,req.authUser.id)});}catch(error){if(error.status)return res.status(error.status).json({message:error.message});next(error);}
+});
 router.patch('/appointments/:id/status', async (req, res, next) => {
   try {
     const doctor = await currentDoctor(req);
     if (!doctor) return res.status(404).json({ message: 'Doctor record not found in database.' });
     const status = String(req.body.status || '').trim().toUpperCase();
     if (!['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].includes(status)) return res.status(400).json({ message: 'Unsupported appointment status.' });
-    const appointment = await changeAppointment(req.params.id,'DOCTOR',doctor.id,{status});
+    const appointment = status==='IN_PROGRESS'?await require('./attendance').attendAppointment(req.params.id,doctor.id):await changeAppointment(req.params.id,'DOCTOR',doctor.id,{status});
     res.json({ appointment });
   } catch (error) {
     if (isDbUnavailable(error)) return res.status(503).json({ message: 'PostgreSQL is not connected.', detail: error.code });
@@ -390,7 +460,7 @@ router.get('/appointment-context', async (req, res, next) => {
         SELECT a.*, p.display_name AS patient_name, p.phone, p.email, p.profile
         FROM appointments a
         JOIN users p ON p.id = a.patient_id
-        WHERE a.doctor_id = $1 AND ($2::uuid IS NULL OR a.id = $2::uuid) AND a.status <> 'CANCELLED'
+        WHERE $1::uuid IS NOT NULL AND ($2::uuid IS NULL OR a.id = $2::uuid) AND a.status <> 'CANCELLED'
         ORDER BY CASE WHEN a.status = 'IN_PROGRESS' THEN 0 ELSE 1 END, ABS(EXTRACT(EPOCH FROM (a.appointment_at - now()))) ASC
         LIMIT 1
       `,
@@ -403,7 +473,7 @@ router.get('/appointment-context', async (req, res, next) => {
         'SELECT id, document_type, name, document_date::text AS document_date, file_name, file_path, status, metadata, created_at FROM medical_documents WHERE patient_id = $1 ORDER BY COALESCE(document_date, created_at::date) DESC, created_at DESC',
         [appointment.patient_id],
       ),
-      pool.query('SELECT id, status, medications, instructions, metadata, created_at FROM prescriptions WHERE patient_id = $1 ORDER BY created_at DESC', [appointment.patient_id]),
+      pool.query('SELECT id, appointment_id,doctor_id,status, medications, instructions, metadata, created_at FROM prescriptions WHERE patient_id = $1 ORDER BY created_at DESC', [appointment.patient_id]),
     ]);
     res.json({
       appointment: {
@@ -411,9 +481,11 @@ router.get('/appointment-context', async (req, res, next) => {
         appointmentAt: appointment.appointment_at,
         serviceType: appointment.service_type,
         status: appointment.status,
+        attendedName:(await pool.query('SELECT display_name FROM users WHERE id=$1',[appointment.attended_by])).rows[0]?.display_name || null,
+        attendedBy:appointment.attended_by,attendedAt:appointment.attended_at,canEdit:appointment.attended_by===doctor.id,canAttend:!appointment.attended_by&&!['COMPLETED','CANCELLED'].includes(appointment.status),
         notes: appointment.notes || {},
-        metadata: appointment.metadata || {},
-        virtualMeeting: appointment.metadata?.virtualMeeting || null,
+        metadata: {...(appointment.metadata || {}),virtualMeeting:appointment.attended_by===doctor.id?appointment.metadata?.virtualMeeting || null:null},
+        virtualMeeting: appointment.attended_by===doctor.id?appointment.metadata?.virtualMeeting || null:null,
       },
       patient: {
         id: appointment.patient_id,
@@ -456,7 +528,7 @@ router.patch('/appointments/:id/notes', async (req, res, next) => {
               ELSE COALESCE(NULLIF($2, ''), status)
             END,
             updated_at = now()
-        WHERE id = $3 AND doctor_id = $4
+        WHERE id = $3 AND attended_by = $4
         RETURNING id, notes, status
       `,
       [JSON.stringify(notesPatch), status, req.params.id, doctor.id],
@@ -477,7 +549,7 @@ router.get('/documents/:id/download', async (req, res, next) => {
       `
         SELECT md.file_path, md.file_name, md.mime_type, md.metadata
         FROM medical_documents md
-        WHERE md.id = $1 AND EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id = md.patient_id AND a.doctor_id = $2)
+        WHERE md.id = $1 AND EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id = md.patient_id AND $2::uuid IS NOT NULL)
         LIMIT 1
       `,
       [req.params.id, doctor.id],
@@ -512,7 +584,7 @@ router.get('/documents/:id/view', async (req, res, next) => {
       `
         SELECT md.file_path, md.file_name, md.mime_type, md.metadata
         FROM medical_documents md
-        WHERE md.id = $1 AND EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id = md.patient_id AND a.doctor_id = $2)
+        WHERE md.id = $1 AND EXISTS (SELECT 1 FROM appointments a WHERE a.patient_id = md.patient_id AND $2::uuid IS NOT NULL)
         LIMIT 1
       `,
       [req.params.id, doctor.id],
@@ -546,7 +618,7 @@ router.post('/appointments/:id/prescription-photo', prescriptionPhotoUpload.sing
     if (!doctor) return res.status(404).json({ message: 'Doctor record not found in database.' });
     if (!req.file) return res.status(400).json({ message: 'Choose a prescription photo to upload.' });
 
-    const appointment = await pool.query('SELECT id, patient_id FROM appointments WHERE id = $1 AND doctor_id = $2 LIMIT 1', [req.params.id, doctor.id]);
+    const appointment = await pool.query('SELECT id, patient_id FROM appointments WHERE id = $1 AND attended_by = $2 LIMIT 1', [req.params.id, doctor.id]);
     if (!appointment.rowCount) return res.status(404).json({ message: 'Appointment not found.' });
 
     const name = String(req.body.name || '').trim() || 'Written Prescription Photo';
@@ -592,17 +664,24 @@ router.post('/prescriptions', async (req, res, next) => {
                p.display_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email, p.profile AS patient_profile
         FROM appointments a
         LEFT JOIN users p ON p.id = a.patient_id
-        WHERE a.id = $1 AND a.doctor_id = $2
+        WHERE a.id = $1 AND a.attended_by = $2
         LIMIT 1
       `,
       [String(req.body.appointmentId || '').trim(), doctor.id],
     );
     if (!appointment.rowCount) return res.status(404).json({ message: 'Appointment not found.' });
     const appointmentRow = appointment.rows[0];
-    const medications = Array.isArray(req.body.medications) ? req.body.medications : [];
+    if(!Array.isArray(req.body.medications) || req.body.medications.length>50)return res.status(400).json({message:'Enter up to 50 medication rows.'});
+    const medicationKeys=['name','composition','dosage','frequency','timing','duration','instructions','quantity'];
+    if(req.body.medications.some(med=>!med || typeof med!=='object' || medicationKeys.some(key=>med[key]!=null && (typeof med[key]!=='string' || med[key].length>2000))))return res.status(400).json({message:'Invalid medication details.'});
+    const medications=req.body.medications.map(med=>Object.fromEntries(medicationKeys.map(key=>[key,String(med[key] || '').trim()]))).filter(med=>Object.values(med).some(Boolean));
     const prescriptionStatus = String(req.body.status || 'FINAL').trim().toUpperCase();
     if (!['DRAFT', 'FINAL'].includes(prescriptionStatus)) return res.status(400).json({ message: 'Unsupported prescription status.' });
-    const instructions = { advice: String(req.body.advice || '').trim(), followUpDate: String(req.body.followUpDate || '').trim() || null };
+    if(appointmentRow.status==='CANCELLED')return res.status(409).json({message:'Cancelled consultations cannot receive prescriptions.'});
+    if(prescriptionStatus==='FINAL' && (!medications.length || medications.some(med=>!med.name)))return res.status(400).json({message:'Enter a medicine name for every row before saving the prescription.'});
+    const instructions = { advice: String(req.body.advice || '').trim(), followUpDate: String(req.body.followUpDate || '').trim() || null,
+      investigations:String(req.body.investigations || '').trim(),imaging:String(req.body.imaging || '').trim(),dietaryAdvice:String(req.body.dietaryAdvice || '').trim() };
+    if(Object.values(instructions).some(value=>typeof value==='string' && value.length>10000) || (instructions.followUpDate && !require('../assets/js/clinical-schema').dateValue(instructions.followUpDate)))return res.status(400).json({message:'Enter valid prescription advice and follow-up date.'});
     const metadata = {
       source: 'appointment_details',
       savedAt: new Date().toISOString(),
@@ -648,11 +727,11 @@ router.get('/patients/lists', async (req, res, next) => {
     const rows = await pool.query(
       `
         SELECT a.id AS appointment_id, a.appointment_at, a.appointment_at::date::text AS appointment_date, to_char(a.appointment_at, 'HH12:MI AM') AS time_label,
-               a.service_type, a.status,
+               a.service_type, a.status, a.attended_by, a.attended_at, (SELECT display_name FROM users WHERE id=a.attended_by) AS attended_name,
                p.id AS patient_id, p.display_name AS patient_name, p.phone, p.email, p.profile
         FROM appointments a
         JOIN users p ON p.id = a.patient_id
-        WHERE a.doctor_id = $1 AND a.status <> 'CANCELLED'
+        WHERE $1::uuid IS NOT NULL AND a.status <> 'CANCELLED'
         ORDER BY a.appointment_at ASC
       `,
       [doctor.id],
@@ -660,6 +739,7 @@ router.get('/patients/lists', async (req, res, next) => {
     const today = new Date().toISOString().slice(0, 10);
     const list = rows.rows.map((item) => ({
       appointmentId: item.appointment_id,
+      attendedBy:item.attended_by,attendedName:item.attended_name,attendedAt:item.attended_at,isMine:item.attended_by===doctor.id,
       appointmentAt: item.appointment_at,
       date: item.appointment_date,
       time: item.time_label,
@@ -694,7 +774,7 @@ router.get('/patients/search', async (req, res, next) => {
       `
         SELECT u.id, u.display_name, u.phone, u.email, u.profile, a.id AS appointment_id
         FROM users u
-        JOIN LATERAL (SELECT id FROM appointments WHERE patient_id = u.id AND doctor_id = $2 AND status <> 'CANCELLED' ORDER BY appointment_at DESC LIMIT 1) a ON true
+        JOIN LATERAL (SELECT id FROM appointments WHERE patient_id = u.id AND $2::uuid IS NOT NULL AND status <> 'CANCELLED' ORDER BY appointment_at DESC LIMIT 1) a ON true
         WHERE u.role = 'PATIENT' AND (u.display_name ILIKE $1 OR u.phone ILIKE $1 OR u.email ILIKE $1)
         ORDER BY u.display_name ASC
         LIMIT 10

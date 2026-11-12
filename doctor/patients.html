@@ -5,41 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Patient Registry | Sumohan Care</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/assets/css/aura-portal.css?v=20261024" rel="stylesheet">
 <link href="/assets/css/brand.css" rel="stylesheet">
 <link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
-</head>
-<body>
+<link rel="stylesheet" href="/assets/css/doctor-theme.css?v=20261106-shared-theme"><link rel="stylesheet" href="/assets/css/doctor-workspace.css?v=20261112-registry"><link rel="stylesheet" href="/assets/css/case-history.css"></head>
+<body class="doctor-portal">
   <div class="aura-shell">
     <aside class="aura-sidebar"></aside>
 
     <main class="aura-main">
-      <section class="aura-page">
-        <p class="aura-eyebrow" id="patient-registry-status">Loading patients...</p>
+      <section class="aura-page dr-registry">
         <h1 class="aura-title" id="doctor-patients-title">Patient Registry</h1>
-        <p class="aura-subtitle" id="doctor-patients-description">Search patients by name or mobile number and open the relevant clinical context quickly.</p>
-
-        <div class="mt-8 flex flex-wrap gap-3" role="tablist" aria-label="Patient registry views">
-          <button class="aura-tab" type="button" data-patient-tab="current" aria-selected="true">Current Patients</button>
-          <button class="aura-tab" type="button" data-patient-tab="future" aria-selected="false">Future Patients</button>
-          <button class="aura-tab" type="button" data-patient-tab="past" aria-selected="false">Past Consultations</button>
+        <p class="aura-subtitle" id="doctor-patients-description">Hospital patient consultations and clinical records.</p>
+        <div class="dr-hero"><div><p class="dr-eyebrow"><span class="material-symbols-outlined" aria-hidden="true">folder_shared</span> Sumohan Care · Clinical Directory</p><h2 id="registry-body-title">Patient Registry &amp; Clinical Directory</h2><p>Find your patients, review consultation details, and open their clinical records.</p></div><a class="dr-button dr-button--light" href="/doctor/schedule.html"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>View appointments</a></div>
+        <div class="dr-metrics" aria-label="Registry overview">
+          <article class="dr-metric"><div><p>Hospital patients</p><strong id="registry-total">—</strong><small>Unique patients with hospital visits</small></div><span class="dr-metric-icon material-symbols-outlined" aria-hidden="true">folder_shared</span></article>
+          <article class="dr-metric"><div><p>Today's visits</p><strong id="registry-today">—</strong><small>Consultations scheduled for today</small></div><span class="dr-metric-icon dr-metric-icon--rose material-symbols-outlined" aria-hidden="true">today</span></article>
+          <article class="dr-metric"><div><p>Upcoming visits</p><strong id="registry-upcoming">—</strong><small>Scheduled after today</small></div><span class="dr-metric-icon material-symbols-outlined" aria-hidden="true">event_upcoming</span></article>
+          <article class="dr-metric"><div><p>Completed consultations</p><strong id="registry-completed">—</strong><small>Saved completed encounters</small></div><span class="dr-metric-icon material-symbols-outlined" aria-hidden="true">task_alt</span></article>
         </div>
-
-        <section class="mt-5 grid gap-4" id="patient-tab-results"></section>
-
-        <input class="aura-field mt-8 rounded-xl p-4" id="patient-search" placeholder="Search patient name or mobile">
-        <section class="mt-6 grid gap-4" id="patient-results"></section>
+        <section class="dr-filter-card" aria-label="Find patient consultations">
+          <div class="dr-filters"><label class="dr-search"><span class="dr-label">Search patients</span><span class="dr-search-field"><span class="material-symbols-outlined" aria-hidden="true">manage_search</span><input id="patient-search" type="search" placeholder="Name, Case ID, phone or email" autocomplete="off"></span></label><label><span class="dr-label">Consultation service</span><select id="registry-service"><option value="">All services</option></select></label><label><span class="dr-label">Booking status</span><select id="registry-status-filter"><option value="">All statuses</option></select></label><button class="dr-button dr-button--light" id="registry-clear" type="button">Clear filters</button></div>
+          <div class="dr-filter-bottom"><div class="dr-tabs" role="tablist" aria-label="Patient registry views"><button type="button" role="tab" data-patient-tab="all" aria-selected="true">All visits</button><button type="button" role="tab" data-patient-tab="current" aria-selected="false">Today</button><button type="button" role="tab" data-patient-tab="future" aria-selected="false">Upcoming</button><button type="button" role="tab" data-patient-tab="past" aria-selected="false">Past</button></div><p id="registry-matches" role="status" aria-live="polite"></p></div>
+        </section>
+        <p class="dr-feedback" id="patient-registry-status" role="status">Loading your patient registry…</p>
+        <section class="dr-table-card" aria-label="Patient consultation directory"><div class="dr-table-scroll"><table class="dr-table"><caption class="dr-sr-only">Hospital patient consultations</caption><thead><tr><th scope="col">Case identifier</th><th scope="col">Patient demographics</th><th scope="col">Consultation service</th><th scope="col">Consultation date</th><th scope="col">Booking status</th><th scope="col">Actions</th></tr></thead><tbody id="patient-tab-results"><tr><td colspan="6" class="dr-empty">Loading patient consultations…</td></tr></tbody></table></div><div class="dr-pagination"><div><p id="registry-page-summary"></p><p class="dr-muted">One row per consultation · Times in India Standard Time</p></div><div class="dr-page-actions"><label>Rows per page<select id="registry-page-size"><option value="10">10</option><option value="25">25</option><option value="50">50</option></select></label><button class="dr-button dr-button--light" id="registry-prev" type="button" disabled>Previous</button><span id="registry-page-number"></span><button class="dr-button dr-button--light" id="registry-next" type="button" disabled>Next</button></div></div></section>
+        <div class="dr-info-grid"><article class="dr-info"><p class="dr-eyebrow">Connected clinical records</p><h2>Patient history &amp; case sheets</h2><p>Open a consultation to review saved history, uploaded reports and case-sheet revisions. Prescription actions open the selected visit.</p></article><article class="dr-info dr-info--teal"><p class="dr-eyebrow">Hospital support · Est. 1984</p><h2>Sumohan Care · Shivamogga</h2><p>For urgent maternity or clinical support, contact the hospital's 24/7 desk.</p><a href="tel:+918618818012"><span class="material-symbols-outlined" aria-hidden="true">call</span> +91 86188 18012</a></article></div>
       </section>
     </main>
   </div>
 
   <nav class="aura-mobile-nav"></nav>
 
-  <script src="/assets/js/aura-core.js?v=2026070816"></script>
-  <script src="/assets/js/doctor-portal.js?v=202607162"></script>
-  <script src="/assets/js/doctor-patients.js?v=2026070816"></script>
-  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
+  <script src="/assets/js/doctor-page.js?v=20261112-shell"></script><script src="/assets/js/aura-core.js?v=2026070816"></script>
+  <script src="/assets/js/doctor-portal.js?v=20261106-workspace"></script>
+  <script src="/assets/js/doctor-patients.js?v=20261112-queue"></script>
+  <script src="/assets/js/aura-sidebar.js?v=20261112-shell"></script>
 </body>
 </html>

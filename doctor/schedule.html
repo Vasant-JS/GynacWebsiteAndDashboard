@@ -5,43 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Appointments | Sumohan Care</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/assets/css/aura-portal.css?v=20261024" rel="stylesheet">
 <link href="/assets/css/brand.css" rel="stylesheet">
 <link rel="icon" type="image/png" href="/assets/images/sumohan-care-logo.png">
-</head>
-<body>
+<link rel="stylesheet" href="/assets/css/doctor-theme.css?v=20261106-shared-theme"><link rel="stylesheet" href="/assets/css/doctor-workspace.css?v=20261112-directory"><link rel="stylesheet" href="/assets/css/case-history.css"></head>
+<body class="doctor-portal">
   <div class="aura-shell">
     <aside class="aura-sidebar"></aside>
     <main class="aura-main">
-      <section class="aura-page">
-        <p class="aura-eyebrow" id="appointments-status">Loading appointments...</p>
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 class="aura-title">Appointments</h1>
-            <p class="aura-subtitle">Review patient appointments. Slot availability is managed separately under Slot Management.</p>
-          </div>
-          <input id="appointments-date" class="aura-field max-w-56 p-3" type="date">
-        </div>
-
-        <div class="mt-8 flex flex-wrap gap-3" role="tablist" aria-label="Appointment views">
-          <button class="aura-tab" type="button" data-appointment-tab="today" aria-selected="true">Today&apos;s Appointments</button>
-          <button class="aura-tab" type="button" data-appointment-tab="future" aria-selected="false">Future Appointments</button>
-          <button class="aura-tab" type="button" data-appointment-tab="past" aria-selected="false">Past Appointments</button>
-        </div>
-
-        <section class="aura-card aura-card--padded mt-5">
-          <div class="grid gap-4" id="appointments-list"></div>
-        </section>
+      <section class="aura-page da-schedule">
+        <h1 class="aura-title">Appointments</h1><p class="aura-subtitle">Hospital bookings and recorded doctor attendance.</p>
+        <div class="da-intro"><div><h2><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Appointments &amp; Consultation Schedule <span class="da-zone">IST (UTC+05:30)</span></h2><p>Appointments are booked with the hospital. A doctor is recorded when they attend.</p></div></div>
+        <div class="da-tab-row"><div class="da-tabs" role="tablist" aria-label="Appointment views"><button type="button" role="tab" data-appointment-scope="upcoming" aria-selected="true"><span class="material-symbols-outlined" aria-hidden="true">event</span>Upcoming Appointments <span data-count="upcoming">—</span></button><button type="button" role="tab" data-appointment-scope="past" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">history</span>Past Appointments <span data-count="past">—</span></button></div><p class="da-current" id="appointments-doctor">Loading doctor…</p></div>
+        <form class="da-filters" id="appointments-filters"><label class="da-search">Search appointments<input id="appointments-search" type="search" placeholder="Patient name, Case ID or phone" maxlength="200"></label><label>Attended by<select id="appointments-doctor-filter"><option value="">All attending doctors</option></select></label><label>Consultation service<select id="appointments-service"><option value="">All services</option></select></label><label>Booking status<select id="appointments-status-filter"><option value="">All statuses</option><option value="SCHEDULED">Scheduled</option><option value="BOOKED">Booked</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option><option value="CANCELLED">Cancelled</option></select></label><label>Date range<select id="appointments-date-mode"><option value="">All upcoming dates</option><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="custom">Custom date range</option></select></label><button class="da-icon-button" id="appointments-clear" type="button" title="Reset filters" aria-label="Reset filters"><span class="material-symbols-outlined" aria-hidden="true">filter_alt_off</span></button><div class="da-date-range" id="appointments-date-range" hidden><label>From<input id="appointments-from" type="date"></label><label>To<input id="appointments-to" type="date"></label><button class="da-button da-button--light" type="submit">Apply dates</button></div></form>
+        <div class="da-results-head"><p id="appointments-scope-description">Shared hospital appointments from today onwards.</p><button class="da-refresh" id="appointments-refresh" type="button"><span class="material-symbols-outlined" aria-hidden="true">refresh</span>Refresh</button></div>
+        <p class="da-feedback" id="appointments-status" role="status" aria-live="polite">Loading appointments…</p><div class="da-groups" id="appointments-list" aria-label="Appointments"></div>
+        <div class="da-pagination"><p id="appointments-page-summary"></p><div><button class="da-button da-button--light" id="appointments-prev" type="button" disabled>Previous</button><span id="appointments-page-number"></span><button class="da-button da-button--light" id="appointments-next" type="button" disabled>Next</button></div></div>
       </section>
     </main>
   </div>
 
   <nav class="aura-mobile-nav"></nav>
-  <script src="/assets/js/aura-core.js?v=2026070816"></script>
-  <script src="/assets/js/doctor-portal.js?v=202607162"></script>
-  <script src="/assets/js/doctor-appointments.js?v=20261106-calendar"></script>
-  <script src="/assets/js/aura-sidebar.js?v=20261106-razorpay"></script>
+  <script src="/assets/js/doctor-page.js?v=20261112-shell"></script><script src="/assets/js/aura-core.js?v=2026070816"></script>
+  <script src="/assets/js/doctor-portal.js?v=20261106-workspace"></script>
+  <script src="/assets/js/doctor-appointments.js?v=20261112-queue"></script>
+  <script src="/assets/js/aura-sidebar.js?v=20261112-shell"></script>
 </body>
 </html>

@@ -26,7 +26,7 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-async function createConsultationMeeting({ appointmentId, appointmentAt, durationMinutes = 15, serviceType, patient, doctor, notify = true }) {
+async function createConsultationMeeting({ appointmentId, appointmentAt, durationMinutes = 15, serviceType, patient, doctor = {}, notify = true }) {
   const accessToken = await getAccessToken();
   if (!accessToken) {
     return { provider: 'google_meet', mode: 'not_configured', meetLink: null, createdAt: new Date().toISOString() };
@@ -38,7 +38,7 @@ async function createConsultationMeeting({ appointmentId, appointmentAt, duratio
     .filter((email, index, list) => email && list.indexOf(email) === index)
     .map((email) => ({ email }));
   const event = {
-    summary: `${serviceType || 'Consultation'} – ${patient.display_name || 'Patient'} and ${doctor.display_name || 'Doctor'}`,
+    summary: `${serviceType || 'Consultation'} – ${patient.display_name || 'Patient'} and ${doctor.display_name || 'Sumohan Care clinical team'}`,
     description: `Sumohan Care consultation. Appointment ID: ${appointmentId}`,
     start: { dateTime: new Date(appointmentAt).toISOString(), timeZone: process.env.APPOINTMENT_TIME_ZONE || 'Asia/Kolkata' },
     end: { dateTime: addMinutes(appointmentAt, durationMinutes), timeZone: process.env.APPOINTMENT_TIME_ZONE || 'Asia/Kolkata' },

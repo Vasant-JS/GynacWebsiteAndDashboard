@@ -22,14 +22,14 @@ async function finalize(paymentId,providerPaymentId) {
     if(captured.status!=='captured' || captured.captured!==true)throw fail('Payment is awaiting confirmation. Please check your booking again shortly.',409);
     const booking=row.metadata.booking;
     if(!booking || !booking.consent)throw fail('Booking details are unavailable.',409);
-    doctor=(await client.query("SELECT * FROM users WHERE id=$1 AND role='DOCTOR' AND status='ACTIVE' FOR UPDATE",[booking.doctorId])).rows[0];
+    doctor={id:null,display_name:'Sumohan Care clinical team',email:null};
     patient=(await client.query("SELECT * FROM users WHERE id=$1 AND role='PATIENT'",[row.patient_id])).rows[0];
     let appointmentAt,reviewReason;
-    const {assertSlotAvailable,bookingDeclaration,bookingHistoryMetadata}=require('./patient');
+    const {assertHospitalBookingSlot,bookingDeclaration,bookingHistoryMetadata}=require('./patient');
     try {
-      if(!doctor || !patient)throw fail('The doctor or patient is no longer available.',409);
+      if(!patient)throw fail('The patient is no longer available.',409);
       await bookingDeclaration(booking,{...patient,display_name:booking.consent.patientName},{medicalConsent:true,accuracyConsent:true,declarationName:booking.consent.patientName},client);
-      appointmentAt=await assertSlotAvailable(doctor.id,booking.date,booking.time,null,client);
+      appointmentAt=await assertHospitalBookingSlot(patient.id,booking.date,booking.time,null,client);
       if(captured.amount_refunded>0)reviewReason='Payment was partially refunded before booking confirmation.';
     } catch(error) {
       if(![400,409].includes(error.status))throw error;
@@ -44,7 +44,7 @@ async function finalize(paymentId,providerPaymentId) {
       ]);
       appointmentId=appointment.rows[0].id;created=true;
       if(booking.documentIds?.length)await client.query('UPDATE medical_documents SET appointment_id=$1 WHERE id=ANY($2::uuid[]) AND patient_id=$3 AND appointment_id IS NULL',[appointmentId,booking.documentIds,patient.id]);
-      await client.query("INSERT INTO notifications (user_id,title,body,category,metadata) VALUES ($1,'Appointment booked',$2,'APPOINTMENT',$3::jsonb),($4,'New consultation',$2,'APPOINTMENT',$3::jsonb)",[patient.id,`${booking.service} on ${booking.date} at ${booking.time}`,JSON.stringify({appointmentId}),doctor.id]);
+      await require('./attendance').notifyBooking(client,patient.id,appointmentId,`${booking.service} on ${booking.date} at ${booking.time}`);
     }
     const outcome=reviewReason?'REQUIRES_REVIEW':'BOOKED';
     await client.query("UPDATE payments SET status='PAID',appointment_id=$1,metadata=metadata || $2::jsonb WHERE id=$3",[appointmentId,JSON.stringify({razorpayPaymentId:providerPaymentId,reference:providerPaymentId,paidAt:new Date().toISOString(),bookingOutcome:outcome,...(reviewReason?{requiresReview:true,reviewReason}: {})}),row.id]);

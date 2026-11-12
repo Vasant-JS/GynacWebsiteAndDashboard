@@ -78,3 +78,21 @@ The backend must be authorized as `sumohancaretech@gmail.com` to create events o
 Do not commit, upload, or send the client JSON, client secret, authorization code, or refresh token. With an External app in Testing, Google refresh tokens for Calendar access expire after 7 days; this is fine for a short local test, but production needs the consent screen publishing setup completed. The configured `BOOKING_NOTIFICATION_EMAIL` records the notification recipient; outbound email delivery is a separate integration.
 
 The current booking flow confirms appointments without collecting online payment. Existing development OTP behavior remains available for local testing.
+
+### Doctor clinical workspace
+
+The doctor dashboard uses the supplied roster design with the shared hospital booking queue, date navigation, Past / Today / Upcoming filters, real seven-day booking counts, patient search and a printable run-sheet. Dates and counts use India Standard Time.
+
+`/doctor/case-history.html?appointmentId=...` provides the complete clinical history, seven case-sheet groups, report access, visit timeline, explicit editing and saved revision history. Cancelled visits are read only. The existing appointment-details page remains available, with links to the new case sheet and prescription workspace.
+
+`/doctor/prescription.html?appointmentId=...` provides structured medicines, investigation/imaging/dietary advice, saved drafts and prescriptions, prescription scan uploads (JPG, PNG, WebP or PDF up to 8 MB) and printable saved records. With no appointment selected, choose a hospital consultation first. Pharmacy transmission, automated allergy checking and digital signatures are not implemented; the workspace does not claim those services.
+
+All doctor pages reuse a persistent sidebar, topbar/account menu and mobile navigation. Sidebar links and consultation selection replace only the central content and support browser Back/Forward. Each page initializes its own scripts, and leaving a clinical page clears its event listeners and pending requests. Unsaved clinical edits prompt before navigation; navigation is blocked while saving. Run `node --test scripts/test-doctor-page.js` to check these lifecycle guards.
+
+The Appointments page now has Upcoming Appointments (today onwards, without a month limit) and Past Appointments for the entire hospital. New bookings have no doctor selection and store doctor_id / attended_by as null. Booking validates hospital consultation hours and future dates, not individual doctor availability. Duplicate bookings for the same patient at the same time are rejected; different patients can book the same hospital time.
+
+A doctor explicitly clicks Attend to claim a consultation. A row lock records attended_by and attended_at atomically, sets the consultation in progress, and rejects competing claims. Only that doctor can write notes, case sheets and prescriptions or join its Google Meet. Other doctors can review hospital clinical records read-only. Patient views show the actual attending doctor's name once recorded. New booking notifications go to all active doctors. Admin doctor rows show attended, completed and attended-today counts.
+
+Startup adds attendance columns and backfills linked doctors only for historical IN_PROGRESS / COMPLETED records, marking attendanceSource as legacy_status. Scheduled legacy bookings are not treated as attended; their former booked doctor is preserved in metadata if another doctor attends. Explicit attendance timestamps are never overwritten. The hospital booking fee is HOSPITAL_CONSULTATION_FEE (default INR 800), independent of a doctor's reference fee. Razorpay and demo checkout also create unassigned hospital bookings. Existing Calendar events/links remain valid; new events are booked with the hospital team.
+
+Run node --test scripts/test-shared-queue.js for booking, concurrent claims, clinical ownership, shared visibility and admin counts. Existing clinical, payment, Calendar and checkout tests cover the revised flow.

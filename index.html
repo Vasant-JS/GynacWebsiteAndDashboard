@@ -246,12 +246,12 @@
 <div class="w-10 h-10 rounded-full bg-secondary-fixed text-secondary font-bold flex items-center justify-center font-headline-sm mb-4">
               2
             </div>
-<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Choose Doctor</h3>
+<h3 class="font-title-md text-title-md text-on-surface font-bold mb-2">Choose Date &amp; Time</h3>
 <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-              Review verified specialist credentials across Obstetrics &amp; Laparoscopic Surgery, or opt for an automatic earliest opening.
+              Choose your hospital consultation date and time. A doctor is recorded when they attend your visit.
             </p>
 </div>
-<span class="font-label-sm text-label-sm text-secondary font-semibold mt-4">3 verified specialists</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold mt-4">Shared hospital consultation queue</span>
 </div>
 <!-- Step 3 -->
 <div class="p-5 rounded-xl bg-surface-container-low shadow-sm flex flex-col justify-between">
@@ -343,7 +343,7 @@
 <span class="text-on-surface font-medium">Kannada, English, Hindi</span>
 </div>
 <div class="flex items-center justify-between text-body-sm font-body-sm">
-<span class="text-on-surface-variant">Availability Mode</span>
+<span class="text-on-surface-variant">Consultation Booking</span>
 <span class="text-primary font-semibold">Google Meet &amp; In-Person (IST)</span>
 </div>
 </div>
@@ -376,7 +376,7 @@
 <span class="text-on-surface font-medium">Kannada, English, Hindi</span>
 </div>
 <div class="flex items-center justify-between text-body-sm font-body-sm">
-<span class="text-on-surface-variant">Availability Mode</span>
+<span class="text-on-surface-variant">Consultation Booking</span>
 <span class="text-primary font-semibold">Google Meet &amp; In-Person (IST)</span>
 </div>
 </div>
@@ -409,7 +409,7 @@
 <span class="text-on-surface font-medium">Kannada, English</span>
 </div>
 <div class="flex items-center justify-between text-body-sm font-body-sm">
-<span class="text-on-surface-variant">Availability Mode</span>
+<span class="text-on-surface-variant">Consultation Booking</span>
 <span class="text-primary font-semibold">Google Meet &amp; In-Person (IST)</span>
 </div>
 </div>
@@ -445,7 +445,7 @@
 <div>
 <label class="font-label-md text-label-md font-bold block mb-2" for="home-availability-date">Consultation date (IST)</label>
 <input id="home-availability-date" type="date" class="w-full rounded-lg border border-outline-variant p-3" required>
-<p id="home-availability-status" class="mt-3 text-body-sm" role="status">Choose a date to view availability.</p>
+<p id="home-availability-status" class="mt-3 text-body-sm" role="status">Choose a date to view hospital consultation times.</p>
 <div id="home-availability-slots" class="grid grid-cols-2 gap-2 mt-3" style="max-height:248px;overflow-y:auto;overscroll-behavior:contain"></div>
 </div>
 <div class="p-3 rounded-lg bg-surface-container-low">
@@ -459,7 +459,7 @@
 <div class="flex items-center gap-3 pt-2">
 <button class="w-1/3 h-10 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md" onclick="closeDoctorModal()" type="button">Close</button>
 <button class="w-2/3 h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md font-bold shadow-sm transition-colors" id="modal-confirm-btn" onclick="applyDoctorAndProceed()" type="button">
-            Book Consultation with Doctor
+            Book Hospital Consultation
           </button>
 </div>
 </div>
@@ -732,15 +732,7 @@
 <option value="Other Concerns">Other Concerns</option>
 </select>
 </div>
-<div class="flex flex-col gap-1.5">
-<label class="font-label-md text-label-md text-on-surface font-bold" for="plan-doctor">Preferred Specialist</label>
-<select class="h-11 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" id="plan-doctor">
-<option value="Any Available Specialist">Any Available Specialist (Earliest Slot)</option>
-<option value="Dr. Abhay M Patel">Dr. Abhay M Patel | MBBS, MS (OBG)</option>
-<option value="Dr. Hemamohan">Dr. Hemamohan | MBBS, MD (OBG), Laparoscopic Surgeon</option>
-<option value="Dr. Sahana Hegde">Dr. Sahana Hegde | MBBS, MD (OBG)</option>
-</select>
-</div>
+<p class="text-body-sm">Book with Sumohan Care. The doctor is recorded when your appointment is attended.</p>
 </div>
 <!-- Medical Record Upload Field Note -->
 <div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-2">
@@ -793,7 +785,7 @@
 <span class="material-symbols-outlined text-primary text-[20px] transition-transform duration-200">expand_more</span>
 </button>
 <div class="faq-content hidden px-5 pb-5 font-body-md text-body-md text-on-surface-variant leading-relaxed">
-            You can plan your consultation using the interactive tool above by picking your category and doctor. After clicking "Continue to Patient Portal," verify your phone number, review doctor availability, and confirm your preferred slot.
+            You can plan your consultation using the interactive tool above by picking your category and doctor. After clicking "Continue to Patient Portal," verify your phone number, choose a consultation date and time, and confirm your preferred slot.
           </div>
 </div>
 <!-- FAQ 2 -->
@@ -1016,15 +1008,6 @@
     }
 
     function applyDoctorAndProceed() {
-      const doctorDropdown = document.getElementById('plan-doctor');
-      if (doctorDropdown && selectedDoctorInModal) {
-        for (let i = 0; i < doctorDropdown.options.length; i++) {
-          if (doctorDropdown.options[i].text.includes(selectedDoctorInModal)) {
-            doctorDropdown.selectedIndex = i;
-            break;
-          }
-        }
-      }
       closeDoctorModal();
       const planningSec = document.getElementById('consultation-planning');
       if (planningSec) {
@@ -1072,13 +1055,13 @@
       e.preventDefault();
       const type = document.querySelector('input[name="consultation-type"]:checked').value;
       const cat = document.getElementById('plan-category').value;
-      const doc = document.getElementById('plan-doctor').value;
+      const doc = 'Sumohan Care clinical team';
       const caseReference = type === 'Follow-Up Consultation' ? document.getElementById('case-reference').value.trim() : '';
 
       sessionStorage.setItem('sumohanConsultationDraft', JSON.stringify({
         consultationType: type === 'Follow-Up Consultation' ? 'FOLLOW_UP' : 'NEW',
         service: cat,
-        doctorName: doc,
+
         previousCaseReference: caseReference,
       }));
 

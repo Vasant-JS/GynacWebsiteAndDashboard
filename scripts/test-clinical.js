@@ -37,7 +37,7 @@ test('clinical calculations and validation', () => {
 });
 
 test('database-backed case history, booking, contact and access controls', async () => {
-  await ensureCaseHistorySchema(); await ensurePublicSchema();
+  await require('../server/attendance').ensureAttendanceSchema();await ensureCaseHistorySchema(); await ensurePublicSchema();
   const ids = { doctor: randomUUID(), outsider: randomUUID(), patient: randomUUID(), otherPatient: randomUUID(), appointment: randomUUID(), admin: randomUUID() };
   const sessions = {};
   let server, enquiryId, newPatientId;
@@ -49,6 +49,7 @@ test('database-backed case history, booking, contact and access controls', async
       ($4, 'PATIENT', 'Clinical Test Other Patient', '{}', '{"test":true}'),
       ($5, 'ADMIN', 'Clinical Test Admin', '{}', '{"test":true}')`, [ids.doctor, ids.outsider, ids.patient, ids.otherPatient, ids.admin]);
     await pool.query("INSERT INTO appointments (id, doctor_id, patient_id, appointment_at, service_type, status) VALUES ($1, $2, $3, '2026-09-01T09:00:00+05:30', 'Gynecology', 'COMPLETED')", [ids.appointment, ids.doctor, ids.patient]);
+    await pool.query('UPDATE appointments SET attended_by=doctor_id,attended_at=now() WHERE id=$1',[ids.appointment]);
     const app = express(); app.use(express.json());
     // Identity injection exists only in this disposable test server, never in the application.
     app.use((req, _res, next) => {
@@ -78,7 +79,7 @@ test('database-backed case history, booking, contact and access controls', async
     }
     const caseUrl = `/api/doctor/appointments/${ids.appointment}/case-history`;
     assert.equal((await request(caseUrl, null)).status, 401);
-    assert.equal((await request(caseUrl, 'OUTSIDER')).status, 404);
+    assert.equal((await request(caseUrl, 'OUTSIDER')).data.canEdit, false);
     assert.equal((await request(caseUrl)).data.sheet, null);
     const data = { complaint: '<script>alert(1)</script>', pregnancyStatus: 'Yes', lmp: '2026-07-01', assessmentDate: '2026-10-14', heightCm: 160, weightKg: 60, children: [{gender:'Female',age:4,notes:'Prior pregnancy'}], rh:'Negative', antiD:'Yes', ictPerformed:'Yes', ictResult:'Negative', familyHistory:'Recorded', diagnosis:'Provisional', referralRequired:'Yes', referralDetails:'Review' };
     const saved = await request(caseUrl, 'DOCTOR', 'PUT', { data, version: 0, calculations:{bmi:999} });
@@ -90,6 +91,31 @@ test('database-backed case history, booking, contact and access controls', async
     const reread = await request(caseUrl);
     assert.equal(reread.data.revisions.length, 2); assert.equal(reread.data.revisions[1].data.diagnosis, 'Provisional');
     assert.equal(reread.data.history[0].data.diagnosis, 'Updated');
+    assert.equal(reread.data.canEdit,true);
+    assert.equal(reread.data.appointment.doctor_name,'Clinical Test Doctor');
+    assert.ok(Array.isArray(reread.data.documents));
+    assert.ok(Array.isArray(reread.data.prescriptions));
+    assert.equal((await request('/api/doctor/dashboard')).status,200);
+    assert.equal((await request('/api/doctor/dashboard/appointments?date=invalid')).status,400);
+    const roster=await request('/api/doctor/dashboard/appointments?date=2026-09-01&period=today');
+    assert.equal(roster.status,200);assert.equal(roster.data.appointments[0].id,ids.appointment);
+    assert.equal(roster.data.appointments[0].patientId,ids.patient);
+    assert((await request('/api/doctor/dashboard/appointments?date=2026-09-01&period=today','OUTSIDER')).data.appointments.some(a=>a.id===ids.appointment));
+    const rx={appointmentId:ids.appointment,status:'DRAFT',medications:[{name:'Test medicine',composition:'Test composition',dosage:'Test dose',frequency:'Test frequency',timing:'After food',duration:'Test duration',quantity:'1',instructions:'Test instruction'}],instructions:{advice:'Recorded advice',followUpDate:'2026-09-08',investigations:'Recorded test',imaging:'Recorded imaging',dietaryAdvice:'Recorded diet'}};
+    Object.assign(rx,rx.instructions);delete rx.instructions;
+    assert.equal((await request('/api/doctor/prescriptions','OUTSIDER','POST',rx)).status,404);
+    assert.equal((await request('/api/doctor/prescriptions','DOCTOR','POST',{...rx,status:'FINAL',medications:[]})).status,400);
+    assert.equal((await request('/api/doctor/prescriptions','DOCTOR','POST',{...rx,followUpDate:'2026-02-30'})).status,400);
+    assert.equal((await request('/api/doctor/prescriptions','DOCTOR','POST',rx)).status,201);
+    assert.equal((await request('/api/doctor/prescriptions','DOCTOR','POST',{...rx,status:'FINAL'})).status,201);
+    const rxContext=(await request('/api/doctor/appointment-context?appointmentId='+ids.appointment)).data;
+    assert.equal(rxContext.prescriptions[0].appointment_id,ids.appointment);
+    assert.equal(rxContext.prescriptions[0].medications[0].composition,'Test composition');
+    assert.equal(rxContext.prescriptions[0].instructions.imaging,'Recorded imaging');
+    const pdfForm=new FormData();pdfForm.append('file',new Blob(['%PDF-1.4\n%%EOF'],{type:'application/pdf'}),'test-prescription.pdf');
+    const pdfResponse=await fetch(base+'/api/doctor/appointments/'+ids.appointment+'/prescription-photo',{method:'POST',headers:{'x-test-role':'DOCTOR'},body:pdfForm});
+    assert.equal(pdfResponse.status,201);
+    assert.ok((await request(caseUrl)).data.documents.some(doc=>doc.file_name==='test-prescription.pdf'));
     const patients = await request('/api/doctor/patients/search?q=Clinical');
     assert.equal((await request('/api/doctor/profile','PATIENT','PATCH',{experienceYears:10,languages:['English']})).status,401);
     assert.equal((await request('/api/doctor/profile','DOCTOR','PATCH',{experienceYears:-1,languages:['English']})).status,400);
@@ -99,7 +125,7 @@ test('database-backed case history, booking, contact and access controls', async
     assert.equal((await request('/api/doctor/profile')).data.user.profile.experienceYears,7.5);
     assert.equal((await request('/api/doctor/profile','OUTSIDER')).data.user.profile.experienceYears,undefined);
     assert.equal(patients.status, 200); assert.equal(patients.data.patients.length, 1); assert.equal(patients.data.patients[0].appointmentId, ids.appointment);
-    assert.equal((await request('/api/doctor/patients/lists')).data.past.length, 1);
+    assert((await request('/api/doctor/patients/lists')).data.past.some(a=>a.appointmentId===ids.appointment));
     const reasons = { service:'Gynecology', reason:'Follow-up review', consultationType:'FOLLOW_UP', previousAppointmentId:ids.appointment, doctorId:ids.doctor };
     await pool.query("INSERT INTO doctor_availability (doctor_id,available_date,is_available,slots) VALUES ($1,'2030-01-11',false,'{}'), ($1,'2030-01-12',true,ARRAY['10:00 AM','11:00 AM'])",[ids.doctor]);
     assert.deepEqual((await request(`/api/public/doctors/${ids.doctor}/availability?date=2030-01-11`,null)).data.slots,[]);
@@ -123,7 +149,7 @@ test('database-backed case history, booking, contact and access controls', async
     assert.equal((await pool.query('SELECT appointment_id FROM medical_documents WHERE id=$1',[uploaded.document.id])).rows[0].appointment_id, booking.data.appointment.id);
     assert.equal((await pool.query('SELECT count(*) FROM payments WHERE appointment_id=$1',[booking.data.appointment.id])).rows[0].count, '0');
     const availability = await request(`/api/public/doctors/${ids.doctor}/availability?date=2030-01-10`, null);
-    assert.equal(availability.status, 200); assert.ok(!availability.data.slots.includes('09:00 AM'));
+    assert.equal(availability.status, 200); assert.ok(availability.data.slots.includes('09:00 AM'));
     assert.equal((await request('/api/patient/booking/reason', 'PATIENT', 'POST', reasons)).status, 200);
     assert.equal((await request('/api/patient/booking/confirm', 'PATIENT', 'POST', consent)).status, 409);
     // Exercise the demo-payment endpoint used by the current booking screen as well.
@@ -143,9 +169,9 @@ test('database-backed case history, booking, contact and access controls', async
     const finished=await request(finish,'PATIENT','PATCH',paymentBody);
     assert.equal(finished.status,201);
     const alerts=await pool.query("SELECT user_id,title FROM notifications WHERE metadata->>'appointmentId'=$1",[finished.data.appointment.id]);
-    assert.equal(alerts.rows.filter(row=>row.user_id===ids.doctor && row.title==='New consultation').length,1);
+    assert.equal(alerts.rows.filter(row=>row.user_id===ids.doctor && row.title==='New hospital consultation').length,1);
     assert.equal(alerts.rows.filter(row=>row.user_id===ids.patient && row.title==='Appointment booked').length,1);
-    assert(!alerts.rows.some(row=>row.user_id===ids.outsider));
+    assert(alerts.rows.some(row=>row.user_id===ids.outsider));
     const persisted=(await pool.query('SELECT metadata FROM appointments WHERE id=$1',[finished.data.appointment.id])).rows[0].metadata;
     assert.equal(persisted.consultationType,'FOLLOW_UP');
     assert.equal(persisted.previousAppointmentId,ids.appointment);
@@ -158,7 +184,7 @@ test('database-backed case history, booking, contact and access controls', async
     const joinUrl=base+'/api/consultations/'+finished.data.appointment.id+'/join';
     const joined=await fetch(joinUrl,{headers:{'x-test-role':'PATIENT'},redirect:'manual'});
     assert.equal(joined.status,302);assert.equal(joined.headers.get('location'),'https://meet.google.com/abc-defg-hij');
-    assert.equal((await fetch(joinUrl+'?role=DOCTOR',{headers:{'x-test-role':'DOCTOR'},redirect:'manual'})).status,302);
+    assert.equal((await fetch(joinUrl+'?role=DOCTOR',{headers:{'x-test-role':'DOCTOR'},redirect:'manual'})).status,404);
     assert.equal((await fetch(joinUrl+'?role=DOCTOR',{headers:{'x-test-role':'PATIENT'},redirect:'manual'})).status,401);
     assert.equal((await fetch(base+'/api/consultations/'+ids.appointment+'/join',{headers:{'x-test-role':'PATIENT'},redirect:'manual'})).status,409);
     assert.equal((await fetch(joinUrl,{headers:{'x-test-role':'OTHER_PATIENT'},redirect:'manual'})).status,404);
@@ -168,6 +194,8 @@ test('database-backed case history, booking, contact and access controls', async
     assert.equal((await request('/api/patient/appointments/'+finished.data.appointment.id+'/reschedule','PATIENT','PATCH',{date:consent.date,time:'10:15 AM'})).status,502);
     assert.equal(new Date((await pool.query('SELECT appointment_at FROM appointments WHERE id=$1',[finished.data.appointment.id])).rows[0].appointment_at).toISOString(),'2030-01-10T04:30:00.000Z');
     calendarFailure=false;
+    assert.equal((await request('/api/doctor/appointments/'+finished.data.appointment.id+'/attend','DOCTOR','POST')).status,200);
+    assert.equal((await fetch(joinUrl+'?role=DOCTOR',{headers:{'x-test-role':'DOCTOR'},redirect:'manual'})).status,302);
     const cancelled=await request('/api/doctor/appointments/'+finished.data.appointment.id+'/status','DOCTOR','PATCH',{status:'CANCELLED'});
     assert.equal(cancelled.status,200);assert.equal(calendarCalls.at(-1).cancel,true);
     assert.equal(cancelled.data.appointment.metadata.virtualMeeting.meetLink,null);
@@ -198,6 +226,7 @@ test('database-backed case history, booking, contact and access controls', async
   } finally {
     if (server) await new Promise(resolve => server.close(resolve));
     if (enquiryId) await pool.query('DELETE FROM contact_enquiries WHERE id=$1',[enquiryId]);
+    await pool.query("DELETE FROM notifications WHERE metadata->>'appointmentId' IN (SELECT id::text FROM appointments WHERE patient_id=ANY($1::uuid[]))",[[ids.patient,ids.otherPatient]]);
     await pool.query('DELETE FROM payments WHERE patient_id = ANY($1::uuid[])', [[ids.patient,ids.otherPatient]]);
     await pool.query('DELETE FROM appointments WHERE patient_id = ANY($1::uuid[])', [[ids.patient,ids.otherPatient]]);
     await pool.query('DELETE FROM users WHERE id = ANY($1::uuid[])', [[ids.doctor,ids.outsider,ids.patient,ids.otherPatient,ids.admin,...(newPatientId ? [newPatientId] : [])]]);

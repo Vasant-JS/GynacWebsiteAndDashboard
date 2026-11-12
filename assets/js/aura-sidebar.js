@@ -43,10 +43,8 @@
         ['Dashboard', '/doctor/dashboard.html', 'grid_view'],
         ['Patient Registry', '/doctor/patients.html', 'group'],
         ['Appointments / Schedule', '/doctor/schedule.html', 'calendar_clock'],
-        ['Clinical Case Sheets', '/doctor/patients.html?view=case-sheets', 'description'],
         ['Prescriptions & Pharmacy', '/doctor/prescription.html', 'prescriptions'],
         ['Payments & Transactions', '/doctor/payments.html', 'payments'],
-        ['Admin Central', '/admin/dashboard.html', 'admin_panel_settings'],
       ],
       mobile: [
         ['Home', '/doctor/dashboard.html', 'dashboard'],
@@ -104,6 +102,7 @@
       '/doctor/payments.html',
       '/doctor/prescription.html',
       '/doctor/appointment-details.html',
+      '/doctor/case-history.html',
     ]),
   };
 
@@ -128,7 +127,13 @@
   function isActive(href, currentPath = `${window.location.pathname}${window.location.search}`) {
     const target = new URL(href, window.location.origin);
     const current = new URL(currentPath, window.location.origin);
-    if (current.pathname === '/doctor/appointment-details.html' && target.pathname === '/doctor/schedule.html') return true;
+    if (['/doctor/appointment-details.html','/doctor/slots.html'].includes(current.pathname) && target.pathname === '/doctor/schedule.html') return true;
+    if(current.pathname==='/doctor/case-history.html' && target.pathname==='/doctor/patients.html' && target.searchParams.get('view')==='case-sheets')return true;
+    if(current.pathname==='/doctor/prescription.html' && target.pathname==='/doctor/prescription.html')return true;
+    if(portal==='doctor' && current.pathname===target.pathname){
+      if(target.pathname==='/doctor/patients.html')return (current.searchParams.get('view')==='case-sheets')===(target.searchParams.get('view')==='case-sheets');
+      return true;
+    }
     return current.pathname === target.pathname && current.search === target.search;
   }
 
@@ -249,6 +254,7 @@
     host.prepend(topbar);
     applySessionPerson(readStoredUser());
     syncDoctorPageHeading(host);
+    window.dispatchEvent(new Event('doctor-topbar-ready'));
   }
 
   function syncDoctorPageHeading(host = contentHost()) {
@@ -258,6 +264,12 @@
     const subtitleNode = topbar?.querySelector('[data-doctor-page-subtitle]');
     const pageTitle = host.querySelector('#doctor-patients-title, .aura-page > .aura-title, .aura-page h1, h1');
     if (!titleNode || !pageTitle) return;
+    if(pageTitle.id==='appointment-patient-name'){
+      titleNode.textContent='Appointment Details';
+      subtitleNode.textContent='Hospital consultation and clinical records.';
+      subtitleNode.hidden=false;
+      return;
+    }
 
     const isDashboardGreeting = pageTitle.id === 'doctor-greeting';
     const title = isDashboardGreeting ? 'Dashboard' : pageTitle.textContent.trim();
@@ -465,6 +477,7 @@
 
   function removeRouteOverlays() {
     document.querySelectorAll('[data-aura-route-overlay]').forEach((node) => node.remove());
+    if(portal==='doctor')document.querySelectorAll('body > #appointment-action-modal, body > #details-modal, body > #slot-editor-modal').forEach(node=>node.remove());
   }
 
   function installRouteOverlays(doc) {
@@ -503,7 +516,7 @@
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = `${src}?spa=${Date.now()}`;
+      script.src = `${src}${src.includes('?')?'&':'?'}spa=${Date.now()}`;
       script.async = false;
       script.addEventListener('load', () => {
         script.remove();
@@ -521,7 +534,60 @@
     }
   }
 
+  let doctorRenderedUrl=location.pathname+location.search;
+  let doctorRouteQueue=Promise.resolve();
+  function doctorOutlet(){
+    const host=contentHost();if(!host)return null;
+    let outlet=host.querySelector(':scope > [data-doctor-outlet]');
+    if(!outlet){outlet=document.createElement('div');outlet.dataset.doctorOutlet='true';
+      [...host.childNodes].filter(node=>!node.matches?.('.doctor-topbar')).forEach(node=>outlet.appendChild(node));host.appendChild(outlet);}
+    return outlet;
+  }
+  function loadDoctorRoute(href,push=true){
+    const requestUrl=new URL(href,location.origin);
+    const target=requestUrl.pathname+requestUrl.search;
+    if(requestUrl.origin!==location.origin || !routeSets.doctor.has(requestUrl.pathname))return Promise.resolve(false);
+    const token=++navigationToken;
+    doctorRouteQueue=doctorRouteQueue.catch(()=>{}).then(async()=>{
+      if(token!==navigationToken || target===doctorRenderedUrl)return true;
+      if(!window.DoctorPage.canLeave()){if(!push)history.pushState({},'',doctorRenderedUrl);return true;}
+      const outlet=doctorOutlet();if(!outlet)return false;
+      outlet.setAttribute('aria-busy','true');
+      try{
+        const response=await fetch(target+(requestUrl.search?'&':'?')+'spa='+Date.now(),{cache:'no-store',headers:{'X-Requested-With':'fetch'}});
+        if(!response.ok)throw new Error('Could not load this page. Please try again.');
+        const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+        if(token!==navigationToken)return true;
+        const nextMain=doc.querySelector('main');if(!nextMain)throw new Error('Page content is missing.');
+        window.DoctorPage.reset();
+        // The sidebar, topbar, account menu and mobile navigation keep their DOM nodes.
+        nextMain.querySelector('.doctor-topbar')?.remove();
+        outlet.innerHTML=nextMain.innerHTML;
+        document.body.className=doc.body.className;
+        document.title=doc.title;
+        installRouteOverlays(doc);
+        if(push)history.pushState({auraRoute:requestUrl.pathname},'',target);
+        doctorRenderedUrl=target;
+        setActiveLinks(target);
+        const dropdown=document.querySelector('[data-doctor-account-dropdown]');dropdown?.classList.add('hidden');
+        document.querySelector('[data-doctor-account-toggle]')?.setAttribute('aria-expanded','false');
+        for(const script of doc.querySelectorAll('script[src]')){
+          const src=new URL(script.getAttribute('src'),location.origin);
+          if(src.origin===location.origin && src.pathname.startsWith('/assets/js/') && !['/assets/js/aura-sidebar.js','/assets/js/doctor-page.js'].includes(src.pathname))await loadScript(src.pathname+src.search);
+        }
+        syncDoctorPageHeading();ensureDeveloperCredit();
+        window.scrollTo({top:0,behavior:'instant'});
+      }catch(error){
+        const message=document.createElement('p');message.setAttribute('role','alert');message.className='aura-card aura-card--padded';message.textContent=error.message;outlet.prepend(message);
+      }finally{outlet.removeAttribute('aria-busy');}
+      return true;
+    });
+    return doctorRouteQueue;
+  }
+  if(portal==='doctor')window.navigateDoctorPage=loadDoctorRoute;
+
   async function loadPortalRoute(href, push = true) {
+    if(portal==='doctor')return loadDoctorRoute(href,push);
     const url = new URL(href, window.location.origin);
     const routes = routeSets[portal];
     if (!routes?.has(url.pathname)) return false;
@@ -583,9 +649,8 @@
     const link = event.target.closest('a[href]');
     if (!link || link.target || link.hasAttribute('download') || event.defaultPrevented) return;
     const url = new URL(link.href, window.location.origin);
-    // A case sheet uses a full page lifecycle so unsaved-change protection and
-    // patient-specific event handlers cannot persist into another consultation.
-    if (url.pathname === '/doctor/appointment-details.html' || window.location.pathname === '/doctor/appointment-details.html') return;
+    if(event.button!==0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)return;
+    if(url.pathname===location.pathname && url.search===location.search && url.hash)return;
     const routes = routeSets[portal];
     if (url.origin !== window.location.origin || !routes?.has(url.pathname)) return;
     event.preventDefault();

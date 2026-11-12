@@ -40,7 +40,7 @@
   }
 
   async function fetchJson(url, options) {
-    const response = await fetch(url, options);
+    const response = await fetch(url, {signal:window.DoctorPage?.signal,...options});
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.message || `Request failed: ${response.status}`);
     return data;
