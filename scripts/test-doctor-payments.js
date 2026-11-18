@@ -66,6 +66,10 @@ test('doctor payment history shows hospital bookings, separates currencies and v
     await pool.query('UPDATE appointments SET attended_by=$1 WHERE id=$2',[doctor,appointments[0]]);
     assert.equal((await get('?attendedBy='+doctor)).data.total,5);
     assert.equal((await get('?attendedBy=unattended')).data.total,2);
+    assert.equal((await get('?paymentState=PAID')).data.total,3);
+    assert.equal((await get('?paymentState=UNPAID')).data.total,3);
+    assert.equal((await get('?paymentState=UNPAID&bookingStatus=COMPLETED&attendedBy='+doctor)).data.total,2);
+    assert.equal((await get('?paymentState=invalid')).status,400);
     assert.equal((await get('?pageSize=50')).data.pageSize,50);
     const ascending=(await get('?sort=amount&direction=asc')).data.records.filter(row=>row.payment_id);
     assert(ascending.every((row,index)=>index===0 || Number(ascending[index-1].amount)<=Number(row.amount)));

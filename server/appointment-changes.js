@@ -1,3 +1,4 @@
+const {isPastAppointmentDate}=require('./appointment-date');
 const { pool } = require('./db');
 const { syncConsultationMeeting } = require('./meeting');
 
@@ -9,6 +10,7 @@ async function changeAppointment(id, role, userId, { status, prepareTime } = {})
     const result = await client.query(`SELECT * FROM appointments WHERE id=$1 AND ${column}=$2 FOR UPDATE`, [id,userId]);
     const appointment = result.rows[0];
     if (!appointment) throw Object.assign(new Error('Appointment not found.'),{status:404});
+    if(prepareTime && role==='PATIENT' && isPastAppointmentDate(appointment.appointment_at))throw Object.assign(new Error('Past appointments cannot be rescheduled. Book a new appointment.'),{status:409});
     if(prepareTime && appointment.attended_by)throw Object.assign(new Error('This consultation has already been attended. Contact the hospital to arrange another visit.'),{status:409});
     if (['CANCELLED','COMPLETED'].includes(appointment.status) && (prepareTime || status !== appointment.status)) throw Object.assign(new Error('Closed appointments cannot be changed.'),{status:409});
     let appointmentAt = appointment.appointment_at;

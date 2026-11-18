@@ -1,3 +1,4 @@
+const {isPastAppointmentDate}=require('./appointment-date');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -168,6 +169,10 @@ router.get('/payments', async (req, res, next) => {
     const add = (sql,value) => {params.push(value);extra += ' AND '+sql.replaceAll('?', '$'+params.length);};
     const demoSql = `COALESCE((COALESCE(p.metadata->>'mode', '') LIKE '%demo%' OR COALESCE(p.metadata->>'gateway', '') IN ('manual_demo', 'manual_placeholder') OR (p.metadata->>'gateway'='razorpay' AND p.metadata->>'mode'='test')),false)`;
     const text = key => String(req.query[key] || '').trim();
+    const paymentState=text('paymentState');
+    if(paymentState && !['PAID','UNPAID'].includes(paymentState))return res.status(400).json({message:'Choose Paid or Unpaid.'});
+    if(paymentState==='PAID')extra+=" AND p.status='PAID'";
+    if(paymentState==='UNPAID')extra+=" AND COALESCE(p.status,'NOT_COLLECTED') IN ('PENDING','FAILED','NOT_COLLECTED')";
     const paymentStart=text('paymentStart'),paymentEnd=text('paymentEnd');
     if ((paymentStart&&!Clinical.dateValue(paymentStart))||(paymentEnd&&!Clinical.dateValue(paymentEnd))||(paymentStart&&paymentEnd&&paymentStart>paymentEnd)) return res.status(400).json({message:'Choose a valid transaction date range.'});
     if(paymentStart)add("p.created_at >= (?::date::timestamp AT TIME ZONE 'Asia/Kolkata')",paymentStart);
@@ -292,7 +297,7 @@ router.get('/dashboard/appointments', async (req, res, next) => {
     const comparison = period === 'past' ? '<' : period === 'future' ? '>' : '=';
     const direction = period === 'past' ? 'DESC' : 'ASC';
     const result = await pool.query(
-      `SELECT a.id,
+      `SELECT a.id, a.appointment_at,
               to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'YYYY-MM-DD') AS date,
               to_char(a.appointment_at AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM') AS time,
               a.service_type, a.status, a.metadata, a.attended_by, a.attended_at, (SELECT display_name FROM users WHERE id=a.attended_by) AS attended_name, a.patient_id,u.phone AS patient_phone, u.display_name AS patient_name
@@ -308,7 +313,7 @@ router.get('/dashboard/appointments', async (req, res, next) => {
       date: item.date,
       time: item.time,
       patientName: item.patient_name || 'Patient',
-      attendedBy:item.attended_by,attendedName:item.attended_name,attendedAt:item.attended_at,canAttend:!item.attended_by&&!['COMPLETED','CANCELLED'].includes(item.status),isMine:item.attended_by===doctor.id,patientId:item.patient_id,patientPhone:item.patient_phone,virtualMeeting:item.attended_by===doctor.id?item.metadata?.virtualMeeting || null:null,
+      attendedBy:item.attended_by,attendedName:item.attended_name,attendedAt:item.attended_at,canAttend:!isPastAppointmentDate(item.appointment_at)&&!item.attended_by&&!['COMPLETED','CANCELLED'].includes(item.status),isMine:item.attended_by===doctor.id,patientId:item.patient_id,patientPhone:item.patient_phone,virtualMeeting:item.attended_by===doctor.id?item.metadata?.virtualMeeting || null:null,
       serviceType: item.service_type,
       status: item.status,
     })) });
@@ -347,7 +352,7 @@ router.get('/appointments-directory', async (req,res,next)=>{
       pool.query('SELECT DISTINCT service_type FROM appointments ORDER BY service_type'),
     ]);
     const totals=counts.rows[0];
-    res.json({currentDoctor:{id:doctor.id,name:doctor.display_name},scope,counts:totals,total:totals[scope],page,pageSize:size,doctors:doctors.rows.map(d=>({id:d.id,name:d.display_name})),services:services.rows.map(s=>s.service_type),appointments:records.rows.map(a=>({id:a.id,appointmentAt:a.appointment_at,date:a.date,serviceType:a.service_type,status:a.status,isMine:a.doctor_id===doctor.id,canAttend:!a.doctor_id&&!['COMPLETED','CANCELLED'].includes(a.status),attendedAt:a.attended_at,patient:{id:a.patient_id,name:a.patient_name,phone:a.phone,age:a.age,gender:a.gender},doctor:{id:a.doctor_id,name:a.doctor_name || 'Not yet attended',specialization:a.specialization},reason:a.reason || null,consultationType:a.consultation_type || null,virtualMeeting:a.virtual_meeting || null}))});
+    res.json({currentDoctor:{id:doctor.id,name:doctor.display_name},scope,counts:totals,total:totals[scope],page,pageSize:size,doctors:doctors.rows.map(d=>({id:d.id,name:d.display_name})),services:services.rows.map(s=>s.service_type),appointments:records.rows.map(a=>({id:a.id,appointmentAt:a.appointment_at,date:a.date,serviceType:a.service_type,status:a.status,isMine:a.doctor_id===doctor.id,canAttend:!isPastAppointmentDate(a.appointment_at)&&!a.doctor_id&&!['COMPLETED','CANCELLED'].includes(a.status),attendedAt:a.attended_at,patient:{id:a.patient_id,name:a.patient_name,phone:a.phone,age:a.age,gender:a.gender},doctor:{id:a.doctor_id,name:a.doctor_name || 'Not yet attended',specialization:a.specialization},reason:a.reason || null,consultationType:a.consultation_type || null,virtualMeeting:a.virtual_meeting || null}))});
   }catch(error){if(isDbUnavailable(error))return res.status(503).json({message:'Unable to connect to the appointment database.'});next(error);}
 });
 
@@ -482,7 +487,7 @@ router.get('/appointment-context', async (req, res, next) => {
         serviceType: appointment.service_type,
         status: appointment.status,
         attendedName:(await pool.query('SELECT display_name FROM users WHERE id=$1',[appointment.attended_by])).rows[0]?.display_name || null,
-        attendedBy:appointment.attended_by,attendedAt:appointment.attended_at,canEdit:appointment.attended_by===doctor.id,canAttend:!appointment.attended_by&&!['COMPLETED','CANCELLED'].includes(appointment.status),
+        attendedBy:appointment.attended_by,attendedAt:appointment.attended_at,canEdit:appointment.attended_by===doctor.id,canAttend:!isPastAppointmentDate(appointment.appointment_at)&&!appointment.attended_by&&!['COMPLETED','CANCELLED'].includes(appointment.status),
         notes: appointment.notes || {},
         metadata: {...(appointment.metadata || {}),virtualMeeting:appointment.attended_by===doctor.id?appointment.metadata?.virtualMeeting || null:null},
         virtualMeeting: appointment.attended_by===doctor.id?appointment.metadata?.virtualMeeting || null:null,

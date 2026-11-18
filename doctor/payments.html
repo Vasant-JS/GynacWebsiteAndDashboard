@@ -14,8 +14,8 @@
     <p class="aura-eyebrow" id="doctor-payments-status" role="status">Loading payments…</p>
     <h1 class="aura-title">Payments &amp; Transactions</h1>
     <p class="aura-subtitle">Hospital consultation payment history. Dates are shown in India Standard Time.</p>
-    <form id="doctor-payments-filters" class="dp-filters aura-card mt-6"><label>Patient name or mobile<input name="patientSearch" type="search" placeholder="Search patient name or mobile" maxlength="200"></label><label>Payment date from<input name="paymentStart" type="date"></label><label>Payment date to<input name="paymentEnd" type="date"></label><div class="dp-filter-actions"><button class="aura-button" type="submit">Search</button><button class="aura-button aura-button--secondary" type="reset">Clear</button></div></form>
     <div id="doctor-payments-summary" class="mt-5 grid gap-4" aria-live="polite"></div>
+    <form id="doctor-payments-filters" class="dp-filters dp-filters--extended aura-card mt-6"><label>Patient name or mobile<input name="patientSearch" type="search" placeholder="Search patient name or mobile" maxlength="200"></label><label>Payment date from<input name="paymentStart" type="date"></label><label>Payment date to<input name="paymentEnd" type="date"></label><label>Attended by<select name="attendedBy"><option value="">All doctors</option><option value="unattended">Not yet attended</option></select></label><label>Booking status<select name="bookingStatus"><option value="">All booking statuses</option><option value="SCHEDULED">Scheduled</option><option value="BOOKED">Booked</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option><option value="CANCELLED">Cancelled</option></select></label><label>Paid / Unpaid<select name="paymentState"><option value="">All payments</option><option value="PAID">Paid</option><option value="UNPAID" title="Pending, failed, or not collected">Unpaid</option></select></label><div class="dp-filter-actions"><button class="aura-button" type="submit">Search</button><button class="aura-button aura-button--secondary" type="reset">Clear</button></div></form>
     <section class="aura-card aura-card--padded mt-5" aria-labelledby="transactions-heading">
       <h2 class="text-xl font-extrabold" id="transactions-heading">Consultation payment history</h2>
       <p class="mt-2 text-sm text-[#5a4044]">Demo entries are labelled and do not confirm money was collected. Bookings without a payment record show “Not collected”.</p>
@@ -24,6 +24,6 @@
     </section>
   </section></main></div><nav class="aura-mobile-nav"></nav>
   <script src="/assets/js/doctor-page.js?v=20261112-shell"></script><script src="/assets/js/aura-core.js?v=2026070816"></script><script src="/assets/js/doctor-portal.js?v=20261106-workspace"></script>
-  <script src="/assets/js/doctor-payments.js?v=20261112-inplace"></script><script src="/assets/js/aura-sidebar.js?v=20261112-shell"></script>
+  <script src="/assets/js/doctor-payments.js?v=20261118-cards"></script><script src="/assets/js/aura-sidebar.js?v=20261112-shell"></script>
 </body>
 </html>

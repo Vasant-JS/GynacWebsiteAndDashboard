@@ -109,9 +109,9 @@
               <button class="${menuItemClass} text-[#ba1a1a] ${canChange ? '' : disabledClass}" data-appointment-cancel="${item.id}" ${canChange ? '' : 'disabled'} type="button">
                 <span class="material-symbols-outlined text-lg">event_busy</span>Cancel
               </button>
-              <button class="${menuItemClass} ${canChange ? '' : disabledClass}" data-appointment-reschedule="${item.id}" ${canChange ? '' : 'disabled'} type="button">
+              ${canChange && !item.attended_by ? `<button class="${menuItemClass} ${canChange ? '' : disabledClass}" data-appointment-reschedule="${item.id}" ${canChange ? '' : 'disabled'} type="button">
                 <span class="material-symbols-outlined text-lg">edit_calendar</span>Reschedule
-              </button>
+              </button>` : ''}
               <button class="${menuItemClass} ${canComplete ? '' : disabledClass}" data-appointment-complete="${item.id}" ${canComplete ? '' : 'disabled'} type="button">
                 <span class="material-symbols-outlined text-lg">task_alt</span>Mark Completed
               </button>

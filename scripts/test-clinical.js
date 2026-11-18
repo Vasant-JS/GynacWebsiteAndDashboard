@@ -82,10 +82,14 @@ test('database-backed case history, booking, contact and access controls', async
     assert.equal((await request(caseUrl, 'OUTSIDER')).data.canEdit, false);
     assert.equal((await request(caseUrl)).data.sheet, null);
     const data = { complaint: '<script>alert(1)</script>', pregnancyStatus: 'Yes', lmp: '2026-07-01', assessmentDate: '2026-10-14', heightCm: 160, weightKg: 60, children: [{gender:'Female',age:4,notes:'Prior pregnancy'}], rh:'Negative', antiD:'Yes', ictPerformed:'Yes', ictResult:'Negative', familyHistory:'Recorded', diagnosis:'Provisional', referralRequired:'Yes', referralDetails:'Review' };
-    const saved = await request(caseUrl, 'DOCTOR', 'PUT', { data, version: 0, calculations:{bmi:999} });
+    const consultationNotes={observations:'Consultation observations',recommendedActions:['Review reports','Follow-up']};
+    const saved = await request(caseUrl, 'DOCTOR', 'PUT', { data, version: 0, calculations:{bmi:999},consultationNotes });
     assert.equal(saved.status, 200); assert.equal(saved.data.sheet.version, 1); assert.equal(saved.data.sheet.calculations.bmi, 23.4);
+    assert.equal((await request(caseUrl)).data.appointment.notes.observations,consultationNotes.observations);
+    assert.equal((await request(caseUrl,'DOCTOR','PUT',{data,version:1,consultationNotes:{observations:'Invalid',recommendedActions:'not an array'}})).status,400);
     assert.equal((await request(caseUrl, 'OUTSIDER', 'PUT', {data,version:1})).status, 404);
-    assert.equal((await request(caseUrl, 'DOCTOR', 'PUT', {data,version:0})).status, 409);
+    assert.equal((await request(caseUrl, 'DOCTOR', 'PUT', {data,version:0,consultationNotes:{observations:'Must not overwrite',recommendedActions:[]}})).status, 409);
+    assert.equal((await request(caseUrl)).data.appointment.notes.observations,consultationNotes.observations);
     const updated = await request(caseUrl, 'DOCTOR', 'PUT', { data:{...data,diagnosis:'Updated'}, version:1 });
     assert.equal(updated.data.sheet.version, 2);
     const reread = await request(caseUrl);

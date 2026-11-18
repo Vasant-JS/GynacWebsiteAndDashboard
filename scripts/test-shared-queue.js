@@ -20,6 +20,7 @@ test('hospital booking without doctor, shared queue, concurrent attendance, clin
    const booking=await request('/api/patient/booking/confirm',patient,'POST',{date:'2031-03-12',time:'09:00 AM',medicalConsent:true,accuracyConsent:true,declarationName:'Queue Test Patient '+patient});assert.equal(booking.status,201,JSON.stringify(booking.data));created.push(booking.data.appointment.id);assert.equal(booking.data.appointment.doctor_id,null);assert.equal(booking.data.appointment.attended_by,null);
   }
   for(const doctor of ['A','B']){const queue=await request('/api/doctor/appointments-directory?scope=upcoming&search=Queue%20Test%20Patient',doctor);assert.equal(queue.status,200,JSON.stringify(queue.data));assert.equal(queue.data.total,2);assert(queue.data.appointments.every(a=>a.canAttend&&a.doctor.id===null));const lists=await request('/api/doctor/patients/lists',doctor);assert.equal(lists.status,200);assert(lists.data.future.some(a=>a.appointmentId===created[0]));}
+  const roster=await request('/api/doctor/dashboard/appointments?period=today&date=2031-03-12');assert.equal(roster.status,200,JSON.stringify(roster.data));assert.equal(roster.data.appointments.filter(a=>created.includes(a.id)).length,2);assert(roster.data.appointments.filter(a=>created.includes(a.id)).every(a=>a.canAttend));
   const history='/api/doctor/appointments/'+created[0]+'/case-history';assert.equal((await request(history)).data.canEdit,false);
   assert.equal((await request(history,'A','PUT',{version:0,data:{complaint:'Not allowed before attendance'}})).status,404);
   const outcomes=await Promise.all(['A','B'].map(user=>request('/api/doctor/appointments/'+created[0]+'/attend',user,'POST')));assert.deepEqual(outcomes.map(r=>r.status).sort(),[200,409]);const winner=outcomes[0].status===200?'A':'B',loser=winner==='A'?'B':'A';
@@ -34,6 +35,17 @@ test('hospital booking without doctor, shared queue, concurrent attendance, clin
   const admin=await request('/api/admin/doctors','ADMIN');const doc=admin.data.doctors.find(d=>d.id===ids[winner]);assert.equal(Number(doc.attended_count),1);assert.equal(Number(doc.completed_count),1);
   const dashboard=await request('/api/doctor/dashboard',loser);assert.equal(dashboard.status,200,JSON.stringify(dashboard.data));
   const notifications=await pool.query("SELECT user_id FROM notifications WHERE metadata->>'appointmentId'=$1 AND title='New hospital consultation'",[created[1]]);assert(notifications.rows.some(n=>n.user_id===ids.A));assert(notifications.rows.some(n=>n.user_id===ids.B));
+  const {isPastAppointmentDate}=require('../server/appointment-date');
+  assert.equal(isPastAppointmentDate('2026-11-16T18:29:59Z',new Date('2026-11-16T18:30:00Z')),true);
+  assert.equal(isPastAppointmentDate('2026-11-16T18:30:00Z',new Date('2026-11-17T10:00:00Z')),false);
+  await pool.query("UPDATE appointments SET appointment_at=((now() AT TIME ZONE 'Asia/Kolkata')::date-1 + time '09:00') AT TIME ZONE 'Asia/Kolkata' WHERE id=$1",[created[1]]);
+  const past=(await request('/api/doctor/appointments-directory?scope=past&search=Queue%20Test%20Patient')).data.appointments.find(a=>a.id===created[1]);assert.equal(past.canAttend,false);
+  assert.equal((await request('/api/doctor/appointments/'+created[1]+'/case-history')).data.canAttend,false);
+  assert.equal((await request('/api/doctor/appointment-context?appointmentId='+created[1])).data.appointment.canAttend,false);
+  assert.equal((await request('/api/doctor/appointments/'+created[1]+'/attend','A','POST')).status,409);
+  assert.equal((await request('/api/doctor/appointments/'+created[1]+'/status','A','PATCH',{status:'IN_PROGRESS'})).status,409);
+  assert.equal((await request('/api/patient/appointments/'+created[1]+'/reschedule','Q','PATCH',{date:'2031-03-13',time:'09:00 AM'})).status,409);
+  const unchanged=(await pool.query('SELECT attended_by,status FROM appointments WHERE id=$1',[created[1]])).rows[0];assert.equal(unchanged.attended_by,null);assert.equal(unchanged.status,'SCHEDULED');
  }finally{if(server)await new Promise(resolve=>server.close(resolve));await pool.query("DELETE FROM notifications WHERE metadata->>'appointmentId' IN (SELECT id::text FROM appointments WHERE patient_id=ANY($1::uuid[]))",[[ids.P,ids.Q]]);
     await pool.query('DELETE FROM prescriptions WHERE patient_id=ANY($1::uuid[])',[[ids.P,ids.Q]]);await pool.query('DELETE FROM appointments WHERE patient_id=ANY($1::uuid[])',[[ids.P,ids.Q]]);await pool.query('DELETE FROM users WHERE id=ANY($1::uuid[])',[Object.values(ids)]);await pool.end();}
 });

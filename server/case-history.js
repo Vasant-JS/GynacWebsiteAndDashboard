@@ -1,3 +1,4 @@
+const {isPastAppointmentDate}=require('./appointment-date');
 const express = require('express');
 const { pool } = require('./db');
 const Clinical = require('../assets/js/clinical-schema');
@@ -40,7 +41,7 @@ router.get('/appointments/:id/case-history', async (req, res, next) => {
       pool.query('SELECT id,appointment_id,doctor_id,status,medications,instructions,created_at FROM prescriptions WHERE patient_id=$1 ORDER BY created_at DESC',[visit.patient_id]),
     ]);
     const revisions = sheet.rowCount ? await pool.query('SELECT r.version, r.created_at, r.data, r.calculations, d.display_name AS doctor_name FROM case_sheet_revisions r JOIN users d ON d.id = r.doctor_id WHERE r.case_sheet_id = $1 ORDER BY r.version DESC', [sheet.rows[0].id]) : { rows: [] };
-    res.json({ appointment: visit, caseId: 'SC-' + visit.patient_id, canEdit:visit.attended_by===req.authUser.id && visit.status!=='CANCELLED',canAttend:!visit.attended_by&&!['COMPLETED','CANCELLED'].includes(visit.status), sheet: sheet.rows[0] || null, history: history.rows, revisions: revisions.rows, documents:documents.rows,prescriptions:prescriptions.rows });
+    res.json({ appointment: visit, caseId: 'SC-' + visit.patient_id, canEdit:visit.attended_by===req.authUser.id && visit.status!=='CANCELLED',canAttend:!isPastAppointmentDate(visit.appointment_at)&&!visit.attended_by&&!['COMPLETED','CANCELLED'].includes(visit.status), sheet: sheet.rows[0] || null, history: history.rows, revisions: revisions.rows, documents:documents.rows,prescriptions:prescriptions.rows });
   } catch (error) { next(error); }
 });
 
@@ -49,6 +50,8 @@ router.put('/appointments/:id/case-history', async (req, res, next) => {
   let data;
   try { data = Clinical.normalize(req.body.data); }
   catch (error) { return res.status(400).json({ message: error.message }); }
+  const consultationNotes=req.body.consultationNotes;
+  if(consultationNotes!==undefined && (!consultationNotes || typeof consultationNotes.observations!=='string' || consultationNotes.observations.length>10000 || !Array.isArray(consultationNotes.recommendedActions) || consultationNotes.recommendedActions.length>100 || consultationNotes.recommendedActions.some(item=>typeof item!=='string'||item.length>10000)))return res.status(400).json({message:'Invalid consultation notes or recommended actions.'});
   if (!Number.isInteger(req.body.version) || req.body.version < 0) return res.status(400).json({ message: 'A valid case-sheet version is required.' });
   const client = await pool.connect();
   try {
@@ -66,6 +69,7 @@ router.put('/appointments/:id/case-history', async (req, res, next) => {
       RETURNING *`, [visit.id, visit.patient_id, req.authUser.id, JSON.stringify(data), JSON.stringify(calculations)]);
     const sheet = saved.rows[0];
     await client.query('INSERT INTO case_sheet_revisions (case_sheet_id, doctor_id, version, data, calculations) VALUES ($1, $2, $3, $4::jsonb, $5::jsonb)', [sheet.id, req.authUser.id, sheet.version, JSON.stringify(data), JSON.stringify(calculations)]);
+    if(consultationNotes!==undefined)await client.query("UPDATE appointments SET notes=notes || $1::jsonb,updated_at=now() WHERE id=$2",[JSON.stringify({observations:consultationNotes.observations.trim(),recommendedActions:consultationNotes.recommendedActions.map(item=>item.trim()).filter(Boolean),updatedBy:'doctor',updatedAt:new Date().toISOString()}),visit.id]);
     await client.query('COMMIT');
     res.json({ sheet, message: 'Case sheet saved.' });
   } catch (error) { await client.query('ROLLBACK'); next(error); }

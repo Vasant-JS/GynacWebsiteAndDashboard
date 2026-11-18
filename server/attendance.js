@@ -1,3 +1,4 @@
+const {isPastAppointmentDate}=require('./appointment-date');
 const {pool}=require('./db');
 async function ensureAttendanceSchema(){
   await pool.query(`ALTER TABLE appointments ADD COLUMN IF NOT EXISTS attended_by uuid REFERENCES users(id) ON DELETE SET NULL;
@@ -14,6 +15,7 @@ async function attendAppointment(id,doctorId){
     if(!doctor.rowCount)throw Object.assign(new Error('Active doctor login required.'),{status:401});
     const result=await client.query('SELECT * FROM appointments WHERE id=$1 FOR UPDATE',[id]);
     const appointment=result.rows[0];if(!appointment)throw Object.assign(new Error('Appointment not found.'),{status:404});
+    if(isPastAppointmentDate(appointment.appointment_at))throw Object.assign(new Error('Past appointments cannot be attended.'),{status:409});
     if(appointment.attended_by && appointment.attended_by!==doctorId)throw Object.assign(new Error('Another doctor is attending this appointment. Refresh the queue.'),{status:409});
     if(['COMPLETED','CANCELLED'].includes(appointment.status))throw Object.assign(new Error('Closed appointments cannot be attended.'),{status:409});
     if(appointment.attended_by===doctorId){await client.query('COMMIT');return appointment;}
